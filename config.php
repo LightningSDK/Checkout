@@ -2,7 +2,7 @@
 
 return [
     'package' => [
-        'module' => 'Stripe',
+        'module' => 'Checkout',
         'version' => '1.0',
     ],
     'routes' => [
