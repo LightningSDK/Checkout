@@ -25,4 +25,24 @@ use Lightning\Model\Object;
 class Address extends Object {
     const TABLE = 'checkout_address';
     const PRIMARY_KEY = 'address_id';
+
+    /**
+     * Get an HTML formatted address block.
+     *
+     * @return string
+     */
+    public function getHTMLFormatted() {
+        $output = [];
+        $output[] = $this->name;
+        if (!empty($this->street)) {
+            $output[] = $this->street;
+        }
+        if (!empty($this->street2)) {
+            $output[] = $this->street2;
+        }
+        if (!empty($this->city)) {
+            $output[] = $this->city . ', ' . $this->state . ' ' . $this->zip;
+        }
+        return implode('<br>', $output);
+    }
 }

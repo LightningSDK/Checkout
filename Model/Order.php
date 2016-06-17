@@ -5,6 +5,23 @@ namespace Modules\Checkout\Model;
 use Lightning\Model\Object;
 use Lightning\Tools\Database;
 
+/**
+ * Class Order
+ * @package Modules\Checkout\Model
+ *
+ * @parameter integer $id
+ * @parameter integer $order_id
+ * @parameter integer $status
+ * @parameter integer $time
+ * @parameter integer $paid
+ * @parameter integer $shipped
+ * @parameter integer shipping_address
+ * @parameter string $gateway_id
+ * @parameter integer $tax
+ * @parameter integer $shipping
+ * @parameter integer $total
+ * @parameter string $details
+ */
 class Order extends Object {
     const TABLE = 'checkout_order';
     const PRIMARY_KEY = 'order_id';
