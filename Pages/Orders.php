@@ -16,7 +16,7 @@ class Orders extends Table {
     const TABLE = 'checkout_order';
     const PRIMARY_KEY = 'order_id';
 
-    protected $field_order = ['order_id', 'status', 'shipping_address'];
+    protected $field_order = ['order_id', 'status', 'email', 'shipping_address'];
     protected $sort = ['order_id' => 'DESC'];
 
     protected $preset = [
@@ -27,9 +27,13 @@ class Orders extends Table {
         [
             'left_join' => 'checkout_address',
             'on' => ['address_id' => ['expression' => 'shipping_address']],
+        ],
+        [
+            'left_join' => 'user',
+            'using' => ['user_id'],
         ]
     ];
-    protected $joinFields = ['checkout_address.*'];
+    protected $joinFields = ['checkout_address.*', 'email'];
 
     public function hasAccess() {
         return ClientUser::requireAdmin();
@@ -40,6 +44,11 @@ class Orders extends Table {
         $this->preset['shipping_address'] = [
             'render_list_field' => function(&$row) {
                 return $row['name'] . '<br>' . $row['street'] . ' ' . $row['street2'] . '<br>' . $row['city'] . ', ' . $row['state'] . ' ' . $row['zip'];
+            }
+        ];
+        $this->preset['email'] = [
+            'render_list_field' => function(&$row) {
+                return $row['email'];
             }
         ];
 
