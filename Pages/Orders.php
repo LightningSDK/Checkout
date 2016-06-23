@@ -21,7 +21,11 @@ class Orders extends Table {
 
     protected $preset = [
         'time' => 'datetime',
+        'paid' => 'datetime',
+        'shipped' => 'datetime',
     ];
+
+    protected $accessControl = ['locked' => 1];
 
     protected $joins = [
         [
@@ -75,7 +79,7 @@ class Orders extends Table {
             $template->set('shipping_address', $db->selectRow('checkout_address', ['address_id' => $this->list['shipping_address']]));
             $template->set('user', $db->selectRow('user', ['user_id' => $this->list['user_id']]));
         }
-        if ($this->list['shipped'] == 1) {
+        if ($this->list['shipped'] > 0) {
             Output::error('This item has already been shipped');
         }
     }
@@ -132,7 +136,7 @@ class Orders extends Table {
         }
 
         // Mark the order as shipped.
-        $db->update('checkout_order', ['shipped' => 1], ['order_id' => $this->list['order_id']]);
+        $db->update('checkout_order', ['shipped' => time()], ['order_id' => $this->list['order_id']]);
 
         // Redirect.
         Navigation::redirect('/admin/orders', $redirect_params);
