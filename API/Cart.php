@@ -38,17 +38,20 @@ class Cart extends API {
         $cart = Order::loadOrCreateBySession();
         $item_id = Request::post('product_id', 'int');
         $qty = Request::post('qty', 'int');
-        $options = Request::post('options', 'assoc_array');
+        $options = json_encode(Request::post('options', 'assoc_array'));
         $cart->addItem($item_id, $qty, $options);
         return $this->get();
     }
 
     public function postSetQty() {
         $cart = Order::loadBySession();
+        if (empty($cart)) {
+            throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
+        }
         $cart->loadItems();
         $item_id = Request::post('product_id', 'int');
         $qty = Request::post('qty', 'int');
-        $options = Request::post('options', 'array');
+        $options = json_encode(Request::post('options', 'assoc_array'));
         if ($cart->setItemQty($item_id, $qty, $options)) {
             return $this->get();
         } else {
@@ -60,7 +63,7 @@ class Cart extends API {
         $cart = Order::loadBySession();
         $cart->loadItems();
         $item_id = Request::post('product_id', 'int');
-        $options = Request::post('options', 'array');
+        $options = json_encode(Request::post('options', 'assoc_array'));
         if ($cart->removeItem($item_id, $options)) {
             return $this->get();
         } else {
