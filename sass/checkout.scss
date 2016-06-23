@@ -1,0 +1,20 @@
+.checkout-cart {
+  width: 100%;
+  .qty, .qty input, .amount, .item-total {
+    text-align: right;
+  }
+  .remove img {
+    cursor: pointer;
+  }
+}
+.final-rows {
+  td {
+    text-align: right;
+  }
+}
+.checkout-buttons {
+  text-align: right;
+  .checkout-pay {
+    display: inline-block;
+  }
+}
