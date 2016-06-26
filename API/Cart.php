@@ -3,7 +3,6 @@
 namespace Modules\Checkout\API;
 
 use Exception;
-use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\View\API;
 use Modules\Checkout\Model\Order;
@@ -38,7 +37,7 @@ class Cart extends API {
         $cart = Order::loadOrCreateBySession();
         $item_id = Request::post('product_id', 'int');
         $qty = Request::post('qty', 'int');
-        $options = json_encode(Request::post('options', 'assoc_array'));
+        $options = Request::post('options', 'assoc_array');
         $cart->addItem($item_id, $qty, $options);
         return $this->get();
     }
@@ -51,7 +50,7 @@ class Cart extends API {
         $cart->loadItems();
         $item_id = Request::post('product_id', 'int');
         $qty = Request::post('qty', 'int');
-        $options = json_encode(Request::post('options', 'assoc_array'));
+        $options = Request::post('options', 'assoc_array');
         if ($cart->setItemQty($item_id, $qty, $options)) {
             return $this->get();
         } else {
@@ -59,11 +58,27 @@ class Cart extends API {
         }
     }
 
+    public function postSetQtys() {
+        $cart = Order::loadBySession();
+        if (empty($cart)) {
+            throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
+        }
+        $cart->loadItems();
+        $updates = Request::post('items', 'assoc_array');
+        foreach ($updates as $update) {
+            $item_id = intval($update['product_id']);
+            $qty = intval($update['qty']);
+            $options = $update['options'];
+            $cart->setItemQty($item_id, $qty, $options);
+        }
+        return $this->get();
+    }
+
     public function postRemoveItem() {
         $cart = Order::loadBySession();
         $cart->loadItems();
         $item_id = Request::post('product_id', 'int');
-        $options = json_encode(Request::post('options', 'assoc_array'));
+        $options = Request::post('options', 'assoc_array');
         if ($cart->removeItem($item_id, $options)) {
             return $this->get();
         } else {

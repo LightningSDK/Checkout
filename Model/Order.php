@@ -80,7 +80,15 @@ class Order extends Object {
     }
 
     public function getShipping() {
-        return 0;
+        $this->loadItems();
+        $max = null;
+        $flat_shipping = 0;
+        $biggest_flat_diff = 0;
+        foreach ($this->items as $key => $item) {
+            $flat_shipping += $item['qty'] * $item['flat_shipping_more'];
+            $biggest_flat_diff = max($biggest_flat_diff, $item['flat_shipping'] - $item['flat_shipping_more']);
+        }
+        return $flat_shipping + $biggest_flat_diff;
     }
 
     public function getSubTotal() {

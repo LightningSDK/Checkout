@@ -12,7 +12,7 @@
                 url : 'api/cart',
                 dataType: 'json',
                 success: function(data) {
-                    self.processUpdatedCart(data, request_id);
+                    self.processUpdatedCart(data, request_id, true);
                 }
             });
 
@@ -21,6 +21,7 @@
             // Add an event handler when clicking to remove an item.
             $('.reveal-modal').on('click', '.remove img', self.removeItem)
                 .on('change', '.checkout-qty', self.updateQty)
+                .on('click', '.checkout-update-total', self.updateQtys)
                 .on('click', '.checkout-pay', self.pay);
         },
 
@@ -96,11 +97,51 @@
             });
         },
 
-        processUpdatedCart: function(data, request_id) {
+        updateQtys: function(event) {
+            // Get all the qtys to send.
+            var items = [];
+            $('.checkout-item').each(function(){
+                var qty_box = $(this).find('.checkout-qty');
+                var qty = parseInt(qty_box.val());
+                if (isNaN(qty)) {
+                    qty_box.val(1);
+                    qty = 1;
+                }
+                items.push({
+                    product_id: $(this).data('product-id'),
+                    options: {
+                        test: 'option 1',
+                    },
+                    qty: qty,
+                });
+            });
+
+            // Update the qtys.
+            var request_id = ++self.requestId;
+            $.ajax({
+                url: 'api/cart',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'set-qtys',
+                    items: items
+                },
+                success: function(data) {
+                    self.processUpdatedCart(data, request_id);
+                }
+            });
+        },
+
+        processUpdatedCart: function(data, request_id, suppress_display) {
+            if (suppress_display == undefined) {
+                suppress_display = false;
+            }
             if (request_id > self.lastRequestId) {
                 self.lastRequestId = request_id;
                 self.updateCart(data.cart);
-                self.showCart();
+                if (!suppress_display) {
+                    self.showCart();
+                }
             }
         },
 
@@ -144,7 +185,7 @@
             var icon = $('<div id="checkout-side-icon"><div class="container"><i class="fa fa-shopping-cart"></i><div class="item-count">' + self.contents.items.length + '</div></div></div>');
             icon.appendTo('body');
             self.cartIcon = $('#checkout-side-icon').addClass('show').click(self.showCart);
-            self.cartIcon.click(self.showCart());
+            self.cartIcon.click(self.showCart);
         },
 
         showCart: function() {
@@ -156,16 +197,22 @@
                 for (var i in data.items) {
                     content += '<tr class="checkout-item" data-product-id="' + data.items[i].product_id + '" data-options="' + data.items[i].options + '">';
                     content += '<td class="remove"><img src="/images/lightning/remove2.png"></td>';
-                    content += '<td class="qty"><input name="checkout-qty" class="checkout-qty" value="' + data.items[i].qty + '"></td>';
+                    content += '<td class="qty"><input name="checkout-qty" class="checkout-qty" value="' + data.items[i].qty + '" size="4"></td>';
                     content += '<td class="title"><strong>' + data.items[i].title + '</strong><br>' + (data.items[i].description ? data.items[i].description : '') + '</td>';
                     content += '<td class="amount">$' + parseFloat(data.items[i].price).toFixed(2) + '</td>';
                     content += '<td class="item-total">$' + (data.items[i].price * data.items[i].qty).toFixed(2) + '</td>';
                     content += '</tr>';
                 }
+                if (data.tax && data.tax > 0) {
+                    content += '<tr class="final-rows"><td colspan="4">Tax:</td><td>$' + data.tax.toFixed(2) + '</td></tr>';
+                }
+                if (data.shipping && data.shipping > 0) {
+                    content += '<tr class="final-rows"><td colspan="4">Shipping:</td><td>$' + data.shipping.toFixed(2) + '</td></tr>';
+                }
                 content += '<tr class="final-rows"><td colspan="4">Total:</td><td>$' + data.total.toFixed(2) + '</td></tr>';
                 content += '</table>';
                 content += '<div class="checkout-buttons">' +
-                    '<span class="button medium checkout-pay">Update Total</span><span class="button-spacer"></span>' +
+                    '<span class="button medium checkout-update-total">Update Total</span><span class="button-spacer"></span>' +
                     '<span class="button red medium checkout-pay">Complete Order</span>' +
                     '</div>';
             } else {
