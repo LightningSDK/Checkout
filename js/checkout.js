@@ -153,7 +153,8 @@
                     amount: self.contents.total,
                     cart_id: self.contents.id,
                 }, function(){
-
+                    self.cartIcon.find('.item-count').html(0);
+                    self.cartIcon.removeClass('show');
                 });
             }
         },
