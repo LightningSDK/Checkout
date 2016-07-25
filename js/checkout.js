@@ -6,7 +6,7 @@
         lastRequestId: 0,
         cartIcon: null,
         init: function() {
-            $('.checkout-product').click(this.click);
+            $('.checkout-product').click(self.click);
             var request_id = ++self.requestId;
             $.ajax({
                 url : 'api/cart',
