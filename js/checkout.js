@@ -28,26 +28,50 @@
         click: function(event) {
             var button = $(event.target);
             if (button.data('checkout') == 'add-to-cart') {
-                var request_id = ++self.requestId;
-                $.ajax({
-                    url: 'api/cart',
-                    method: 'POST',
-                    dataType: 'json',
-                    data: {
-                        product_id: button.data('checkout-product-id'),
-                        qty: 1,
-                        options: {
-                            test: 'option 1'
-                        },
-                        action: 'add-to-cart',
-                    },
-                    success: function(data) {
-                        self.processUpdatedCart(data, request_id);
-                    }
-                });
+                self.addItem(button.data('checkout-product-id'), 1, {});
             } else {
                 // Pay Now
             }
+        },
+
+        addItemPopupOptions: function() {
+            // Make sure to validate the form.
+            var form = $('#checkout-popup-options');
+            var elems = form.find('input, textarea, select').not(":hidden, [data-abide-ignore]").get();
+            Foundation.libs.abide.validate(elems, form, true);
+            if (form.find('div.error').length == 0) {
+                var options = {};
+                form.find('input,select').each(function(index, item){
+                    options[item.name] = item.value;
+                });
+                self.addItem(form.data('product-id'), 1, options);
+            }
+        },
+
+        addItem: function(product_id, qty, options) {
+            var request_id = ++self.requestId;
+            lightning.dialog.showLoader('Adding this item to your cart...');
+            $.ajax({
+                url: 'api/cart',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    product_id: product_id,
+                    qty: qty,
+                    options: options,
+                    action: 'add-to-cart',
+                },
+                success: function(data) {
+                    if (data.form) {
+                        lightning.dialog.showContent(data.form);
+                        setTimeout(function(){
+                            $(document).foundation('reflow');
+                        }, 500);
+                    } else {
+                        self.processUpdatedCart(data, request_id);
+                    }
+                }
+            });
         },
 
         removeItem: function(event) {
@@ -60,9 +84,7 @@
                 dataType: 'json',
                 data: {
                     product_id: row.data('product-id'),
-                    options: {
-                        test: 'option 1'
-                    },
+                    options: row.data('options'),
                     action: 'remove-item',
                 },
                 success: function(data) {
@@ -85,9 +107,7 @@
                 dataType: 'json',
                 data: {
                     product_id: row.data('product-id'),
-                    options: {
-                        test: 'option 1'
-                    },
+                    options: row.data('options'),
                     action: 'set-qty',
                     qty: new_qty
                 },
@@ -101,17 +121,16 @@
             // Get all the qtys to send.
             var items = [];
             $('.checkout-item').each(function(){
-                var qty_box = $(this).find('.checkout-qty');
+                var row = $(this);
+                var qty_box = row.find('.checkout-qty');
                 var qty = parseInt(qty_box.val());
                 if (isNaN(qty)) {
                     qty_box.val(1);
                     qty = 1;
                 }
                 items.push({
-                    product_id: $(this).data('product-id'),
-                    options: {
-                        test: 'option 1',
-                    },
+                    product_id: row.data('product-id'),
+                    options: row.data('options'),
                     qty: qty,
                 });
             });
@@ -187,8 +206,12 @@
         initIcon: function() {
             var icon = $('<div id="checkout-side-icon"><div class="container"><i class="fa fa-shopping-cart"></i><div class="item-count">' + self.contents.items.length + '</div></div></div>');
             icon.appendTo('body');
-            self.cartIcon = $('#checkout-side-icon').addClass('show').click(self.showCart);
-            self.cartIcon.click(self.showCart);
+            self.cartIcon = $('#checkout-side-icon')
+                .addClass('show')
+                .click(function(){
+                    lightning.dialog.clear();
+                    self.showCart();
+                });
         },
 
         showCart: function() {
@@ -201,7 +224,14 @@
                     content += '<tr class="checkout-item" data-product-id="' + data.items[i].product_id + '" data-options="' + data.items[i].options + '">';
                     content += '<td class="remove"><img src="/images/lightning/remove2.png"></td>';
                     content += '<td class="qty"><input name="checkout-qty" class="checkout-qty" value="' + data.items[i].qty + '" size="4"></td>';
-                    content += '<td class="title"><strong>' + data.items[i].title + '</strong><br>' + (data.items[i].description ? data.items[i].description : '') + '</td>';
+                    content += '<td class="title"><strong>' + data.items[i].title + '</strong>';
+                    if (data.items[i].description) {
+                        content += '<br>' + data.items[i].description;
+                    }
+                    if (data.items[i].options_formatted) {
+                        content += '<br>' + data.items[i].options_formatted;
+                    }
+                    content += '</td>';
                     content += '<td class="amount">$' + parseFloat(data.items[i].price).toFixed(2) + '</td>';
                     content += '<td class="item-total">$' + (data.items[i].price * data.items[i].qty).toFixed(2) + '</td>';
                     content += '</tr>';
@@ -221,7 +251,7 @@
             } else {
                 content = '<div><h2>Your cart is empty.</h2></div>';
             }
-            lightning.dialog.showContent(content);
+            lightning.dialog.showContent(content, false);
         }
     };
     self = lightning.modules.checkout;

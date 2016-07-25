@@ -4,8 +4,10 @@ namespace Modules\Checkout\API;
 
 use Exception;
 use Lightning\Tools\Request;
+use Lightning\Tools\Template;
 use Lightning\View\API;
 use Modules\Checkout\Model\Order;
+use Modules\Checkout\Model\Product;
 
 class Cart extends API {
     /**
@@ -38,6 +40,17 @@ class Cart extends API {
         $item_id = Request::post('product_id', 'int');
         $qty = Request::post('qty', 'int');
         $options = Request::post('options', 'assoc_array');
+        $item = Product::loadByID($item_id);
+
+        // Make sure the product was loaded.
+        if (empty($item)) {
+            throw new Exception('Invalid product selected.');
+        }
+
+        // If there are missing options, we need to show the options form.
+        if (!$item->optionsSatisfied($options)) {
+            return ['form' => $item->getPopupOptionsForm()];
+        }
         $cart->addItem($item_id, $qty, $options);
         return $this->get();
     }
@@ -50,7 +63,7 @@ class Cart extends API {
         $cart->loadItems();
         $item_id = Request::post('product_id', 'int');
         $qty = Request::post('qty', 'int');
-        $options = Request::post('options', 'assoc_array');
+        $options = Request::post('options');
         if ($cart->setItemQty($item_id, $qty, $options)) {
             return $this->get();
         } else {
@@ -64,7 +77,7 @@ class Cart extends API {
             throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
         }
         $cart->loadItems();
-        $updates = Request::post('items', 'assoc_array');
+        $updates = Request::post('items');
         foreach ($updates as $update) {
             $item_id = intval($update['product_id']);
             $qty = intval($update['qty']);
@@ -78,7 +91,7 @@ class Cart extends API {
         $cart = Order::loadBySession();
         $cart->loadItems();
         $item_id = Request::post('product_id', 'int');
-        $options = Request::post('options', 'assoc_array');
+        $options = Request::post('options');
         if ($cart->removeItem($item_id, $options)) {
             return $this->get();
         } else {

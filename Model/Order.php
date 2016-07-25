@@ -5,7 +5,8 @@ namespace Modules\Checkout\Model;
 use Lightning\Model\Object;
 use Lightning\Tools\Database;
 use Lightning\Tools\Session;
-use Lightning\Tools\ClientUser;
+use Lightning\View\HTMLEditor\Markup;
+use Overridable\Lightning\Tools\ClientUser;
 
 /**
  * Class Order
@@ -75,6 +76,25 @@ class Order extends Object {
         }
     }
 
+    public function formatContents() {
+        $contents = '<table width="100%"><tr><td>Qty</td><td>Item</td><td align="right">Amount</td><td align="right">Total</td></tr>';
+        foreach ($this->getItems() as $item) {
+            $contents .= '<tr><td>' . $item['qty'] . '</td>';
+            $contents .= '<td><strong>' . $item['title'] . '</strong>';
+            if (!empty($item['description'])) {
+                $contents .= '<br>' . $item['description'];
+            }
+            if (!empty($item['options_formatted'])) {
+                $contents .= '<br>' . $item['options_formatted'];
+            }
+            $contents .= '</td><td align="right">$' . number_format($item['price'], 2) . '</td>';
+            $contents .= '<td align="right">$' . number_format($item['price'] * $item['qty'], 2) . '</td></tr>';
+        }
+        $contents .= '<tr><td colspan="2"></td><td align="right">Shipping</td><td align="right">$' . number_format($this->getShipping(), 2) . '</td>';
+        $contents .= '<tr><td colspan="2"></td><td align="right">Total</td><td align="right">$' . number_format($this->getTotal(), 2) . '</td></tr></table>';
+        return $contents;
+    }
+
     public function getTax() {
         return 0;
     }
@@ -106,53 +126,59 @@ class Order extends Object {
 
     public function addItem($product_id, $qty, $options = []) {
         $db = Database::getInstance();
-        if ($db->selectRow('checkout_order_item', [
+        $item = [
             'order_id' => $this->id,
             'product_id' => $product_id,
-            'options' => json_encode($options)
-        ])) {
+            'options' => !empty($options) ? base64_encode(json_encode($options)) : null
+        ];
+        if ($db->selectRow('checkout_order_item', $item)) {
             // Update existing item by adding qty.
             $db->update('checkout_order_item', [
                 'qty' => [
                     'expression' => 'qty + ?',
                     'vars' => [intval($qty)]
                 ],
-            ], [
-                'order_id' => $this->id,
-                'product_id' => $product_id,
-                'options' => json_encode($options)
-            ]);
+            ], $item);
         } else {
             // Insert new checkout item.
-            $db->insert('checkout_order_item', [
-                'order_id' => $this->id,
-                'product_id' => $product_id,
-                'qty' => $qty,
-                'options' => json_encode($options)
-            ]);
+            $db->insert('checkout_order_item', $item + [ 'qty' => $qty ]);
         }
     }
 
-    public function setItemQty($product_id, $qty, $options = []) {
+    public function setItemQty($product_id, $qty, $options = '') {
         return Database::getInstance()->update('checkout_order_item', [
             'qty' => $qty,
         ], [
             'order_id' => $this->id,
             'product_id' => $product_id,
-            'options' => json_encode($options)
+            'options' => !empty($options) ? $options : null
         ]);
     }
 
-    public function removeItem($product_id, $options = []) {
+    public function removeItem($product_id, $options = '') {
         return Database::getInstance()->delete('checkout_order_item', [
             'order_id' => $this->id,
             'product_id' => $product_id,
-            'options' => json_encode($options)
+            'options' => !empty($options) ? $options : null
         ]);
     }
 
     public function getItems() {
         $this->loadItems();
+        $product_ids = [];
+        foreach ($this->items as $item) {
+            $product_ids[$item['product_id']] = $item['product_id'];
+        }
+        $products = Product::loadAll(['product_id' => ['IN', $product_ids]], [], '', true);
+        foreach ($this->items as &$item) {
+            if (!empty($products[$item['product_id']]->options->option_formatting_user)) {
+                $item['options_formatted'] = Markup::render(
+                    $products[$item['product_id']]->options->option_formatting_user,
+                    json_decode(base64_decode($item['options']), true) ?: []
+                );
+            }
+        }
+
         return $this->items;
     }
 
@@ -160,7 +186,7 @@ class Order extends Object {
         if ($this->items === null) {
             $this->items = Database::getInstance()->selectAllQuery([
                 'select' => [
-                    'qty', 'checkout_product.*'
+                    'qty', 'checkout_product.*', 'checkout_order_item.options',
                 ],
                 'from' => 'checkout_order_item',
                 'join' => [
