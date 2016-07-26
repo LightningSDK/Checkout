@@ -10,6 +10,7 @@ use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\Tools\Template;
 use Lightning\View\JS;
+use Modules\Checkout\Model\Order;
 use Overridable\Lightning\Tools\ClientUser;
 
 class Orders extends Table {
@@ -20,9 +21,28 @@ class Orders extends Table {
     protected $sort = ['order_id' => 'DESC'];
 
     protected $preset = [
-        'time' => 'datetime',
-        'paid' => 'datetime',
-        'shipped' => 'datetime',
+        'details' => [
+            'type' => 'json',
+        ],
+        'time' => [
+            'type' => 'datetime',
+            'editable' => false,
+            'allow_blank' => true,
+        ],
+        'paid' => [
+            'type' => 'datetime',
+            'editable' => false,
+            'allow_blank' => true,
+        ],
+        'shipped' => [
+            'type' => 'datetime',
+            'editable' => false,
+            'allow_blank' => true,
+        ],
+        'contents' => [
+            'editable' => false,
+            'unlisted' => true,
+        ],
     ];
 
     protected $accessControl = ['locked' => 1];
@@ -55,6 +75,10 @@ class Orders extends Table {
                 return $row['email'];
             }
         ];
+        $this->preset['contents']['display_value'] = function(&$row) {
+            $order = Order::loadByID($row['order_id']);
+            return $order->formatContents();
+        };
 
         $this->action_fields = [
             'Ship' => [
