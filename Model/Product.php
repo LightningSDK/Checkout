@@ -25,8 +25,10 @@ class Product extends Object {
         $template = new Template();
         if (!empty($this->options->options_popup_template)) {
             $template->set('fields_template', $this->options->options_popup_template);
-            $template->set('product_id', $this->id);
-            return $template->build(['options', 'Checkout'], true);
+        } else {
+            $template->set('fields_template', ['default_options_layout', 'Checkout']);
         }
+        $template->set('product_id', $this->id);
+        return $template->build(['options', 'Checkout'], true);
     }
 }

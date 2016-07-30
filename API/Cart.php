@@ -49,7 +49,10 @@ class Cart extends API {
 
         // If there are missing options, we need to show the options form.
         if (!$item->optionsSatisfied($options)) {
-            return ['form' => $item->getPopupOptionsForm()];
+            return [
+                'form' => $item->getPopupOptionsForm(),
+                'options' => $item->options,
+            ];
         }
         $cart->addItem($item_id, $qty, $options);
         return $this->get();

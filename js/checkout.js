@@ -64,6 +64,9 @@
                 success: function(data) {
                     if (data.form) {
                         lightning.dialog.showContent(data.form);
+                        self.popupOptions = data.options;
+                        self.updateOptionsFormRoot();
+                        $('.options-fields').on('change', 'input,select', self.updateOptionsFormRoot);
                         setTimeout(function(){
                             $(document).foundation('reflow');
                         }, 500);
@@ -72,6 +75,62 @@
                     }
                 }
             });
+        },
+
+        updateOptionsFormRoot: function() {
+            self.popupImg = null;
+            self.updateOptionsForm(null, self.popupOptions, $('.options-fields'));
+            if (self.popupImg) {
+                var img = $('.options-image').find('img');
+                if (img.length == 0) {
+                    $('.options-image').append('<img src="' + self.popupImg + '">');
+                } else {
+                    img.prop('src', self.popupImg);
+                }
+            } else {
+                $('.options-image').empty();
+            }
+        },
+
+        // Build form options
+        updateOptionsForm: function(field, options, parent) {
+            var field_container;
+            for (var i in options.options) {
+                field_container = parent.children().filter('.children');
+
+                // Remove any fields that are at the current level and not in the current options list.
+                field_container.children().each(function(){
+                    var obj = $(this);
+                    if (!options.options.hasOwnProperty(obj.prop('id').replace(/^option-/, ''))) {
+                        obj.remove();
+                    }
+                });
+
+                // If the current field is not present, add it.
+                if (parent.find('#option-' + i).length == 0) {
+                    var input = $('<select name="' + i + '">');
+                    for (var j in options.options[i].values) {
+                        input.append('<option value="' + j + '">' + j + '</option>');
+                    }
+                    field_container.append($('<div id="option-' + i + '">').append(input).append('<div class="children">'));
+                }
+
+                // Get the selected field value.
+                var value = parent.find('#option-' + i + ' [name=' + i + ']').val();
+
+                // Update the child fields
+                if (typeof options.options[i].values != 'undefined' && typeof options.options[i].values[value] == 'object') {
+                    if (options.options[i].values[value].hasOwnProperty('image')) {
+                        self.popupImg = options.options[i].values[value].image;
+                    }
+                    var child_options = {};
+                    $.extend(child_options, options, options.options[i].values[value]);
+                    if (!options.options[i].values[value].hasOwnProperty('options')) {
+                        delete child_options.options;
+                    }
+                    self.updateOptionsForm(i, child_options, parent.find('#option-' + i));
+                }
+            }
         },
 
         removeItem: function(event) {

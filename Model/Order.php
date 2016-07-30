@@ -176,6 +176,15 @@ class Order extends Object {
                     $products[$item['product_id']]->options->option_formatting_user,
                     json_decode(base64_decode($item['options']), true) ?: []
                 );
+            } else {
+                $options = json_decode(base64_decode($item['options']), true) ?: [];
+                $output = '';
+                foreach ($options as $option => $value) {
+                    $output .= $option . ': <strong>' . $value . '</strong> ';
+                }
+                if (!empty($output)) {
+                    $item['options_formatted'] = $output;
+                }
             }
         }
 
