@@ -6,7 +6,7 @@ use Lightning\Model\Object;
 use Lightning\Tools\Database;
 use Lightning\Tools\Session;
 use Lightning\View\HTMLEditor\Markup;
-use Overridable\Lightning\Tools\ClientUser;
+use Lightning\Tools\ClientUser;
 
 /**
  * Class Order

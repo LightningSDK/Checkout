@@ -11,7 +11,7 @@ use Lightning\Tools\Request;
 use Lightning\Tools\Template;
 use Lightning\View\JS;
 use Modules\Checkout\Model\Order;
-use Overridable\Lightning\Tools\ClientUser;
+use Lightning\Tools\ClientUser;
 
 class Orders extends Table {
     const TABLE = 'checkout_order';

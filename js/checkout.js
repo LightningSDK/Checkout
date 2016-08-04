@@ -28,7 +28,8 @@
         click: function(event) {
             var button = $(event.target);
             if (button.data('checkout') == 'add-to-cart') {
-                self.addItem(button.data('checkout-product-id'), 1, {});
+                var product_id = button.data('checkout-product-id');
+                self.addItem(product_id, 1, {});
             } else {
                 // Pay Now
             }
@@ -71,6 +72,9 @@
                             $(document).foundation('reflow');
                         }, 500);
                     } else {
+                        lightning.tracker.track(lightning.tracker.events.addToCart, {
+                            label: product_id
+                        });
                         self.processUpdatedCart(data, request_id);
                     }
                 }
@@ -233,6 +237,9 @@
                 }, function(){
                     self.cartIcon.find('.item-count').html(0);
                     self.cartIcon.removeClass('show');
+                    lightning.tracker.track(lightning.tracker.events.purchase, {
+                        value: self.contents.total
+                    });
                 });
             }
         },
