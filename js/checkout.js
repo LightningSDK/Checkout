@@ -1,6 +1,5 @@
 (function(){
-    var self;
-    lightning.modules.checkout = {
+    var self = lightning.modules.checkout = {
         contents: {},
         requestId: 0,
         lastRequestId: 0,
@@ -66,6 +65,7 @@
                     if (data.form) {
                         lightning.dialog.showContent(data.form);
                         self.popupOptions = data.options;
+                        self.basePrice = data.base_price;
                         self.updateOptionsFormRoot();
                         $('.options-fields').on('change', 'input,select', self.updateOptionsFormRoot);
                         setTimeout(function(){
@@ -82,7 +82,7 @@
         },
 
         updateOptionsFormRoot: function() {
-            self.popupImg = null;
+            self.popupImg = self.popupOptions.image ? self.popupOptions.image : null;
             self.updateOptionsForm(null, self.popupOptions, $('.options-fields'));
             if (self.popupImg) {
                 var img = $('.options-image').find('img');
@@ -94,6 +94,7 @@
             } else {
                 $('.options-image').empty();
             }
+            $('.price', $('.options-fields')).html('$' + parseFloat(self.basePrice).toFixed(2));
         },
 
         // Build form options
@@ -105,22 +106,23 @@
                 // Remove any fields that are at the current level and not in the current options list.
                 field_container.children().each(function(){
                     var obj = $(this);
-                    if (!options.options.hasOwnProperty(obj.prop('id').replace(/^option-/, ''))) {
+                    if (!options.options.hasOwnProperty(obj.children().first().prop('name'))) {
                         obj.remove();
                     }
                 });
 
                 // If the current field is not present, add it.
-                if (parent.find('#option-' + i).length == 0) {
+                field_name = i.replace(/[^a-z0-9-_]/i, '');
+                if (parent.find('#option-' + field_name).length == 0) {
                     var input = $('<select name="' + i + '">');
                     for (var j in options.options[i].values) {
                         input.append('<option value="' + j + '">' + j + '</option>');
                     }
-                    field_container.append($('<div id="option-' + i + '">').append(input).append('<div class="children">'));
+                    field_container.append($('<div id="option-' + field_name + '">').append(input).append('<div class="children">'));
                 }
 
                 // Get the selected field value.
-                var value = parent.find('#option-' + i + ' [name=' + i + ']').val();
+                var value = parent.find('#option-' + field_name + ' [name="' + i + '"]').val();
 
                 // Update the child fields
                 if (typeof options.options[i].values != 'undefined' && typeof options.options[i].values[value] == 'object') {
@@ -132,7 +134,7 @@
                     if (!options.options[i].values[value].hasOwnProperty('options')) {
                         delete child_options.options;
                     }
-                    self.updateOptionsForm(i, child_options, parent.find('#option-' + i));
+                    self.updateOptionsForm(i, child_options, parent.find('#option-' + field_name));
                 }
             }
         },
@@ -320,5 +322,4 @@
             lightning.dialog.showContent(content, false);
         }
     };
-    self = lightning.modules.checkout;
 })();

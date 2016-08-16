@@ -52,6 +52,7 @@ class Cart extends API {
             return [
                 'form' => $item->getPopupOptionsForm(),
                 'options' => $item->options,
+                'base_price' => $item->price,
             ];
         }
         $cart->addItem($item_id, $qty, $options);

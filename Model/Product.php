@@ -3,6 +3,7 @@
 namespace Modules\Checkout\Model;
 
 use Lightning\Model\Object;
+use Lightning\Tools\Database;
 use Lightning\Tools\Template;
 
 class Product extends Object {
@@ -10,6 +11,15 @@ class Product extends Object {
     const PRIMARY_KEY = 'product_id';
 
     protected $__json_encoded_fields = ['options'];
+
+    public static function loadByURL($url) {
+        $data = Database::getInstance()->selectRow(self::TABLE, ['url' => ['LIKE', $url]]);
+        if (!empty($data)) {
+            return new static($data);
+        } else {
+            return null;
+        }
+    }
 
     public function optionsSatisfied($options) {
         foreach ($this->options->options as $option => $settings) {
