@@ -13,6 +13,6 @@
 </div>
 <div class="row">
     <div class="column">
-        <?= $this->build(['default_options_layout', 'Checkout']); ?>
+        <?= $this->build(['options', 'Checkout']); ?>
     </div>
 </div>

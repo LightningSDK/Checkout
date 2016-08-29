@@ -8,7 +8,7 @@
             $('.checkout-product').click(self.click);
             var request_id = ++self.requestId;
             $.ajax({
-                url : 'api/cart',
+                url : '/api/cart',
                 dataType: 'json',
                 success: function(data) {
                     self.processUpdatedCart(data, request_id, true);
@@ -52,7 +52,7 @@
             var request_id = ++self.requestId;
             lightning.dialog.showLoader('Adding this item to your cart...');
             $.ajax({
-                url: 'api/cart',
+                url: '/api/cart',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -64,10 +64,7 @@
                 success: function(data) {
                     if (data.form) {
                         lightning.dialog.showContent(data.form);
-                        self.popupOptions = data.options;
-                        self.basePrice = data.base_price;
-                        self.updateOptionsFormRoot();
-                        $('.options-fields').on('change', 'input,select', self.updateOptionsFormRoot);
+                        self.initProductOptions(data);
                         setTimeout(function(){
                             $(document).foundation('reflow');
                         }, 500);
@@ -79,6 +76,13 @@
                     }
                 }
             });
+        },
+
+        initProductOptions: function(data) {
+            self.popupOptions = data.options;
+            self.basePrice = data.base_price;
+            self.updateOptionsFormRoot();
+            $('.options-fields').on('change', 'input,select', self.updateOptionsFormRoot);
         },
 
         updateOptionsFormRoot: function() {
@@ -112,7 +116,7 @@
                 });
 
                 // If the current field is not present, add it.
-                field_name = i.replace(/[^a-z0-9-_]/i, '');
+                var field_name = i.replace(/[^a-z0-9-_]/i, '');
                 if (parent.find('#option-' + field_name).length == 0) {
                     var input = $('<select name="' + i + '">');
                     for (var j in options.options[i].values) {
@@ -144,7 +148,7 @@
             var row = target.closest('tr');
             var request_id = ++self.requestId;
             $.ajax({
-                url: 'api/cart',
+                url: '/api/cart',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -167,7 +171,7 @@
             }
             var request_id = ++self.requestId;
             $.ajax({
-                url: 'api/cart',
+                url: '/api/cart',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -203,7 +207,7 @@
             // Update the qtys.
             var request_id = ++self.requestId;
             $.ajax({
-                url: 'api/cart',
+                url: '/api/cart',
                 method: 'POST',
                 dataType: 'json',
                 data: {

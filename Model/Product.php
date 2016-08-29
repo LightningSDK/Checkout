@@ -2,6 +2,7 @@
 
 namespace Modules\Checkout\Model;
 
+use Exception;
 use Lightning\Model\Object;
 use Lightning\Tools\Database;
 use Lightning\Tools\Template;
@@ -38,7 +39,25 @@ class Product extends Object {
         } else {
             $template->set('fields_template', ['default_options_layout', 'Checkout']);
         }
-        $template->set('product_id', $this->id);
+        $template->set('product', $this);
         return $template->build(['options', 'Checkout'], true);
+    }
+
+    public function getImage() {
+        $image = null;
+        try {
+            array_walk_recursive(json_decode($this->__json_encoded_source['options'], true), function($val, $key) use (&$image) {
+                switch ($key) {
+                    case 'og-image':
+                    case 'image':
+                        $image = $val;
+                        break;
+                    case 'listing-image':
+                        $image = $val;
+                        throw new Exception('Complete');
+                }
+            });
+        } catch (Exception $e) {};
+        return $image;
     }
 }
