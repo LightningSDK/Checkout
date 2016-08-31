@@ -46,7 +46,8 @@ class Product extends Object {
     public function getImage() {
         $image = null;
         try {
-            array_walk_recursive(json_decode($this->__json_encoded_source['options'], true), function($val, $key) use (&$image) {
+            $options = json_decode($this->__json_encoded_source['options'], true);
+            array_walk_recursive($options, function($val, $key) use (&$image) {
                 switch ($key) {
                     case 'og-image':
                     case 'image':

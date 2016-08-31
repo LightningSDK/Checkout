@@ -26,7 +26,7 @@ class Product extends Page {
 
         $template = Template::getInstance();
         if ($product = ProductModel::loadByURL($content_locator)) {
-            // Setup the templates.
+            // If this is a product page.
             $template->set('product', $product);
 
             if (!empty($product->options->options_popup_template)) {
@@ -43,11 +43,44 @@ class Product extends Page {
             if (!empty($payment_handler)) {
                 call_user_func($payment_handler . '::init');
             }
+
+            // Set up the meta data.
+            $this->setMeta('title', $product->title);
+            $this->setMeta('description', $product->description);
+            if (!empty($product->options->{'og-image'})) {
+                $image = $product->options->{'og-image'};
+            } elseif (!empty($product->options->{'listing-image'})) {
+                $image = $product->options->{'listing-image'};
+            }
+            if (!empty($image)) {
+                $this->setMeta('image', $image);
+            }
         } elseif ($category = Category::loadByURL($content_locator)) {
+            // If this is a category page.
             $template->set('category', $category);
             // TODO: Add pagination
             $this->page[0] = 'category';
-            $template->set('products', ProductModel::loadAll(['category_id' => $category->id]));
+            $products = ProductModel::loadAll(['category_id' => $category->id]);
+            $template->set('products', $products);
+
+            // Add meta data
+            $this->setMeta('title', !empty($category->header_text) ? $category->header_text : $category->name);
+            $this->setMeta('description', $category->description);
+            $image = '';
+            try {
+                foreach ($products as $product) {
+                    if (!empty($product->options->{'og-image'})) {
+                        $image = $product->options->{'og-image'};
+                        throw new \Exception('complete');
+                    } elseif (!empty($product->options->{'listing-image'})) {
+                        $image = $product->options->{'listing-image'};
+                        throw new \Exception('complete');
+                    }
+                }
+            } catch (\Exception $e) {}
+            if (!empty($image)) {
+                $this->setMeta('image', $image);
+            }
         } else {
             Output::notFound();
         }
