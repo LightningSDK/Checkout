@@ -4,7 +4,6 @@ namespace Modules\Checkout\API;
 
 use Exception;
 use Lightning\Tools\Request;
-use Lightning\Tools\Template;
 use Lightning\View\API;
 use Modules\Checkout\Model\Order;
 use Modules\Checkout\Model\Product;

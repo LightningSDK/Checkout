@@ -63,7 +63,7 @@ class Orders extends Table {
         return ClientUser::requireAdmin();
     }
 
-    public function initSettings() {
+    protected function initSettings() {
         parent::initSettings();
         $this->preset['shipping_address'] = [
             'render_list_field' => function(&$row) {

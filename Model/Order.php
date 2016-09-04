@@ -25,7 +25,7 @@ use Lightning\Tools\ClientUser;
  * @parameter integer $total
  * @parameter string $details
  */
-class Order extends Object {
+class OrderOverridable extends Object {
     const TABLE = 'checkout_order';
     const PRIMARY_KEY = 'order_id';
 
