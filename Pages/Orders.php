@@ -93,7 +93,7 @@ class Orders extends Table {
     }
 
     public function getShip() {
-        if ($shipping_module = Configuration::get('checkout.shipping_module')) {
+        if ($shipping_module = Configuration::get('modules.checkout.shipping_module')) {
             $this->getRow();
             $this->page = ['ship-confirmation-print', 'Checkout'];
             $this->fullWidth = false;
@@ -115,7 +115,7 @@ class Orders extends Table {
 
         if (
             Request::post('print-label', 'boolean') &&
-            $shipping_module = Configuration::get('checkout.shipping_module')
+            $shipping_module = Configuration::get('modules.checkout.shipping_module')
         ) {
             // Create a shipping label.
             $shipping_data_model = '\Modules\\' . $shipping_module . '\\Model\\ShipmentData';
@@ -124,7 +124,7 @@ class Orders extends Table {
             // Load shipping data
             $shipping_address = $db->selectRow('checkout_address', ['address_id' => $this->list['shipping_address']]);
             $user = $db->selectRow('user', ['user_id' => $this->list['user_id']]);
-            $from_address = Configuration::get('checkout.from_address');
+            $from_address = Configuration::get('modules.checkout.from_address');
 
             // Create the shipment.
             $shipment_data = new $shipping_data_model();
