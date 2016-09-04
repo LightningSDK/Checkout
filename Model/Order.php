@@ -3,6 +3,8 @@
 namespace Modules\Checkout\Model;
 
 use Lightning\Model\Object;
+use Lightning\Model\User;
+use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
 use Lightning\Tools\Session;
 use Lightning\View\HTMLEditor\Markup;
@@ -234,6 +236,11 @@ class OrderOverridable extends Object {
         if ($paid >= $this->total) {
             $this->paid = time();
             $this->save();
+        }
+
+        // If there is a user id and a mailing list ID, then subscribe the user to the list.
+        if (!empty($this->user_id && $list = Configuration::get('modules.checkout.lists.any'))) {
+            User::loadById($this->user_id)->subscribe($list);
         }
 
         return $payment;
