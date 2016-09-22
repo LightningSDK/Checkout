@@ -1,3 +1,6 @@
+@import 'util/_unit';
+@import 'util/breakpoint';
+
 .checkout-cart {
   width: 100%;
   .qty, .qty input, .amount, .item-total {
@@ -23,6 +26,12 @@
   .final-rows {
     td {
       text-align: right;
+    }
+  }
+  .small-description {
+    display: none;
+    @include breakpoint(small only) {
+      display: table-row !important;
     }
   }
 }

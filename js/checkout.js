@@ -288,33 +288,36 @@
 
         showCart: function() {
             var data = self.contents;
-            var content = '';
+            var content = '', description = '';
             if (data.items && data.items.length > 0) {
                 content += '<table class="checkout-cart">';
-                content += '<tr><td></td><td class="qty">Qty</td><td>Item</td><td class="amount">Amount</td><td class="item-total">Total</td></tr>'
+                content += '<tr><td></td><td class="qty">Qty</td><td class="hide-for-small">Item</td><td class="amount">Amount</td><td class="item-total">Total</td></tr>'
                 for (var i in data.items) {
+                    description = '<strong>' + data.items[i].title + '</strong>';
+                    if (data.items[i].description) {
+                        description += '<br>' + data.items[i].description;
+                    }
+                    if (data.items[i].options_formatted) {
+                        description += '<br>' + data.items[i].options_formatted;
+                    }
+
+                    content += '<tr class="small-description"><td colspan="4">' + description + '</td></tr>';
+
                     content += '<tr class="checkout-item" data-product-id="' + data.items[i].product_id + '" data-options="' + data.items[i].options + '">';
                     content += '<td class="remove"><img src="/images/lightning/remove2.png"></td>';
                     content += '<td class="qty"><input name="checkout-qty" class="checkout-qty" value="' + data.items[i].qty + '" size="4"></td>';
-                    content += '<td class="title"><strong>' + data.items[i].title + '</strong>';
-                    if (data.items[i].description) {
-                        content += '<br>' + data.items[i].description;
-                    }
-                    if (data.items[i].options_formatted) {
-                        content += '<br>' + data.items[i].options_formatted;
-                    }
-                    content += '</td>';
+                    content += '<td class="title hide-for-small">' + description + '</td>';
                     content += '<td class="amount">$' + parseFloat(data.items[i].price).toFixed(2) + '</td>';
                     content += '<td class="item-total">$' + (data.items[i].price * data.items[i].qty).toFixed(2) + '</td>';
                     content += '</tr>';
                 }
                 if (data.tax && data.tax > 0) {
-                    content += '<tr class="final-rows"><td colspan="4">Tax:</td><td>$' + data.tax.toFixed(2) + '</td></tr>';
+                    content += '<tr class="final-rows"><td colspan="2"></td><td class="hide-for-small"></td><td>Tax:</td><td>$' + data.tax.toFixed(2) + '</td></tr>';
                 }
                 if (data.shipping && data.shipping > 0) {
-                    content += '<tr class="final-rows"><td colspan="4">Shipping:</td><td>$' + data.shipping.toFixed(2) + '</td></tr>';
+                    content += '<tr class="final-rows"><td colspan="2"></td><td class="hide-for-small"></td><td>Shipping:</td><td>$' + data.shipping.toFixed(2) + '</td></tr>';
                 }
-                content += '<tr class="final-rows"><td colspan="4">Total:</td><td>$' + data.total.toFixed(2) + '</td></tr>';
+                content += '<tr class="final-rows"><td colspan="2"></td><td class="hide-for-small"></td><td>Total:</td><td>$' + data.total.toFixed(2) + '</td></tr>';
                 content += '</table>';
                 content += '<div class="checkout-buttons">' +
                     '<span class="button medium checkout-update-total">Update Total</span><span class="button-spacer"></span>' +
