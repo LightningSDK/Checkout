@@ -36,9 +36,9 @@ class Cart extends API {
 
     public function postAddToCart() {
         $cart = Order::loadOrCreateBySession();
-        $item_id = Request::post('product_id', 'int');
-        $qty = Request::post('qty', 'int');
-        $options = Request::post('options', 'assoc_array');
+        $item_id = Request::post('product_id', Request::TYPE_INT);
+        $qty = Request::post('qty', Request::TYPE_INT);
+        $options = Request::post('options', Request::TYPE_ASSOC_ARRAY);
         $item = Product::loadByID($item_id);
 
         // Make sure the product was loaded.
@@ -64,8 +64,8 @@ class Cart extends API {
             throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
         }
         $cart->loadItems();
-        $item_id = Request::post('product_id', 'int');
-        $qty = Request::post('qty', 'int');
+        $item_id = Request::post('product_id', Request::TYPE_INT);
+        $qty = Request::post('qty', Request::TYPE_INT);
         $options = Request::post('options');
         if ($cart->setItemQty($item_id, $qty, $options)) {
             return $this->get();
@@ -93,7 +93,7 @@ class Cart extends API {
     public function postRemoveItem() {
         $cart = Order::loadBySession();
         $cart->loadItems();
-        $item_id = Request::post('product_id', 'int');
+        $item_id = Request::post('product_id', Request::TYPE_INT);
         $options = Request::post('options');
         if ($cart->removeItem($item_id, $options)) {
             return $this->get();
