@@ -23,7 +23,7 @@ class Product extends Object {
     }
 
     public function optionsSatisfied($options) {
-        if (!empty($this->option->optionss)) {
+        if (!empty($this->options->options)) {
             foreach ($this->options->options as $option => $settings) {
                 if (!empty($settings->required) && empty($options[$option])) {
                     return false;
