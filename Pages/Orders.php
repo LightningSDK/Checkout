@@ -84,6 +84,7 @@ class Orders extends Table {
             'Ship' => [
                 'type' => 'action',
                 'action' => 'ship',
+                'display_name' => 'Ship',
                 'display_value' => '<img src="/images/checkout/ship.png" border="0">',
                 'condition' => function(&$row) {
                     return empty($row['shipped']);
