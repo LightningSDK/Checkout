@@ -31,7 +31,34 @@
                 self.addItem(product_id, 1, {});
             } else {
                 // Pay Now
+                var product_id = button.data('checkout-product-id');
+                var options = {};
+                if (button.data('create-customer')) {
+                    options.create_customer = true;
+                }
+                if (product_id) {
+                    options.product_id = product_id;
+                    self.buyItem(options);
+                }
             }
+        },
+
+        buyItem: function(options) {
+            var amount = $.ajax({
+                url: '/api/cart',
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    product_id: options.product_id,
+                    action: 'product',
+                },
+                success: function(data) {
+                    var paymentHandler = lightning.get('modules.checkout.handler');
+                    var handler = lightning.getMethodReference(paymentHandler);
+                    options.amount = data.amount;
+                    handler(options);
+                }
+            });
         },
 
         addItemPopupOptions: function() {

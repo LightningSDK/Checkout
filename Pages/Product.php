@@ -11,6 +11,7 @@ use Lightning\View\CSS;
 use Lightning\View\JS;
 use Modules\Checkout\Model\Category;
 use Modules\Checkout\Model\Product as ProductModel;
+use Modules\Checkout\View\Checkout;
 
 class Product extends Page {
 
@@ -38,11 +39,7 @@ class Product extends Page {
             // Init the checkout methods
             JS::startup('lightning.modules.checkout.init();lightning.modules.checkout.initProductOptions(' . json_encode(['options' => $product->options, 'base_price' => $product->price]) . ');', '/js/checkout.min.js');
 
-            // Init the payment handler.
-            $payment_handler = Configuration::get('modules.checkout.handler');
-            if (!empty($payment_handler)) {
-                call_user_func($payment_handler . '::init');
-            }
+            Checkout::init();
 
             // Set up the meta data.
             $this->setMeta('title', $product->title);

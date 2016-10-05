@@ -34,6 +34,21 @@ class Cart extends API {
         }
     }
 
+    public function getProduct() {
+        $product_id = Request::get('product_id', Request::TYPE_INT);
+        if (empty($product_id)) {
+            throw new Exception('Invalid Product ID');
+        }
+        $product = Product::loadByID($product_id);
+        if (empty($product)) {
+            throw new Exception('Invalid Product');
+        }
+
+        return [
+            'amount' => $product->price,
+        ];
+    }
+
     public function postAddToCart() {
         $cart = Order::loadOrCreateBySession();
         $item_id = Request::post('product_id', Request::TYPE_INT);

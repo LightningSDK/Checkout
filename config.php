@@ -14,5 +14,10 @@ return [
             'store/.*' => 'Modules\\Checkout\\Pages\\Product',
         ],
     ],
+    'markup' => [
+        'renderers' => [
+            'checkout' => 'Modules\\Checkout\\Renderers\\Checkout'
+        ]
+    ]
     // TODO: add login update session_id => user_id or cart
 ];
