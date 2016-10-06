@@ -39,33 +39,23 @@
                 if (button.data('redirect')) {
                     options.redirect = button.data('redirect');
                 }
+                if (button.data('title')) {
+                    options.title = button.data('title');
+                }
+                if (button.data('amount')) {
+                    options.amount = button.data('amount');
+                }
                 if (product_id) {
                     options.product_id = product_id;
-                    self.buyItem(options);
                 }
+                var paymentHandler = lightning.get('modules.checkout.handler');
+                var handler = lightning.getMethodReference(paymentHandler);
+                handler(options, function(){
+                    if (options.redirect) {
+                        window.location = options.redirect;
+                    }
+                });
             }
-        },
-
-        buyItem: function(options) {
-            var amount = $.ajax({
-                url: '/api/cart',
-                method: 'GET',
-                dataType: 'json',
-                data: {
-                    product_id: options.product_id,
-                    action: 'product',
-                },
-                success: function(data) {
-                    var paymentHandler = lightning.get('modules.checkout.handler');
-                    var handler = lightning.getMethodReference(paymentHandler);
-                    options.amount = data.amount;
-                    handler(options, function(){
-                        if (options.redirect) {
-                            window.location = options.redirect;
-                        }
-                    });
-                }
-            });
         },
 
         addItemPopupOptions: function() {
