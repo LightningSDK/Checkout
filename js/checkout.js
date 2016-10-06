@@ -36,6 +36,9 @@
                 if (button.data('create-customer')) {
                     options.create_customer = true;
                 }
+                if (button.data('redirect')) {
+                    options.redirect = button.data('redirect');
+                }
                 if (product_id) {
                     options.product_id = product_id;
                     self.buyItem(options);
@@ -56,7 +59,11 @@
                     var paymentHandler = lightning.get('modules.checkout.handler');
                     var handler = lightning.getMethodReference(paymentHandler);
                     options.amount = data.amount;
-                    handler(options);
+                    handler(options, function(){
+                        if (options.redirect) {
+                            window.location = options.redirect;
+                        }
+                    });
                 }
             });
         },
