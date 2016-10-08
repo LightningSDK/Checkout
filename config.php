@@ -16,7 +16,7 @@ return [
     ],
     'markup' => [
         'renderers' => [
-            'checkout' => 'Modules\\Checkout\\Renderers\\Checkout'
+            'checkout' => 'Modules\\Checkout\\View\\Checkout'
         ]
     ]
     // TODO: add login update session_id => user_id or cart
