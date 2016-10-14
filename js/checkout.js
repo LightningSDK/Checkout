@@ -26,13 +26,12 @@
 
         click: function(event) {
             var button = $(event.target);
+            var product_id = button.data('checkout-product-id');
+            var options = {};
             if (button.data('checkout') == 'add-to-cart') {
-                var product_id = button.data('checkout-product-id');
-                self.addItem(product_id, 1, {});
+                self.addItem(product_id, 1, options);
             } else {
                 // Pay Now
-                var product_id = button.data('checkout-product-id');
-                var options = {};
                 if (button.data('create-customer')) {
                     options.create_customer = true;
                 }
@@ -44,6 +43,12 @@
                 }
                 if (button.data('amount')) {
                     options.amount = button.data('amount');
+                }
+                if (button.data('shipping-address') == "true") {
+                    options.shipping_address = true;
+                }
+                if (button.data('modules.checkout.bitcoin', false)) {
+                    options.bitcoin = true;
                 }
                 if (product_id) {
                     options.product_id = product_id;
@@ -264,6 +269,7 @@
                 handler({
                     amount: self.contents.total,
                     cart_id: self.contents.id,
+                    shipping_address: self.contents.shipping_address,
                 }, function(){
                     self.cartIcon.find('.item-count').html(0);
                     self.cartIcon.removeClass('show');

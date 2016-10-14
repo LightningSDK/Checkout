@@ -3,7 +3,6 @@
 namespace Modules\Checkout\Pages;
 
 use Lightning\Pages\Page;
-use Lightning\Tools\Configuration;
 use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\Tools\Template;

@@ -122,6 +122,17 @@ class OrderOverridable extends Object {
         return $this->total;
     }
 
+    public function requiresShippingAddress() {
+        $this->loadItems();
+        $shipping_address = false;
+        foreach ($this->items as $item) {
+            if ($item['shipping_address'] == 1) {
+                $shipping_address = true;
+            }
+        }
+        return $shipping_address;
+    }
+
     public function getTotal() {
         return $this->getSubTotal() + $this->getShipping() + $this->getTax();
     }

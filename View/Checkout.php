@@ -11,6 +11,8 @@ class Checkout {
     public static function init() {
         // Add the startup initialization script.
         JS::startup('lightning.modules.checkout.init();', ['/js/checkout.min.js']);
+        JS::set('modules.checkout.bitcoin', Configuration::get('modules.checkout.bitcoin', false));
+        JS::set('modules.checkout.ach', Configuration::get('modules.checkout.ach', false));
 
         // Init the payment handler for the page.
         $payment_handler = Configuration::get('modules.checkout.handler');
@@ -50,6 +52,12 @@ class Checkout {
         }
         if (!empty($options['redirect'])) {
             $attributes['data-redirect'] = $options['redirect'];
+        }
+        if (!empty($options['shipping-address']) && $options['shipping-address'] == "true") {
+            $attributes['data-shipping-address'] = $options['shipping-address'];
+        }
+        if (!empty($options['bitcoin']) && $options['bitcoin'] == "true") {
+            $attributes['data-bitcoin'] = $options['bitcoin'];
         }
 
         return '<span ' . HTML::implodeAttributes($attributes) . ' >' . $text . '</span>';

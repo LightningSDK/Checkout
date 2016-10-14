@@ -19,6 +19,7 @@ class Cart extends API {
             return ['cart' => [
                 'subtotal' => $cart->getSubTotal(),
                 'shipping' => $cart->getShipping(),
+                'shipping_address' => $cart->requiresShippingAddress(),
                 'tax' => $cart->getTax(),
                 'items' => $items,
                 'id' => $cart->id,
@@ -27,6 +28,7 @@ class Cart extends API {
             return ['cart' => [
                 'subtotal' => 0,
                 'shipping' => 0,
+                'shipping_address' => false,
                 'tax' => 0,
                 'items' => [],
                 'id' => 0,
