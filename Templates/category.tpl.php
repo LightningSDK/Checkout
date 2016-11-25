@@ -15,7 +15,7 @@
     <?php foreach ($products as $product): ?>
     <li class="column small-12 medium-4 large-3 left">
         <a href="/store/<?= $product->url; ?>"><img src="<?= $product->getImage(); ?>">
-        <br><strong><?=$product->title;?></strong></a>
+        <br><strong><?= $product->title; ?></strong></a>
     </li>
     <?php endforeach; ?>
 </ul>

@@ -13,6 +13,7 @@
 </div>
 <div class="row">
     <div class="column">
+        <h1><?= $product->title; ?></h1>
         <?= $this->build(['options', 'Checkout']); ?>
     </div>
 </div>
