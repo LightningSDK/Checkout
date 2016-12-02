@@ -84,11 +84,11 @@ class Cart extends API {
         $item_id = Request::post('product_id', Request::TYPE_INT);
         $qty = Request::post('qty', Request::TYPE_INT);
         $options = Request::post('options');
-        if ($cart->setItemQty($item_id, $qty, $options)) {
-            return $this->get();
-        } else {
+        if (!$cart->hasItem($item_id, $options)) {
             throw new Exception('Could not change the quantity.');
         }
+        $cart->setItemQty($item_id, $qty, $options);
+        return $this->get();
     }
 
     public function postSetQtys() {

@@ -137,6 +137,14 @@ class OrderOverridable extends Object {
         return $this->getSubTotal() + $this->getShipping() + $this->getTax();
     }
 
+    public function hasItem($product_id, $options = '') {
+        return Database::getInstance()->check('checkout_order_item', [
+            'order_id' => $this->id,
+            'product_id' => $product_id,
+            'options' => !empty($options) ? (is_array($options) ? base64_encode(json_encode($options)) : $options) : null
+        ]);
+    }
+
     public function addItem($product_id, $qty, $options = []) {
         $db = Database::getInstance();
         $item = [
