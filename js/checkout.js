@@ -286,7 +286,8 @@
             self.contents.total
                 = self.contents.subtotal
                 + self.contents.shipping
-                + self.contents.tax;
+                + self.contents.tax
+                + self.contents.discounts.total;
 
             if (self.contents.items.length > 0) {
                 // If there are items in the cart, show the cart button.
@@ -314,6 +315,29 @@
                     lightning.dialog.clear();
                     self.showCart();
                 });
+        },
+
+        addDiscount: function(discount) {
+            $.ajax({
+                url: '/api/cart',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    action: 'add-discount',
+                    discount: discount,
+                },
+                success: function(data) {
+                    self.updateCart(data.cart);
+                    self.showCart();
+                },
+                error: function(data) {
+                    $('.discount-result').html('The discount code is not valid.');
+                }
+            });
+        },
+
+        removeDiscount: function(discount) {
+
         },
 
         showCart: function() {
@@ -346,6 +370,26 @@
                 }
                 if (data.shipping && data.shipping > 0) {
                     content += '<tr class="final-rows"><td colspan="2"></td><td class="hide-for-small"></td><td>Shipping:</td><td>$' + data.shipping.toFixed(2) + '</td></tr>';
+                }
+                if (lightning.vars.modules.checkout.enable_discounts) {
+                    var discountsField = '<div class="row">' +
+                        '<div class="large-4 medium-12 column"><span class="form-inline">Add a discount:</span></div>' +
+                        '<div class="large-4 medium-6 column"><input type="text" name="discount" value="" id="cart-discount" /></div>' +
+                        '<div class="large-4 medium-6 column"><span class="button form-inline" onclick="lightning.modules.checkout.addDiscount($(\'#cart-discount\').val())">Add Discount</span><div class="discount-result"></div></div>' +
+                        '</div>';
+                    // Show added discounts.
+                    if (data.discounts && data.discounts.total) {
+                        content += '<tr class="final-rows hide-for-small">' +
+                            '<td colspan="3" class="hide-for-small">' + discountsField + '</td>' +
+                            '<td>Discounts:</td><td>$' + data.discounts.total.toFixed(2) + '</td>' +
+                            '</tr>' +
+                            '<tr class="final-rows small-description">' +
+                            '<td colspan="2"></td>' +
+                            '<td>Discounts:</td><td>$' + data.discounts.total.toFixed(2) + '</td>' +
+                            '</tr>';
+                    } else {
+                        content += '<tr><td colspan="3">' + discountsField + '</td></tr>';
+                    }
                 }
                 content += '<tr class="final-rows"><td colspan="2"></td><td class="hide-for-small"></td><td>Total:</td><td>$' + data.total.toFixed(2) + '</td></tr>';
                 content += '</table>';

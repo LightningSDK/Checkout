@@ -5,6 +5,7 @@ namespace Modules\Checkout\API;
 use Exception;
 use Lightning\Tools\Request;
 use Lightning\View\API;
+use Modules\Checkout\Model\Discount;
 use Modules\Checkout\Model\Order;
 use Modules\Checkout\Model\Product;
 
@@ -19,6 +20,10 @@ class Cart extends API {
             return ['cart' => [
                 'subtotal' => $cart->getSubTotal(),
                 'shipping' => $cart->getShipping(),
+                'discounts' => [
+                    'discounts' => $cart->getDiscountDescriptions(),
+                    'total' => $cart->getDiscounts(),
+                ],
                 'shipping_address' => $cart->requiresShippingAddress(),
                 'tax' => $cart->getTax(),
                 'items' => $items,
@@ -28,6 +33,7 @@ class Cart extends API {
             return ['cart' => [
                 'subtotal' => 0,
                 'shipping' => 0,
+                'discounts' => 0,
                 'shipping_address' => false,
                 'tax' => 0,
                 'items' => [],
@@ -117,5 +123,18 @@ class Cart extends API {
         } else {
             throw new Exception('Could not remove the item.');
         }
+    }
+
+    public function postAddDiscount() {
+        $cart = Order::loadBySession();
+        if ($discount = Discount::loadByCode(Request::post('discount'))) {
+            $added = $cart->addDiscount($discount);
+            $cart->save();
+            if (!$added) {
+                throw new Exception('This discount is already applied.');
+            }
+            return $this->get();
+        }
+        throw new Exception('That discount code is not valid.');
     }
 }

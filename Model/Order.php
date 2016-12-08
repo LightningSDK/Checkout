@@ -31,7 +31,21 @@ class OrderOverridable extends Object {
     const TABLE = 'checkout_order';
     const PRIMARY_KEY = 'order_id';
 
-    protected $__json_encoded_fields = ['details'];
+    protected $__json_encoded_fields = [
+        'details',
+        'discounts' => [
+            'type' => 'array',
+        ]
+    ];
+
+    /**
+     * List of actual discount objects.
+     *
+     * @var array
+     */
+    protected $discounts = [];
+
+    protected $discountValue = 0;
 
     /**
      * List of items in the cart.
@@ -122,6 +136,21 @@ class OrderOverridable extends Object {
         return $this->total;
     }
 
+    public function getDiscounts() {
+        $this->discountValue = 0;
+        // TODO: This can be optimized.
+        $discounts = Discount::loadAll(['code' => ['IN', $this->__data['discounts']]]);
+        foreach ($discounts as $d) {
+            $this->discountValue += $d->getAmount($this);
+        }
+
+        return $this->discountValue;
+    }
+
+    public function getDiscountDescriptions() {
+        return $this->__data['discounts'];
+    }
+
     public function requiresShippingAddress() {
         $this->loadItems();
         $shipping_address = false;
@@ -134,7 +163,7 @@ class OrderOverridable extends Object {
     }
 
     public function getTotal() {
-        return $this->getSubTotal() + $this->getShipping() + $this->getTax();
+        return $this->getSubTotal() + $this->getShipping() + $this->getDiscounts() + $this->getTax();
     }
 
     public function hasItem($product_id, $options = '') {
@@ -263,5 +292,21 @@ class OrderOverridable extends Object {
         }
 
         return $payment;
+    }
+
+    /**
+     * Add a new discount to the order.
+     *
+     * @param Discount $discount
+     *
+     * @return boolean
+     */
+    public function addDiscount($discount) {
+        if (!in_array($discount->code, $this->__data['discounts'])) {
+            $this->__data['discounts'][] = $discount->code;
+            $this->discounts[$discount->code] = $discount;
+            return true;
+        }
+        return false;
     }
 }

@@ -13,6 +13,7 @@ class Checkout {
         JS::startup('lightning.modules.checkout.init();', ['/js/checkout.min.js']);
         JS::set('modules.checkout.bitcoin', Configuration::get('modules.checkout.bitcoin', false));
         JS::set('modules.checkout.ach', Configuration::get('modules.checkout.ach', false));
+        JS::set('modules.checkout.enable_discounts', Configuration::get('modules.checkout.enable_discounts', false));
 
         // Init the payment handler for the page.
         $payment_handler = Configuration::get('modules.checkout.handler');
