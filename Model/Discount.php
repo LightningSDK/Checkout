@@ -12,7 +12,7 @@ class Discount extends Object {
     protected $__json_encoded_fields = ['discounts'];
 
     public static function loadByCode($code) {
-        if ($discount = Database::getInstance()->selectRow(static::TABLE, ['code' => $code])) {
+        if ($discount = Database::getInstance()->selectRow(static::TABLE, ['code' => ['LIKE', $code]])) {
             return new static($discount);
         } else {
             return null;
