@@ -10,7 +10,7 @@ use Modules\Checkout\Model\Product;
 class Checkout {
     public static function init() {
         // Add the startup initialization script.
-        JS::startup('lightning.modules.checkout.init();', ['/js/checkout.min.js']);
+        JS::startup('lightning.modules.checkout.init();', ['Checkout' => 'Checkout.js']);
         JS::set('modules.checkout.bitcoin', Configuration::get('modules.checkout.bitcoin', false));
         JS::set('modules.checkout.ach', Configuration::get('modules.checkout.ach', false));
         JS::set('modules.checkout.enable_discounts', Configuration::get('modules.checkout.enable_discounts', false));

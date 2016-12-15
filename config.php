@@ -18,6 +18,13 @@ return [
         'renderers' => [
             'checkout' => 'Modules\\Checkout\\View\\Checkout'
         ]
+    ],
+    'js' => [
+        // Module Name
+        'Checkout' => [
+            // Source file => Dest file
+            'Checkout.js' => 'Checkout.min.js',
+        ]
     ]
     // TODO: add login update session_id => user_id or cart
 ];
