@@ -23,6 +23,7 @@ class Orders extends Table {
     protected $preset = [
         'details' => [
             'type' => 'json',
+            'unlisted' => true,
         ],
         'time' => [
             'type' => 'datetime',
@@ -43,6 +44,7 @@ class Orders extends Table {
             'editable' => false,
             'unlisted' => true,
         ],
+        'discounts' => 'json',
     ];
 
     protected $accessControl = ['locked' => 1];
