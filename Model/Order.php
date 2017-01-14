@@ -54,6 +54,8 @@ class OrderOverridable extends Object {
      */
     protected $items;
 
+    protected $shippingAddress;
+
     /**
      * @return Order
      */
@@ -90,6 +92,13 @@ class OrderOverridable extends Object {
             $data['order_id'] = Database::getInstance()->insert(static::TABLE, $data);
             return new static($data);
         }
+    }
+
+    public function getShippingAddress() {
+        if (empty($this->shippingAddress)) {
+            $this->shippingAddress = Address::loadByID($this->shipping_address);
+        }
+        return $this->shippingAddress;
     }
 
     public function formatContents() {
