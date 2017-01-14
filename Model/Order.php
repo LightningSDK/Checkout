@@ -263,7 +263,8 @@ class OrderOverridable extends Object {
         if ($this->items === null) {
             $this->items = Database::getInstance()->selectAllQuery([
                 'select' => [
-                    'qty', 'checkout_product.*', 'checkout_order_item.options',
+                    'qty', 'checkout_product.*', 'checkout_order_item_id',
+                    'order_item_options' => 'checkout_order_item.options',
                 ],
                 'from' => 'checkout_order_item',
                 'join' => [
