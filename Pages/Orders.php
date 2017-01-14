@@ -142,6 +142,9 @@ class Orders extends Table {
         }
     }
 
+    /**
+     * Handles shipping page submissions.
+     */
     public function postShip() {
         $db = Database::getInstance();
         $this->getRow();
