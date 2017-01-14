@@ -63,4 +63,27 @@ class Product extends Object {
         } catch (Exception $e) {};
         return $image;
     }
+
+    public function getAggregateOption($option, $item) {
+        $aggregate_options = $this->getAggregateOptions($item);
+        return !empty($aggregate_options[$option]) ? $aggregate_options[$option] : null;
+    }
+
+    public function getAggregateOptions($item) {
+        $options = json_decode($item['options'], true);
+        $selected_options = json_decode(base64_decode($item['order_item_options']), true);
+        while (!empty($options['options'])) {
+            // Iterate over the options
+            $child_options = $options['options'];
+            unset($options['options']);
+            foreach ($child_options as $option_name => $settings) {
+                // If the option is set, the child options will override the parent options.
+                $selected_value = $selected_options[$option_name];
+                if (!empty($settings['values'][$selected_value])) {
+                    $options = $settings['values'][$selected_value] + $options;
+                }
+            }
+        }
+        return $options;
+    }
 }
