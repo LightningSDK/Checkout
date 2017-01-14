@@ -328,4 +328,18 @@ class OrderOverridable extends Object {
         }
         return false;
     }
+
+    public function getRequiredFulfillmentHandlers() {
+        $this->loadItems();
+        $required_handlers = [];
+        foreach ($this->items as $i) {
+            if (!empty($i['options'])) {
+                $options = json_decode($i['options'], true);
+                if (!empty($options['fulfillment'])) {
+                    $required_handlers[] = $options['fulfillment'];
+                }
+            }
+        }
+        return $required_handlers;
+    }
 }

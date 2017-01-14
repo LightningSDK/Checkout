@@ -93,6 +93,37 @@ class Orders extends Table {
         ];
     }
 
+    public function getView() {
+        $this->addFulfillmentHandlers();
+        return parent::getView();
+    }
+
+    public function getEdit() {
+        $this->addFulfillmentHandlers();
+        return parent::getEdit();
+    }
+
+    protected function addFulfillmentHandlers() {
+        $this->getRow();
+        $order = new Order($this->list);
+        $required_handlers = $order->getRequiredFulfillmentHandlers();
+
+        foreach (Configuration::get('modules.checkout.fulfillment_handlers') as $reference => $connector) {
+            if (in_array($reference, $required_handlers)) {
+                if (($url = $connector::FULFILLMENT_URL) && ($button_text = $connector::FULLFILLMENT_TEXT)) {
+                    $this->custom_buttons[] = [
+                        'type' => self::CB_ACTION_LINK,
+                        'url' => $url,
+                        'text' => $button_text,
+                    ];
+                }
+            }
+        }
+    }
+
+    /**
+     * The shipping page handler.
+     */
     public function getShip() {
         if ($shipping_module = Configuration::get('modules.checkout.shipping_module')) {
             $this->getRow();
