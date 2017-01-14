@@ -223,20 +223,29 @@ class OrderOverridable extends Object {
     }
 
     public function getItems() {
+        // Load all the items.
         $this->loadItems();
+
+        // Load all the products.
         $product_ids = [];
         foreach ($this->items as $item) {
             $product_ids[$item['product_id']] = $item['product_id'];
         }
         $products = Product::loadAll(['product_id' => ['IN', $product_ids]], [], '', true);
+
         foreach ($this->items as &$item) {
-            if (!empty($products[$item['product_id']]->options->option_formatting_user)) {
+            // Save a reference to the product.
+            // TODO: $items should be converted into objects.
+            $item['product'] = $products[$item['product_id']];
+
+            // Get the HTML formatted options.
+            if (!empty($item['product']->options->option_formatting_user)) {
                 $item['options_formatted'] = Markup::render(
-                    $products[$item['product_id']]->options->option_formatting_user,
-                    json_decode(base64_decode($item['options']), true) ?: []
+                    $item['product']->options->option_formatting_user,
+                    json_decode(base64_decode($item['order_item_options']), true) ?: []
                 );
             } else {
-                $options = json_decode(base64_decode($item['options']), true) ?: [];
+                $options = json_decode(base64_decode($item['order_item_options']), true) ?: [];
                 $output = '';
                 foreach ($options as $option => $value) {
                     $output .= $option . ': <strong>' . $value . '</strong> ';
