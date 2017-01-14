@@ -8,6 +8,7 @@ return [
     'routes' => [
         'static' => [
             'admin/orders' => 'Modules\\Checkout\\Pages\\Orders',
+            'admin/products' => 'Modules\\Checkout\\Pages\\Products',
             'api/cart' => 'Modules\\Checkout\\API\\Cart',
         ],
         'dynamic' => [
