@@ -56,6 +56,8 @@ class OrderOverridable extends Object {
 
     protected $shippingAddress;
 
+    protected $user;
+
     /**
      * @return Order
      */
@@ -101,19 +103,29 @@ class OrderOverridable extends Object {
         return $this->shippingAddress;
     }
 
+    public function getUser() {
+        if (empty($this->user)) {
+            $this->user = User::loadById($this->user_id);;
+        }
+        return $this->user;
+    }
+
+    /**
+     * Create a rendered HTML table with the cart contents.
+     *
+     * @return string
+     */
     public function formatContents() {
         $contents = '<table width="100%"><tr><td>Qty</td><td>Item</td><td align="right">Amount</td><td align="right">Total</td></tr>';
-        foreach ($this->getItems() as $item) {
-            $contents .= '<tr><td>' . $item['qty'] . '</td>';
-            $contents .= '<td><strong>' . $item['title'] . '</strong>';
-            if (!empty($item['description'])) {
-                $contents .= '<br>' . $item['description'];
+        $this->loadItems();
+        foreach ($this->items as $item) {
+            $contents .= '<tr><td>' . $item->qty . '</td>';
+            $contents .= '<td><strong>' . $item->getProduct()->title . '</strong>';
+            if ($options = $item->getHTMLFormattedOptions()) {
+                $contents .= '<br>' . $options;
             }
-            if (!empty($item['options_formatted'])) {
-                $contents .= '<br>' . $item['options_formatted'];
-            }
-            $contents .= '</td><td align="right">$' . number_format($item['price'], 2) . '</td>';
-            $contents .= '<td align="right">$' . number_format($item['price'] * $item['qty'], 2) . '</td></tr>';
+            $contents .= '</td><td align="right">$' . number_format($item->getProduct()->price, 2) . '</td>';
+            $contents .= '<td align="right">$' . number_format($item->getProduct()->price * $item->qty, 2) . '</td></tr>';
         }
         $contents .= '<tr><td colspan="2"></td><td align="right">Shipping</td><td align="right">$' . number_format($this->getShipping(), 2) . '</td>';
         $contents .= '<tr><td colspan="2"></td><td align="right">Total</td><td align="right">$' . number_format($this->getTotal(), 2) . '</td></tr></table>';
@@ -130,8 +142,8 @@ class OrderOverridable extends Object {
         $flat_shipping = 0;
         $biggest_flat_diff = 0;
         foreach ($this->items as $key => $item) {
-            $flat_shipping += $item['qty'] * $item['flat_shipping_more'];
-            $biggest_flat_diff = max($biggest_flat_diff, $item['flat_shipping'] - $item['flat_shipping_more']);
+            $flat_shipping += $item->qty * $item->getProduct()->flat_shipping_more;
+            $biggest_flat_diff = max($biggest_flat_diff, $item->getProduct()->flat_shipping - $item->getProduct()->flat_shipping_more);
         }
         return $flat_shipping + $biggest_flat_diff;
     }
@@ -140,7 +152,7 @@ class OrderOverridable extends Object {
         $this->loadItems();
         $this->total = 0;
         foreach ($this->items as $item) {
-            $this->total += $item['qty'] * $item['price'];
+            $this->total += $item->qty * $item->getProduct()->price;
         }
         return $this->total;
     }
@@ -160,11 +172,17 @@ class OrderOverridable extends Object {
         return $this->__data['discounts'];
     }
 
+    /**
+     * Check if any items in the cart require a shipping address.
+     *
+     * @return boolean
+     *   Whether any items in this cart require a shipping address.
+     */
     public function requiresShippingAddress() {
         $this->loadItems();
         $shipping_address = false;
         foreach ($this->items as $item) {
-            if ($item['shipping_address'] == 1) {
+            if ($item->getProduct()->shipping_address == 1) {
                 $shipping_address = true;
             }
         }
@@ -176,6 +194,7 @@ class OrderOverridable extends Object {
     }
 
     public function hasItem($product_id, $options = '') {
+        $this->loadItems();
         return Database::getInstance()->check('checkout_order_item', [
             'order_id' => $this->id,
             'product_id' => $product_id,
@@ -205,6 +224,7 @@ class OrderOverridable extends Object {
     }
 
     public function setItemQty($product_id, $qty, $options = '') {
+        $this->loadItems();
         return Database::getInstance()->update('checkout_order_item', [
             'qty' => $qty,
         ], [
@@ -215,6 +235,7 @@ class OrderOverridable extends Object {
     }
 
     public function removeItem($product_id, $options = '') {
+        $this->loadItems();
         return Database::getInstance()->delete('checkout_order_item', [
             'order_id' => $this->id,
             'product_id' => $product_id,
@@ -222,57 +243,25 @@ class OrderOverridable extends Object {
         ]);
     }
 
+    /**
+     * Get a list of line items in this order.
+     *
+     * @return array[LineItem]
+     *   An array of LineItem objects.
+     */
     public function getItems() {
         // Load all the items.
         $this->loadItems();
 
-        // Load all the products.
-        $product_ids = [];
-        foreach ($this->items as $item) {
-            $product_ids[$item['product_id']] = $item['product_id'];
-        }
-        $products = Product::loadAll(['product_id' => ['IN', $product_ids]], [], '', true);
-
-        foreach ($this->items as &$item) {
-            // Save a reference to the product.
-            // TODO: $items should be converted into objects.
-            $item['product'] = $products[$item['product_id']];
-
-            // Get the HTML formatted options.
-            if (!empty($item['product']->options->option_formatting_user)) {
-                $item['options_formatted'] = Markup::render(
-                    $item['product']->options->option_formatting_user,
-                    json_decode(base64_decode($item['order_item_options']), true) ?: []
-                );
-            } else {
-                $options = json_decode(base64_decode($item['order_item_options']), true) ?: [];
-                $output = '';
-                foreach ($options as $option => $value) {
-                    $output .= $option . ': <strong>' . $value . '</strong> ';
-                }
-                if (!empty($output)) {
-                    $item['options_formatted'] = $output;
-                }
-            }
-        }
-
         return $this->items;
     }
 
+    /**
+     * Ensures that the items have been loaded.
+     */
     public function loadItems() {
         if ($this->items === null) {
-            $this->items = Database::getInstance()->selectAllQuery([
-                'select' => [
-                    'qty', 'checkout_product.*', 'checkout_order_item_id',
-                    'order_item_options' => 'checkout_order_item.options',
-                ],
-                'from' => 'checkout_order_item',
-                'join' => [
-                    'left_join' => 'checkout_product',
-                    'using' => 'product_id',
-                ],
-                'where' => ['order_id' => $this->id]
-            ]);
+            $this->items = LineItem::loadAllByOrderID($this->id);
         }
     }
 
@@ -333,13 +322,54 @@ class OrderOverridable extends Object {
         $this->loadItems();
         $required_handlers = [];
         foreach ($this->items as $i) {
-            if (!empty($i['options'])) {
-                $options = json_decode($i['options'], true);
-                if (!empty($options['fulfillment'])) {
-                    $required_handlers[] = $options['fulfillment'];
-                }
+            if ($handler = $i->getAggregateOption('fulfillment')) {
+                $required_handlers[] = $handler;
             }
         }
         return $required_handlers;
+    }
+
+    /**
+     * Get a list of items that require s specific fulfillment handler.
+     *
+     * @param string $handler
+     *   The name of the handler.
+     *
+     * @return array
+     *   A list of LineItems.
+     */
+    public function getItemsToFulfillWithHandler($handler) {
+        $items = [];
+        foreach ($this->items as $item) {
+            /* @var LineItem $item */
+            if ($item->getAggregateOption('fulfillment') == $handler) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * Mark an order as fulfilled. This will check ot make sure each line item has been fulfilled.
+     *
+     * @param boolean $force
+     *   Whether to set the item as fulfilled, regardless of whether line items are still pending.
+     *
+     * @return boolean
+     *   Whether the order was set.
+     */
+    public function markFullfilled($force = false) {
+        if (!$force) {
+            $this->loadItems();
+            foreach ($this->items as $item) {
+                if ($item->fulfilled == 0) {
+                    return false;
+                }
+            }
+        }
+        $this->shipped = time();
+        $this->save();
+        return true;
     }
 }

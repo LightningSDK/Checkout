@@ -6,6 +6,7 @@ use Exception;
 use Lightning\Tools\Request;
 use Lightning\View\API;
 use Modules\Checkout\Model\Discount;
+use Modules\Checkout\Model\LineItem;
 use Modules\Checkout\Model\Order;
 use Modules\Checkout\Model\Product;
 
@@ -16,7 +17,6 @@ class Cart extends API {
     public function get() {
         $cart = Order::loadBySession();
         if ($cart) {
-            $items = $cart->getItems();
             return ['cart' => [
                 'subtotal' => $cart->getSubTotal(),
                 'shipping' => $cart->getShipping(),
@@ -26,7 +26,7 @@ class Cart extends API {
                 ],
                 'shipping_address' => $cart->requiresShippingAddress(),
                 'tax' => $cart->getTax(),
-                'items' => $items,
+                'items' => $this->formatItemsForAPI($cart),
                 'id' => $cart->id,
             ]];
         } else {
@@ -41,6 +41,31 @@ class Cart extends API {
             ]];
         }
     }
+
+    /**
+     * Convert the items into an array for the cart API.
+     *
+     * @param Order $cart
+     *   The order.
+     *
+     * @return array
+     *   An array of line items with option data.
+     */
+    public function formatItemsForAPI(Order $cart) {
+        $api_fields = ['checkout_order_item_id' => 1, 'product_id' => 1, 'qty' => 1, 'options' => 1];
+        $output_items = [];
+        foreach ($cart->getItems() as $item) {
+            /* @var LineItem $item */
+            $output = array_intersect_key($item->getData(), $api_fields);
+            $output['price'] = $item->getProduct()->price;
+            $output['title'] = $item->getProduct()->title;
+            $output['options_formatted'] = $item->getHTMLFormattedOptions();
+            $output_items[] = $output;
+        }
+
+        return $output_items;
+    }
+
 
     public function getProduct() {
         $product_id = Request::get('product_id', Request::TYPE_INT);
@@ -86,7 +111,6 @@ class Cart extends API {
         if (empty($cart)) {
             throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
         }
-        $cart->loadItems();
         $item_id = Request::post('product_id', Request::TYPE_INT);
         $qty = Request::post('qty', Request::TYPE_INT);
         $options = Request::post('options');

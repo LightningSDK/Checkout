@@ -11,7 +11,7 @@ class Product extends Object {
     const TABLE = 'checkout_product';
     const PRIMARY_KEY = 'product_id';
 
-    protected $__json_encoded_fields = ['options'];
+    protected $__json_encoded_fields = ['options' => ['type' => 'array']];
 
     public static function loadByURL($url) {
         $data = Database::getInstance()->selectRow(self::TABLE, ['url' => ['LIKE', $url]]);
@@ -23,9 +23,9 @@ class Product extends Object {
     }
 
     public function optionsSatisfied($options) {
-        if (!empty($this->options->options)) {
-            foreach ($this->options->options as $option => $settings) {
-                if (!empty($settings->required) && empty($options[$option])) {
+        if (!empty($this->options['options'])) {
+            foreach ($this->options['options'] as $option => $settings) {
+                if (!empty($settings['required']) && empty($options[$option])) {
                     return false;
                 }
             }
@@ -36,8 +36,8 @@ class Product extends Object {
 
     public function getPopupOptionsForm() {
         $template = new Template();
-        if (!empty($this->options->options_popup_template)) {
-            $template->set('fields_template', $this->options->options_popup_template);
+        if (!empty($this->options['options_popup_template'])) {
+            $template->set('fields_template', $this->options['options_popup_template']);
         } else {
             $template->set('fields_template', ['default_options_layout', 'Checkout']);
         }
@@ -64,14 +64,9 @@ class Product extends Object {
         return $image;
     }
 
-    public function getAggregateOption($option, $item) {
-        $aggregate_options = $this->getAggregateOptions($item);
-        return !empty($aggregate_options[$option]) ? $aggregate_options[$option] : null;
-    }
-
     public function getAggregateOptions($item) {
-        $options = json_decode($item['options'], true);
-        $selected_options = json_decode(base64_decode($item['order_item_options']), true);
+        $options = $this->options;
+        $selected_options = json_decode(base64_decode($item->options), true);
         while (!empty($options['options'])) {
             // Iterate over the options
             $child_options = $options['options'];
