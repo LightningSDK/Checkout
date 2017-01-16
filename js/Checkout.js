@@ -70,7 +70,7 @@
             Foundation.libs.abide.validate(elems, form, true);
             if (form.find('div.error').length == 0) {
                 var options = {};
-                form.find('input,select').each(function(index, item){
+                form.find('input,select,textarea').each(function(index, item){
                     options[item.name] = item.value;
                 });
                 self.addItem(form.data('product-id'), 1, options);
