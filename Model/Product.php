@@ -45,19 +45,24 @@ class Product extends Object {
         return $template->build(['options', 'Checkout'], true);
     }
 
-    public function getImage() {
+    public function getImage($type = 'listing-image') {
         $image = null;
         try {
-            $options = json_decode($this->__json_encoded_source['options'], true);
-            array_walk_recursive($options, function($val, $key) use (&$image) {
+            $options = $this->options;
+            array_walk_recursive($options, function($val, $key) use (&$image, $type) {
                 switch ($key) {
                     case 'og-image':
                     case 'image':
                         $image = $val;
+                        if ($key == $type) {
+                            throw new Exception('Complete');
+                        }
                         break;
                     case 'listing-image':
                         $image = $val;
-                        throw new Exception('Complete');
+                        if ($key == $type) {
+                            throw new Exception('Complete');
+                        }
                 }
             });
         } catch (Exception $e) {};
