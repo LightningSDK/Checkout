@@ -71,7 +71,7 @@ class Product extends Object {
 
     public function getAggregateOptions($item) {
         $options = $this->options;
-        $selected_options = json_decode(base64_decode($item->options), true);
+        $selected_options = $item->options;
         while (!empty($options['options'])) {
             // Iterate over the options
             $child_options = $options['options'];

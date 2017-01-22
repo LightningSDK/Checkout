@@ -98,7 +98,7 @@ class Cart extends API {
         if (!$item->optionsSatisfied($options)) {
             return [
                 'form' => $item->getPopupOptionsForm(),
-                'options' => $item->options,
+                'options' => base64_encode(json_encode($item->options)),
                 'base_price' => $item->price,
             ];
         }

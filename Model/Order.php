@@ -339,6 +339,7 @@ class OrderOverridable extends Object {
      *   A list of LineItems.
      */
     public function getItemsToFulfillWithHandler($handler) {
+        $this->loadItems();
         $items = [];
         foreach ($this->items as $item) {
             /* @var LineItem $item */

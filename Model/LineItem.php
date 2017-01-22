@@ -10,6 +10,8 @@ class LineItem extends Object {
     const TABLE = 'checkout_order_item';
     const PRIMARY_KEY = 'checkout_order_item_id';
 
+    protected $__json_encoded_fields = ['options' => ['type' => 'array', 'base64' => true]];
+
     protected $formattedOptions;
 
     /**
@@ -80,10 +82,10 @@ class LineItem extends Object {
             if (!empty($this->product->options->option_formatting_user)) {
                 $this->formattedOptions = Markup::render(
                     $this->product->options->option_formatting_user,
-                    json_decode(base64_decode($this->options), true) ?: []
+                    $this->options
                 );
             } else {
-                $options = json_decode(base64_decode($this->options), true) ?: [];
+                $options = $this->options;
                 $this->formattedOptions = '';
                 foreach ($options as $option => $value) {
                     $this->formattedOptions .= $option . ': <strong>' . $value . '</strong> ';
@@ -95,8 +97,8 @@ class LineItem extends Object {
         return $this->formattedOptions ?: '';
     }
 
-    public function getAggregateOption($option) {
+    public function getAggregateOption($option, $default = null) {
         $aggregate_options = $this->product->getAggregateOptions($this);
-        return !empty($aggregate_options[$option]) ? $aggregate_options[$option] : null;
+        return !empty($aggregate_options[$option]) ? $aggregate_options[$option] : $default;
     }
 }
