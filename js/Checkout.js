@@ -11,7 +11,7 @@
                 url : '/api/cart',
                 dataType: 'json',
                 success: function(data) {
-                    lightning.modules.checkout.processUpdatedCart(data, request_id, true);
+                    self.processUpdatedCart(data, request_id, true);
                 }
             });
 
@@ -101,7 +101,7 @@
                         lightning.tracker.track(lightning.tracker.events.addToCart, {
                             label: product_id
                         });
-                        lightning.modules.checkout.processUpdatedCart(data, request_id);
+                        self.processUpdatedCart(data, request_id);
                     }
                 }
             });
@@ -186,7 +186,7 @@
                     action: 'remove-item',
                 },
                 success: function(data) {
-                    lightning.modules.checkout.processUpdatedCart(data, request_id);
+                    self.processUpdatedCart(data, request_id);
                 }
             });
         },
@@ -210,7 +210,7 @@
                     qty: new_qty
                 },
                 success: function(data) {
-                    lightning.modules.checkout.processUpdatedCart(data, request_id);
+                    self.processUpdatedCart(data, request_id);
                 }
             });
         },
@@ -244,7 +244,7 @@
                     items: items
                 },
                 success: function(data) {
-                    lightning.modules.checkout.processUpdatedCart(data, request_id);
+                    self.processUpdatedCart(data, request_id);
                 }
             });
         },
