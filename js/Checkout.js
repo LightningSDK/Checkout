@@ -1,4 +1,7 @@
 (function(){
+    if (lightning.modules.checkout) {
+        return;
+    }
     var self = lightning.modules.checkout = {
         contents: {},
         requestId: 0,
