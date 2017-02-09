@@ -193,12 +193,11 @@ class OrderOverridable extends Object {
         return $this->getSubTotal() + $this->getShipping() + $this->getDiscounts() + $this->getTax();
     }
 
-    public function hasItem($product_id, $options = '') {
+    public function hasItem($order_item_id) {
         $this->loadItems();
         return Database::getInstance()->check('checkout_order_item', [
             'order_id' => $this->id,
-            'product_id' => $product_id,
-            'options' => !empty($options) ? (is_array($options) ? base64_encode(json_encode($options)) : $options) : null
+            'checkout_order_item_id' => $order_item_id,
         ]);
     }
 
@@ -223,23 +222,21 @@ class OrderOverridable extends Object {
         }
     }
 
-    public function setItemQty($product_id, $qty, $options = '') {
+    public function setItemQty($order_item_id, $qty) {
         $this->loadItems();
         return Database::getInstance()->update('checkout_order_item', [
             'qty' => $qty,
         ], [
             'order_id' => $this->id,
-            'product_id' => $product_id,
-            'options' => !empty($options) ? $options : null
+            'checkout_order_item_id' => $order_item_id,
         ]);
     }
 
-    public function removeItem($product_id, $options = '') {
+    public function removeItem($order_item_id) {
         $this->loadItems();
         return Database::getInstance()->delete('checkout_order_item', [
             'order_id' => $this->id,
-            'product_id' => $product_id,
-            'options' => !empty($options) ? $options : null
+            'checkout_order_item_id' => $order_item_id,
         ]);
     }
 

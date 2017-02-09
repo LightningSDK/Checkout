@@ -184,8 +184,7 @@
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    product_id: row.data('product-id'),
-                    options: row.data('options'),
+                    order_item_id: row.data('order-item-id'),
                     action: 'remove-item',
                 },
                 success: function(data) {
@@ -207,8 +206,7 @@
                 method: 'POST',
                 dataType: 'json',
                 data: {
-                    product_id: row.data('product-id'),
-                    options: row.data('options'),
+                    order_item_id: row.data('order-item-id'),
                     action: 'set-qty',
                     qty: new_qty
                 },
@@ -230,8 +228,7 @@
                     qty = 1;
                 }
                 items.push({
-                    product_id: row.data('product-id'),
-                    options: row.data('options'),
+                    order_item_id: row.data('order-item-id'),
                     qty: qty,
                 });
             });
@@ -360,7 +357,7 @@
 
                     content += '<tr class="small-description"><td colspan="4">' + description + '</td></tr>';
 
-                    content += '<tr class="checkout-item" data-product-id="' + data.items[i].product_id + '" data-options="' + data.items[i].options + '">';
+                    content += '<tr class="checkout-item" data-product-id="' + data.items[i].product_id + '" data-order-item-id="' + data.items[i].checkout_order_item_id + '">';
                     content += '<td class="remove"><img src="/images/lightning/remove2.png"></td>';
                     content += '<td class="qty"><input name="checkout-qty" class="checkout-qty" value="' + data.items[i].qty + '" size="4"></td>';
                     content += '<td class="title hide-for-small">' + description + '</td>';

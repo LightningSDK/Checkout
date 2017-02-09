@@ -111,13 +111,12 @@ class Cart extends API {
         if (empty($cart)) {
             throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
         }
-        $item_id = Request::post('product_id', Request::TYPE_INT);
         $qty = Request::post('qty', Request::TYPE_INT);
-        $options = Request::post('options');
-        if (!$cart->hasItem($item_id, $options)) {
+        $order_item_id = Request::post('order_item_id', Request::TYPE_INT);
+        if (!$cart->hasItem($order_item_id)) {
             throw new Exception('Could not change the quantity.');
         }
-        $cart->setItemQty($item_id, $qty, $options);
+        $cart->setItemQty($order_item_id, $qty);
         return $this->get();
     }
 
@@ -127,22 +126,22 @@ class Cart extends API {
             throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
         }
         $cart->loadItems();
-        $updates = Request::post('items');
+        $updates = Request::post('items', Request::TYPE_ARRAY);
         foreach ($updates as $update) {
-            $item_id = intval($update['product_id']);
+            $order_item_id = intval($update['order_item_id']);
             $qty = intval($update['qty']);
-            $options = $update['options'];
-            $cart->setItemQty($item_id, $qty, $options);
+            $cart->setItemQty($order_item_id, $qty);
         }
         return $this->get();
     }
 
     public function postRemoveItem() {
         $cart = Order::loadBySession();
-        $cart->loadItems();
-        $item_id = Request::post('product_id', Request::TYPE_INT);
-        $options = Request::post('options');
-        if ($cart->removeItem($item_id, $options)) {
+        if (empty($cart)) {
+            throw new Exception('Invalid Cart. Maybe your session expired? Reload the page and try again.');
+        }
+        $order_item_id = Request::post('order_item_id', Request::TYPE_INT);
+        if ($cart->removeItem($order_item_id)) {
             return $this->get();
         } else {
             throw new Exception('Could not remove the item.');
