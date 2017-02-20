@@ -6,7 +6,9 @@ use Exception;
 use Lightning\Pages\Table;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Navigation;
+use Lightning\Tools\Output;
 use Lightning\Tools\Request;
+use Lightning\Tools\Template;
 use Lightning\View\JS;
 use Modules\Checkout\Model\Order;
 use Lightning\Tools\ClientUser;
@@ -135,8 +137,27 @@ class Orders extends Table {
             throw new Exception('No fulfillment handlers for the unfulfilled items.');
         }
 
-        // Redirect to the first fulfillment page.
-        $handler = Configuration::get('modules.checkout.fulfillment_handlers.' . $handlers[0]);
-        Navigation::redirect($handler::FULFILLMENT_URL, ['id' => $this->id, 'return' => 'fulfill']);
+        if (empty($handlers)) {
+            Output::error('There are no fulfillment handlers available for this order.');
+        }
+
+        if ($specific_handler = Request::get('handler')) {
+            $handler = Configuration::get('modules.checkout.fulfillment_handlers.' . $specific_handler);
+        } elseif (count($handlers) == 1) {
+            $handler = Configuration::get('modules.checkout.fulfillment_handlers.' . $handlers[0]);
+        } elseif (count($handlers) > 1) {
+            $template = Template::getInstance();
+            $template->set('handlers', $handlers);
+            $template->set('order_id', $order->id);
+            $this->page = ['fulfillment_selector', 'Checkout'];
+            return;
+        }
+
+        // Redirect to the fulfillment page.
+        if (!empty($handler)) {
+            Navigation::redirect($handler::FULFILLMENT_URL, ['id' => $this->id, 'return' => 'fulfill']);
+        } else {
+            Output::error('Fulfillment handler not found.');
+        }
     }
 }

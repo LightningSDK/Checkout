@@ -86,4 +86,8 @@ class Product extends Object {
         }
         return $options;
     }
+
+    public function getURL() {
+        return '/store/' . $this->url;
+    }
 }
