@@ -34,11 +34,18 @@ class LineItem extends Object {
      * @return Product
      */
     public function getProduct() {
+        $this->loadProduct();
         return $this->product;
     }
 
     public function setProduct($product) {
         $this->product = $product;
+    }
+
+    protected function loadProduct() {
+        if (empty($this->product) && !empty($this->product_id)) {
+            $this->product = Product::loadByID($this->product_id);
+        }
     }
 
     /**
@@ -98,6 +105,7 @@ class LineItem extends Object {
     }
 
     public function getAggregateOption($option, $default = null) {
+        $this->loadProduct();
         $aggregate_options = $this->product->getAggregateOptions($this);
         return !empty($aggregate_options[$option]) ? $aggregate_options[$option] : $default;
     }
