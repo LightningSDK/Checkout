@@ -357,7 +357,7 @@ class OrderOverridable extends Object {
      * @return boolean
      *   Whether the order was set.
      */
-    public function markFullfilled($force = false) {
+    public function markFulfilled($force = false) {
         if (!$force) {
             $this->loadItems();
             foreach ($this->items as $item) {

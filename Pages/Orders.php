@@ -112,7 +112,7 @@ class Orders extends Table {
 
         foreach (Configuration::get('modules.checkout.fulfillment_handlers') as $reference => $connector) {
             if (in_array($reference, $required_handlers)) {
-                if (($url = $connector::FULFILLMENT_URL) && ($button_text = $connector::FULLFILLMENT_TEXT)) {
+                if (($url = $connector::FULFILLMENT_URL) && ($button_text = $connector::FULFILLMENT_TEXT)) {
                     $this->custom_buttons[] = [
                         'type' => self::CB_ACTION_LINK,
                         'url' => $url,
