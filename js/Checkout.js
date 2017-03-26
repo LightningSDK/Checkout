@@ -149,16 +149,34 @@
 
                 // If the current field is not present, add it.
                 var field_name = i.replace(/[^a-z0-9-_]/i, '');
-                if (parent.find('#option-' + field_name).length == 0) {
-                    var input = $('<select name="' + i + '">');
-                    for (var j in options.options[i].values) {
-                        input.append('<option value="' + j + '">' + j + '</option>');
-                    }
-                    field_container.append($('<div id="option-' + field_name + '">').append(input).append('<div class="children">'));
+                var previousValue = null;
+                var input = parent.find('#option-' + field_name);
+                if (input.length > 0) {
+                    // Get the previous value
+                    previousValue = input.val();
+                    // Remove all the current options, they will be replaced.
+                    input.empty();
+                } else {
+                    // Create a new field with the correct options.
+                    input = $('<select name="' + i + '" id="option-' + field_name + '">');
+                    field_container.append($('<div id="option-' + field_name + '-wrapper">').append(input).append('<div class="children">'));
+                    input = parent.find('#option-' + field_name);
+                }
+
+                // Add all the options.
+                for (var j in options.options[i].values) {
+                    input.append('<option value="' + j + '">' + j + '</option>');
+                }
+
+                // If there was a previous option and it's still available, set it.
+                if (previousValue && $(input).find('[value="' + previousValue + '"]').length > 0) {
+                    input.val(previousValue);
+                } else {
+                    input.val(input.children().first().prop('value'));
                 }
 
                 // Get the selected field value.
-                var value = parent.find('#option-' + field_name + ' [name="' + i + '"]').val();
+                var value = parent.find('#option-' + field_name).val();
 
                 // Update the child fields
                 if (typeof options.options[i].values != 'undefined' && typeof options.options[i].values[value] == 'object') {
@@ -170,7 +188,7 @@
                     if (!options.options[i].values[value].hasOwnProperty('options')) {
                         delete child_options.options;
                     }
-                    self.updateOptionsForm(i, child_options, parent.find('#option-' + field_name));
+                    self.updateOptionsForm(i, child_options, parent.find('#option-' + field_name + '-wrapper'));
                 }
             }
         },
