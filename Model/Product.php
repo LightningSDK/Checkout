@@ -90,4 +90,24 @@ class Product extends Object {
     public function getURL() {
         return '/store/' . $this->url;
     }
+
+    public function isAvailable() {
+        if ($this->active == 0) {
+            return false;
+        }
+        if ($this->qty == 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function renderCheckoutOptions() {
+        $template = Template::getInstance();
+        if ($this->isAvailable()) {
+            return $template->build(['options', 'Checkout']);
+        } else {
+            return $template->build(['unavailable', 'Checkout']);
+        }
+    }
 }

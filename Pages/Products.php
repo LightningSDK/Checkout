@@ -16,6 +16,13 @@ class Products extends Table {
             'unlisted' => true,
         ],
         'shipping_address' => 'checkbox',
+        'qty' => [
+            'note' => 'Enter -1 to ignore QTY',
+        ],
+        'active' => [
+            'type' => 'checkbox',
+            'default' => true,
+        ]
     ];
 
     protected $searchable = true;
