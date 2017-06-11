@@ -3,6 +3,8 @@
 namespace Modules\Checkout\API;
 
 use Exception;
+use Lightning\Tools\ClientUser;
+use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\View\API;
 use Modules\Checkout\Model\Discount;
@@ -79,6 +81,37 @@ class Cart extends API {
 
         return [
             'amount' => $product->price,
+        ];
+    }
+
+    public function postPayNow() {
+        $item_id = Request::post('product_id', Request::TYPE_INT);
+        $qty = Request::post('qty', Request::TYPE_INT);
+        $options = Request::post('options', Request::TYPE_ASSOC_ARRAY);
+        $item = Product::loadByID($item_id);
+
+        // Make sure the product was loaded.
+        if (empty($item)) {
+            throw new Exception('Invalid product selected.');
+        }
+
+        // If there are missing options, we need to show the options form.
+        if (!$item->optionsSatisfied($options)) {
+            return [
+                'form' => $item->getPopupOptionsForm(),
+                'options' => $item->options,
+                'base_price' => $item->price,
+            ];
+        }
+
+        if (!empty($item->options['create_customer']) && ClientUser::getInstance()->isAnonymous()) {
+            return Output::LOGIN_REQUIRED;
+        }
+
+        $options = $item->aggregateOptions($options);
+
+        return [
+            'total' => ((!empty($options['price']) ? $options['price'] : '') * $qty)
         ];
     }
 

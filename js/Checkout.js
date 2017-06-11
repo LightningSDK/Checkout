@@ -24,7 +24,7 @@
             $('.reveal-modal').on('click', '.remove img', self.removeItem)
                 .on('change', '.checkout-qty', self.updateQty)
                 .on('click', '.checkout-update-total', self.updateQtys)
-                .on('click', '.checkout-pay', self.pay);
+                .on('click', '.checkout-pay', self.payCart);
         },
 
         click: function(event) {
@@ -35,52 +35,68 @@
                 self.addItem(product_id, 1, options);
             } else {
                 // Pay Now
-                if (button.data('create-customer')) {
-                    options.create_customer = true;
+                if (button.data('create-customer') === 'true') {
+                    purchase_options.create_customer = true;
                 }
                 if (button.data('redirect')) {
-                    options.redirect = button.data('redirect');
+                    purchase_options.redirect = button.data('redirect');
                 }
                 if (button.data('title')) {
-                    options.title = button.data('title');
+                    purchase_options.title = button.data('title');
                 }
                 if (button.data('amount')) {
-                    options.amount = button.data('amount');
+                    purchase_options.amount = button.data('amount');
                 }
-                if (button.data('shipping-address') == "true") {
-                    options.shipping_address = true;
+                if (button.data('shipping-address') === "true") {
+                    purchase_options.shipping_address = true;
                 }
-                if (button.data('modules.checkout.bitcoin', false)) {
-                    options.bitcoin = true;
+                // TODO: Move this to stripe module
+                if (lightning.get('modules.checkout.bitcoin', false)) {
+                    purchase_options.bitcoin = true;
                 }
+
+                // Attempt to start the process.
                 if (product_id) {
-                    options.product_id = product_id;
+                    // If a product ID is specified, check with the server.
+                    purchase_options.product_id = product_id;
+                    self.purchaseItem(product_id, 1, line_item_options, purchase_options);
+                } else {
+                    // If no product ID is specified, process the transaction.
+                    self.pay(purchase_options, function(){
+                        if (purchase_options.redirect) {
+                            window.location = purchase_options.redirect;
+                        }
+                    });
                 }
-                var paymentHandler = lightning.get('modules.checkout.handler');
-                var handler = lightning.getMethodReference(paymentHandler);
-                handler(options, function(){
-                    if (options.redirect) {
-                        window.location = options.redirect;
+            }
+        },
+
+        purchaseItem: function(product_id, qty, line_item_options, purchase_options) {
+            $.ajax({
+                url: '/api/cart',
+                method: 'POST',
+                dataType: 'JSON',
+                data: {
+                    action: 'pay-now',
+                    product_id: product_id,
+                    qty: qty,
+                    options: line_item_options
+                },
+                success: function(data){
+                    if (data.status === 'success') {
+                        purchase_options.product_id = product_id;
+                        purchase_options.product_options = data.options;
+                        self.pay(purchase_options, function(){
+                            if (purchase_options.redirect) {
+                                window.location = purchase_options.redirect;
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
         },
 
-        addItemPopupOptions: function() {
-            // Make sure to validate the form.
-            var form = $('#checkout-popup-options');
-            var elems = form.find('input, textarea, select').not(":hidden, [data-abide-ignore]").get();
-            Foundation.libs.abide.validate(elems, form, true);
-            if (form.find('div.error').length == 0) {
-                var options = {};
-                form.find('input,select,textarea').each(function(index, item){
-                    options[item.name] = item.value;
-                });
-                self.addItem(form.data('product-id'), 1, options);
-            }
-        },
-
-        addItem: function(product_id, qty, options) {
+        addItem: function(product_id, qty, line_item_options) {
             var request_id = ++self.requestId;
             lightning.dialog.showLoader('Adding this item to your cart...');
             $.ajax({
@@ -90,17 +106,19 @@
                 data: {
                     product_id: product_id,
                     qty: qty,
-                    options: options,
+                    options: line_item_options,
                     action: 'add-to-cart',
                 },
                 success: function(data) {
                     if (data.form) {
+                        // There are more required options to be completed.
                         lightning.dialog.showContent(data.form);
                         self.initProductOptions(data);
                         setTimeout(function(){
                             $(document).foundation('reflow');
                         }, 500);
                     } else {
+                        // The product has been added.
                         lightning.tracker.track(lightning.tracker.events.addToCart, {
                             label: product_id
                         });
@@ -280,22 +298,29 @@
             }
         },
 
-        pay: function() {
+        pay: function(options, callback) {
             var paymentHandler = lightning.get('modules.checkout.handler');
             if (paymentHandler) {
                 var handler = lightning.getMethodReference(paymentHandler);
-                handler({
-                    amount: self.contents.total,
-                    cart_id: self.contents.id,
-                    shipping_address: self.contents.shipping_address,
-                }, function(){
-                    self.cartIcon.find('.item-count').html(0);
-                    self.cartIcon.removeClass('show');
-                    lightning.tracker.track(lightning.tracker.events.purchase, {
-                        value: self.contents.total
-                    });
-                });
+                handler(options, callback);
+            } else {
+                lightning.dialog.show();
+                lightning.dialog.add('The payment handler has not been configured for the checkout module.', 'error');
             }
+        },
+
+        payCart: function() {
+            self.pay({
+                amount: self.contents.total,
+                cart_id: self.contents.id,
+                shipping_address: self.contents.shipping_address,
+            }, function(){
+                self.cartIcon.find('.item-count').html(0);
+                self.cartIcon.removeClass('show');
+                lightning.tracker.track(lightning.tracker.events.purchase, {
+                    value: self.contents.total
+                });
+            });
         },
 
         updateCart: function(data) {
