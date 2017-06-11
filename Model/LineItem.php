@@ -38,6 +38,11 @@ class LineItem extends Object {
         return $this->product;
     }
 
+    public function getPrice() {
+        $values = $this->product->getAggregateOptions($this);
+        return !empty($values['price']) ? $values['price'] : $this->product->price;
+    }
+
     public function setProduct($product) {
         $this->product = $product;
     }
@@ -52,7 +57,7 @@ class LineItem extends Object {
      * Load a list of line item objects wth all their product data and options.
      *
      * @param $order_id
-     * @return array|static
+     * @return array
      */
     public static function loadAllByOrderID($order_id) {
         // Load the line items.

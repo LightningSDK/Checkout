@@ -152,7 +152,8 @@ class OrderOverridable extends Object {
         $this->loadItems();
         $this->total = 0;
         foreach ($this->items as $item) {
-            $this->total += $item->qty * $item->getProduct()->price;
+            /* @var LineItem $item */
+            $this->total += $item->qty * $item->getPrice();
         }
         return $this->total;
     }

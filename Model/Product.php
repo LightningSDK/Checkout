@@ -69,9 +69,8 @@ class Product extends Object {
         return $image;
     }
 
-    public function getAggregateOptions($item) {
+    public function aggregateOptions($selected_options) {
         $options = $this->options;
-        $selected_options = $item->options;
         while (!empty($options['options'])) {
             // Iterate over the options
             $child_options = $options['options'];
@@ -85,6 +84,10 @@ class Product extends Object {
             }
         }
         return $options;
+    }
+
+    public function getAggregateOptions(LineItem $item) {
+        return $this->aggregateOptions($item->options);
     }
 
     public function getURL() {

@@ -57,7 +57,7 @@ class Cart extends API {
         foreach ($cart->getItems() as $item) {
             /* @var LineItem $item */
             $output = array_intersect_key($item->getData(), $api_fields);
-            $output['price'] = $item->getProduct()->price;
+            $output['price'] = $item->getPrice();
             $output['title'] = $item->getProduct()->title;
             $output['options_formatted'] = $item->getHTMLFormattedOptions();
             $output_items[] = $output;
