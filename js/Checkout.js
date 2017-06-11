@@ -8,7 +8,9 @@
         lastRequestId: 0,
         cartIcon: null,
         init: function() {
-            $('.checkout-product').click(self.click);
+            $('body')
+                .on('click', '.checkout-product', self.click)
+                .on('click', '.options-image .selection img', self.selectImage);
             var request_id = ++self.requestId;
             $.ajax({
                 url : '/api/cart',
@@ -30,9 +32,22 @@
         click: function(event) {
             var button = $(event.target);
             var product_id = button.data('checkout-product-id');
-            var options = {};
-            if (button.data('checkout') == 'add-to-cart') {
-                self.addItem(product_id, 1, options);
+            var purchase_options = {};
+            var line_item_options = {};
+            if (button.data('checkout') === 'add-to-cart') {
+                // If there are options already on the page, load them.
+                var form = button.closest('form.checkout-form');
+                if (form.length === 1) {
+                    var elems = form.find('input, textarea, select').not(":hidden, [data-abide-ignore]").get();
+                    Foundation.libs.abide.validate(elems, form, true);
+                    if (form.find('div.error').length === 0) {
+                        form.find('input,select,textarea').each(function(index, item){
+                            line_item_options[item.name] = item.value;
+                        });
+                    }
+                }
+                // Attempt to add the item to the cart.
+                self.addItem(product_id, 1, line_item_options);
             } else {
                 // Pay Now
                 if (button.data('create-customer') === 'true') {
@@ -137,18 +152,59 @@
 
         updateOptionsFormRoot: function() {
             self.popupImg = self.popupOptions.image ? self.popupOptions.image : null;
-            self.updateOptionsForm(null, self.popupOptions, $('.options-fields'));
+            var optionsFields = $('.options-fields');
+            self.updateOptionsForm(null, self.popupOptions, optionsFields);
+            var imgContainer = $('.options-image');
             if (self.popupImg) {
-                var img = $('.options-image').find('img');
-                if (img.length == 0) {
-                    $('.options-image').append('<img src="' + self.popupImg + '">');
-                } else {
-                    img.prop('src', self.popupImg);
+                // Make sure the main display image exists.
+                var img = imgContainer.find('.preview-image img');
+                if (img.length === 0) {
+                    imgContainer.append('<div class="preview-image"><img src="" /></div>');
+                    img = imgContainer.find('.preview-image img');
                 }
+
+                // Make sure the image is an array (even if just one image)
+                if (typeof self.popupImg !== 'object') {
+                    self.popupImg = [self.popupImg];
+                }
+
+                var imageSet = false;
+                if (self.popupImg.length > 1) {
+                    // Make sure there is an image selection container.
+                    var selectionContainer = imgContainer.find('.selection');
+                    if (selectionContainer.length === 0) {
+                        imgContainer.append('<div class="column selection"></div>');
+                        selectionContainer = imgContainer.find('.selection');
+                    }
+                    selectionContainer.empty();
+                    for (i in self.popupImg) {
+                        var active = '';
+                        if (self.popupImg[i] === img.prop('src')) {
+                            active = 'active';
+                            imageSet = true;
+                        }
+                        selectionContainer.append('<img src="' + self.popupImg[i] + '" class="' + active + '" />');
+                    }
+                }
+
+                if (!imageSet) {
+                    // If the image has not already been set, then active the first image.
+                    img.prop('src', self.popupImg[0]);
+                    if (self.popupImg.length > 1) {
+                        selectionContainer.find('img').first().addClass('active');
+                    }
+                }
+
             } else {
-                $('.options-image').empty();
+                imgContainer.empty();
             }
-            $('.price', $('.options-fields')).html('$' + parseFloat(self.basePrice).toFixed(2));
+            $('.price', optionsFields).html('$' + parseFloat(self.basePrice).toFixed(2));
+        },
+
+        selectImage: function (e) {
+            var image = $(e.target);
+            $('.options-image .selection img').removeClass('active');
+            $('.options-image .preview-image img').prop('src', image.addClass('active').prop('src'));
         },
 
         // Build form options
@@ -197,10 +253,18 @@
                 var value = parent.find('#option-' + field_name).val();
 
                 // Update the child fields
-                if (typeof options.options[i].values != 'undefined' && typeof options.options[i].values[value] == 'object') {
+                if (typeof options.options[i].values !== 'undefined' && typeof options.options[i].values[value] === 'object') {
+                    // Override the images if present.
                     if (options.options[i].values[value].hasOwnProperty('image')) {
                         self.popupImg = options.options[i].values[value].image;
                     }
+
+                    // Override the price if present.
+                    if (options.options[i].values[value].hasOwnProperty('price')) {
+                        self.basePrice = options.options[i].values[value].price;
+                    }
+
+                    // Override child options if present.
                     var child_options = {};
                     $.extend(child_options, options, options.options[i].values[value]);
                     if (!options.options[i].values[value].hasOwnProperty('options')) {
