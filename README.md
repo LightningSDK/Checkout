@@ -28,3 +28,33 @@ $conf = [
     ]
 ];
 ```
+
+# Adding to a page
+
+You can add checkout buttons simply by adding markup to a span element. The `checkout-product` class must be present on all elements to activate the click listener. All other options are specified via data attributes.
+
+```
+<span class="checkout-product" data-checkout-product-id="{product id}" data-checkout="add-to-cart">Buy Now</span>
+```
+
+The following fields are available:
+
+* data-checkout-product-id
+   Mandatory: the id of the product to buy. This can be a single purchase or a subscription.
+   
+* data-checkout
+   Optional
+   Values:
+     `buy-now` (default) - Takes the user directly to payment
+     `add-to-cart` - Adds to a shopping cart displayed in a modal, so the user can continue shopping.
+     
+* data-create-customer
+   Optional
+   Values:
+     `false` (default)
+     `true` - Whather to save the user's card information for future billing
+     
+* data-redirect
+* data-title
+* data-amount
+* shipping-address
