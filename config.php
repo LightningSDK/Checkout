@@ -26,6 +26,11 @@ return [
             // Source file => Dest file
             'Checkout.js' => 'Checkout.min.js',
         ]
+    ],
+    'modules' => [
+        'checkout' => [
+            'init_view' => 'Modules\\Checkout\\View\\Checkout::init',
+        ]
     ]
     // TODO: add login update session_id => user_id or cart
 ];
