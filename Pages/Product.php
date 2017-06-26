@@ -15,7 +15,7 @@ use Modules\Checkout\View\Checkout;
 
 class Product extends Page {
 
-    protected $page = ['product', 'Checkout'];
+    protected $page = ['product_wrapper', 'Checkout'];
 
     public function get() {
         CSS::add('/css/modules.css');
@@ -34,6 +34,12 @@ class Product extends Page {
                 $template->set('fields_template', $product->options['options_popup_template']);
             } else {
                 $template->set('fields_template', ['default_options_layout', 'Checkout']);
+            }
+
+            if (!empty($product->options['product_template'])) {
+                $template->set('product_template', $product->options['product_template']);
+            } else {
+                $template->set('product_template', ['product', 'Checkout']);
             }
 
             // Init the checkout methods
