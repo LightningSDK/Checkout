@@ -202,14 +202,31 @@ class OrderOverridable extends Object {
         ]);
     }
 
-    public function addItem($product_id, $qty, $options = []) {
-        $db = Database::getInstance();
+    public function addItem($product, $qty, $options = []) {
+        // Make sure the order is saved, so it has an ID.
+        if (empty($this->id)) {
+            $this->save();
+        }
+
+        // Make sure the product is an object.
+        if (is_int($product)) {
+            $product = Product::loadByID($product);
+        }
+
         $item = [
             'order_id' => $this->id,
-            'product_id' => $product_id,
+            'product_id' => $product->id,
             'options' => !empty($options) ? base64_encode(json_encode($options)) : null
         ];
-        if ($db->selectRow('checkout_order_item', $item)) {
+
+        if ($map = $product->getMappedOption('qty')) {
+            if (!empty($options[$map])) {
+                $qty = intval($options[$map]) ?: 1;
+            }
+        }
+
+        $db = Database::getInstance();
+        if ($row = $db->selectRow('checkout_order_item', $item)) {
             // Update existing item by adding qty.
             $db->update('checkout_order_item', [
                 'qty' => [
@@ -217,9 +234,10 @@ class OrderOverridable extends Object {
                     'vars' => [intval($qty)]
                 ],
             ], $item);
+            return $row['checkout_order_item_id'];
         } else {
             // Insert new checkout item.
-            $db->insert('checkout_order_item', $item + [ 'qty' => $qty ]);
+            return $db->insert('checkout_order_item', $item + [ 'qty' => $qty ]);
         }
     }
 

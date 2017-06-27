@@ -25,9 +25,18 @@ class Discount extends Object {
      * @return float
      */
     public function getAmount($order) {
+        if (!empty($this->discounts->minimum) && $order->getSubTotal() < $this->discounts->minimum) {
+            return 0;
+        }
+
         $discount = 0;
+
         if (!empty($this->discounts->percent)) {
             $discount = $this->discounts->percent * $order->getSubTotal() / 100;
+        }
+
+        elseif (!empty($this->discounts->amount)) {
+            $discount = $this->discounts->amount;
         }
 
         return number_format(-$discount, 2);

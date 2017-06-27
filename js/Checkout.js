@@ -34,23 +34,25 @@
             var product_id = button.data('checkout-product-id');
             var purchase_options = {};
             var line_item_options = {};
-            if (button.data('checkout') === 'add-to-cart') {
-                // If there are options already on the page, load them.
-                var form = button.closest('form.checkout-form');
-                if (form.length === 1) {
-                    var elems = form.find('input, textarea, select').not(":hidden, [data-abide-ignore]").get();
-                    Foundation.libs.abide.validate(elems, form, true);
-                    if (form.find('div.error').length === 0) {
-                        form.find('input,select,textarea').each(function(index, item){
-                            line_item_options[item.name] = item.value;
-                        });
-                    }
+
+            // If there are options already on the page, load them.
+            var form = button.closest('.options-fields');
+            if (form.length === 1) {
+                var elems = form.find('input, textarea, select').not(":hidden, [data-abide-ignore]").get();
+                Foundation.libs.abide.validate(elems, form, true);
+                if (form.find('div.error').length === 0) {
+                    form.find('input,select,textarea').each(function(index, item){
+                        line_item_options[item.name] = item.value;
+                    });
                 }
+            }
+
+            if (button.data('checkout') === 'add-to-cart') {
                 // Attempt to add the item to the cart.
                 self.addItem(product_id, 1, line_item_options);
             } else {
                 // Pay Now
-                if (button.data('create-customer') === 'true') {
+                if (button.data('create-customer') === true) {
                     purchase_options.create_customer = true;
                 }
                 if (button.data('redirect')) {
@@ -62,7 +64,7 @@
                 if (button.data('amount')) {
                     purchase_options.amount = button.data('amount');
                 }
-                if (button.data('shipping-address') === "true") {
+                if (button.data('shipping-address') === true) {
                     purchase_options.shipping_address = true;
                 }
                 // TODO: Move this to stripe module
@@ -74,7 +76,8 @@
                 if (product_id) {
                     // If a product ID is specified, check with the server.
                     purchase_options.product_id = product_id;
-                    self.purchaseItem(product_id, 1, line_item_options, purchase_options);
+                    purchase_options.item_options = line_item_options;
+                    self.purchaseItem(product_id, 1, purchase_options);
                 } else {
                     // If no product ID is specified, process the transaction.
                     self.pay(purchase_options, function(){
@@ -86,7 +89,7 @@
             }
         },
 
-        purchaseItem: function(product_id, qty, line_item_options, purchase_options) {
+        purchaseItem: function(product_id, qty, purchase_options) {
             $.ajax({
                 url: '/api/cart',
                 method: 'POST',
@@ -95,7 +98,7 @@
                     action: 'pay-now',
                     product_id: product_id,
                     qty: qty,
-                    options: line_item_options
+                    options: purchase_options.item_options
                 },
                 success: function(data){
                     if (data.status === 'success') {
@@ -150,6 +153,10 @@
             $('.options-fields').on('change', 'input,select', self.updateOptionsFormRoot);
         },
 
+        /**
+         * Update the options form starting from the root. This applies changes to the image and options below
+         * when an option field is changd.
+         */
         updateOptionsFormRoot: function() {
             self.popupImg = self.popupOptions.image ? self.popupOptions.image : null;
             var optionsFields = $('.options-fields');
@@ -207,8 +214,24 @@
             $('.options-image .preview-image img').prop('src', image.addClass('active').prop('src'));
         },
 
-        // Build form options
+        /**
+         * Makes actual changes to an option when the parent option is changed.
+         *
+         * @param {element|null} field
+         *   Contains a dom element or null if this is the initial call.
+         * @param {object} options
+         *   The options set to be displayed below the field
+         * @param {element} parent
+         *   The html wrapper element where the options will go
+         */
         updateOptionsForm: function(field, options, parent) {
+            // Field layout:
+            // div#option-NAME-wrapper
+            // +--div#option-NAME-container
+            //    +--label
+            //    +--input|select
+            // +--div.children
+
             var field_container;
             for (var i in options.options) {
                 field_container = parent.children().filter('.children');
@@ -216,40 +239,68 @@
                 // Remove any fields that are at the current level and not in the current options list.
                 field_container.children().each(function(){
                     var obj = $(this);
-                    if (!options.options.hasOwnProperty(obj.children().first().prop('name'))) {
+                    if (!options.options.hasOwnProperty(obj.data('name'))) {
                         obj.remove();
                     }
                 });
 
-                // If the current field is not present, add it.
+                // Determine the field type and other attributes.
+                var field_type = 'input';
+                var has_label = true;
+                if (typeof options.options[i].values === 'object') {
+                    field_type = 'select';
+                    has_label = false;
+                }
                 var field_name = i.replace(/[^a-z0-9-_]/i, '');
                 var previousValue = null;
+
+                // Make sure a wrapper exists
+                var wrapper = parent.find('#option-' + field_name + '-wrapper')
+                if (wrapper.length === 0) {
+                    // Insert the new field.
+                    wrapper = $('<div id="option-' + field_name + '-wrapper">')
+                        .append('<div id="option-' + field_name + '-container">')
+                        .append('<div class="children">')
+                        .data('name', field_name);
+                    field_container.append(wrapper);
+                }
+
+                // See if the input already exists, save the value and remove it.
+                var container = field_container.find('#option-' + field_name + '-container');
                 var input = parent.find('#option-' + field_name);
                 if (input.length > 0) {
-                    // Get the previous value
+                    // Save the previous value and remove the field.
                     previousValue = input.val();
-                    // Remove all the current options, they will be replaced.
-                    input.empty();
-                } else {
-                    // Create a new field with the correct options.
-                    input = $('<select name="' + i + '" id="option-' + field_name + '">');
-                    field_container.append($('<div id="option-' + field_name + '-wrapper">').append(input).append('<div class="children">'));
-                    input = parent.find('#option-' + field_name);
+                } else if (options.options[i].hasOwnProperty('default')) {
+                    previousValue = options.options[i].default;
+                }
+                container.empty();
+
+                // Create a new field.
+                switch (field_type) {
+                    case 'input':
+                        // TODO: Add input validation to options.options[i].type == 'int'
+                        input = $('<input name="' + i + '" id="option-' + field_name + '">');
+                        // Set the previous value.
+                        input.val(previousValue);
+                        container.append('<label>' + i + '</label>').append(input);
+                        break;
+                    case 'select':
+                        input = $('<select name="' + i + '" id="option-' + field_name + '">');
+                        for (var j in options.options[i].values) {
+                            input.append('<option value="' + j + '">' + j + '</option>');
+                        }
+                        // Set the previous value.
+                        if ($(input).find('[value="' + previousValue + '"]').length > 0) {
+                            input.val(previousValue);
+                        } else {
+                            input.val(input.children().first().prop('value'));
+                        }
+                        container.append(input);
+                        break;
                 }
 
-                // Add all the options.
-                for (var j in options.options[i].values) {
-                    input.append('<option value="' + j + '">' + j + '</option>');
-                }
-
-                // If there was a previous option and it's still available, set it.
-                if (previousValue && $(input).find('[value="' + previousValue + '"]').length > 0) {
-                    input.val(previousValue);
-                } else {
-                    input.val(input.children().first().prop('value'));
-                }
-
-                // Get the selected field value.
+                // Get the final selected field value.
                 var value = parent.find('#option-' + field_name).val();
 
                 // Update the child fields

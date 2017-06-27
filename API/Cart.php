@@ -117,25 +117,32 @@ class Cart extends API {
 
     public function postAddToCart() {
         $cart = Order::loadOrCreateBySession();
-        $item_id = Request::post('product_id', Request::TYPE_INT);
+        $product_id = Request::post('product_id', Request::TYPE_INT);
         $qty = Request::post('qty', Request::TYPE_INT);
         $options = Request::post('options', Request::TYPE_ASSOC_ARRAY);
-        $item = Product::loadByID($item_id);
+        $product = Product::loadByID($product_id);
 
         // Make sure the product was loaded.
-        if (empty($item)) {
+        if (empty($product)) {
             throw new Exception('Invalid product selected.');
         }
 
         // If there are missing options, we need to show the options form.
-        if (!$item->optionsSatisfied($options)) {
+        if (!$product->optionsSatisfied($options)) {
             return [
-                'form' => $item->getPopupOptionsForm(),
-                'options' => $item->options,
-                'base_price' => $item->price,
+                'form' => $product->getPopupOptionsForm(),
+                'options' => $product->options,
+                'base_price' => $product->price,
             ];
         }
-        $cart->addItem($item_id, $qty, $options);
+
+        if ($qty_map = $product->getMappedOption('qty')) {
+            if (!empty($options[$qty_map])) {
+                $qty = $options[$qty_map];
+            }
+        }
+
+        $cart->addItem($product_id, $qty, $options);
         return $this->get();
     }
 

@@ -39,10 +39,10 @@ class Product extends Object {
         if (!empty($this->options['options_popup_template'])) {
             $template->set('fields_template', $this->options['options_popup_template']);
         } else {
-            $template->set('fields_template', ['default_options_layout', 'Checkout']);
+            $template->set('fields_template', '');
         }
         $template->set('product', $this);
-        return $template->build(['options', 'Checkout'], true);
+        return $template->build(['product_popup', 'Checkout'], true);
     }
 
     public function getImage($type = 'listing-image') {
@@ -70,6 +70,7 @@ class Product extends Object {
     }
 
     public function aggregateOptions($selected_options) {
+        // TODO: This does not take into account options on the same level.
         $options = $this->options;
         while (!empty($options['options'])) {
             // Iterate over the options
@@ -86,6 +87,36 @@ class Product extends Object {
         return $options;
     }
 
+    /**
+     * Search for options mapped as specific fields. This currently only supports qty.
+     * If an option has a setting 'map' => 'qty', then whatever value is entered for this option
+     * may override the qty field. This is handled in the Cart controller.
+     *
+     * @param string $mapped_as
+     *   The value of the map.
+     *
+     * @return string
+     *   The name of the option.
+     */
+    public function getMappedOption($mapped_as) {
+        $product_options = $this->options;
+
+        foreach (new \RecursiveIteratorIterator(new \RecursiveArrayIterator($product_options), \RecursiveIteratorIterator::SELF_FIRST) as $key => $item) {
+            if (!empty($item['map']) && $item['map'] == $mapped_as) {
+                return $key;
+            }
+        }
+    }
+
+    /**
+     * Get the aggregated options for a line item with this product.
+     *
+     * @param LineItem $item
+     *   The existing line item with options saved.
+     *
+     * @return array
+     *   A key/value array of set options.
+     */
     public function getAggregateOptions(LineItem $item) {
         return $this->aggregateOptions($item->options);
     }
@@ -107,10 +138,11 @@ class Product extends Object {
 
     public function renderCheckoutOptions() {
         $template = Template::getInstance();
+        $template->set('product', $this);
         if ($this->isAvailable()) {
-            return $template->build(['options', 'Checkout']);
+            return $template->build(['options', 'Checkout'], true);
         } else {
-            return $template->build(['unavailable', 'Checkout']);
+            return $template->build(['unavailable', 'Checkout'], true);
         }
     }
 }
