@@ -51,16 +51,7 @@ class Product extends Page {
             // Set up the meta data.
             $this->setMeta('title', $product->title);
             $this->setMeta('description', $product->description);
-            if (!empty($product->options['og-image'])) {
-                $image = $product->options['og-image'];
-            } elseif (!empty($product->options['listing-image'])) {
-                $image = $product->options['listing-image'];
-            } elseif (!empty($product->options['image'])) {
-                $image = $product->options['image'];
-            }
-            if (!empty($image)) {
-                $this->setMeta('image', $image);
-            }
+            $this->setMeta('image', $product->getImage('og-image'));
         } elseif ($category = Category::loadByURL($content_locator)) {
             // If this is a category page.
             $template->set('category', $category);
@@ -72,20 +63,11 @@ class Product extends Page {
             // Add meta data
             $this->setMeta('title', !empty($category->header_text) ? $category->header_text : $category->name);
             $this->setMeta('description', $category->description);
-            $image = '';
-            try {
-                foreach ($products as $product) {
-                    if (!empty($product->options['og-image'])) {
-                        $image = $product->options['og-image'];
-                        throw new \Exception('complete');
-                    } elseif (!empty($product->options['listing-image'])) {
-                        $image = $product->options['listing-image'];
-                        throw new \Exception('complete');
-                    }
+            foreach ($products as $product) {
+                if ($image = $product->getImage('og-image')) {
+                    $this->setMeta('image', $image);
+                    break;
                 }
-            } catch (Exception $e) {}
-            if (!empty($image)) {
-                $this->setMeta('image', $image);
             }
         } else {
             Output::notFound();
