@@ -153,7 +153,8 @@ class Product extends Object {
                 // TODO: This information can be developed from this array
             }
             elseif ($handler = Configuration::get('modules.checkout.handler')) {
-                return $handler::printPlan($this->options['subscription']);
+                $connector = new $handler();
+                return $handler::printSubscription($this->options['subscription']);
             }
         }
     }
