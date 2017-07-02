@@ -55,6 +55,8 @@ class Product extends Page {
                 $image = $product->options['og-image'];
             } elseif (!empty($product->options['listing-image'])) {
                 $image = $product->options['listing-image'];
+            } elseif (!empty($product->options['image'])) {
+                $image = $product->options['image'];
             }
             if (!empty($image)) {
                 $this->setMeta('image', $image);
