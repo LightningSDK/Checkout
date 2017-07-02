@@ -4,6 +4,7 @@ namespace Modules\Checkout\Model;
 
 use Exception;
 use Lightning\Model\Object;
+use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
 use Lightning\Tools\Template;
 
@@ -143,6 +144,17 @@ class Product extends Object {
             return $template->build(['options', 'Checkout'], true);
         } else {
             return $template->build(['unavailable', 'Checkout'], true);
+        }
+    }
+
+    public function printTotalAmount() {
+        if (!empty($this->options['subscription'])) {
+            if (is_array($this->options['subscription'])) {
+                // TODO: This information can be developed from this array
+            }
+            elseif ($handler = Configuration::get('modules.checkout.handler')) {
+                return $handler::printPlan($this->options['subscription']);
+            }
         }
     }
 }

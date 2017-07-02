@@ -30,6 +30,7 @@
         },
 
         click: function(event) {
+            lightning.dialog.showLoader();
             var button = $(event.target);
             var product_id = button.data('checkout-product-id');
             var purchase_options = {};
@@ -416,6 +417,7 @@
         pay: function(options, callback) {
             var paymentHandler = lightning.get('modules.checkout.handler');
             if (paymentHandler) {
+                lightning.dialog.showLoader();
                 var handler = lightning.getMethodReference(paymentHandler);
                 handler(options, callback);
             } else {
