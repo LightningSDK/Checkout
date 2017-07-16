@@ -51,6 +51,9 @@ class Product extends Object {
         try {
             $options = $this->options;
             array_walk_recursive($options, function($val, $key) use (&$image, $type) {
+                if (empty($key)) {
+                    return;
+                }
                 switch ($key) {
                     case 'og-image':
                     case 'image':
