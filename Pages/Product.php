@@ -32,8 +32,6 @@ class Product extends Page {
 
             if (!empty($product->options['options_popup_template'])) {
                 $template->set('fields_template', $product->options['options_popup_template']);
-            } else {
-                $template->set('fields_template', ['default_options_layout', 'Checkout']);
             }
 
             if (!empty($product->options['product_template'])) {
