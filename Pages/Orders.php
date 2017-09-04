@@ -83,6 +83,15 @@ class Orders extends Table {
         };
 
         $this->action_fields = [
+            'Cancel' => [
+                'type' => 'action',
+                'action' => 'cancel',
+                'display_name' => 'Cancel',
+                'display_value' => '<img src="/images/checkout/cancel.png" border="0">',
+                'condition' => function(&$row) {
+                    return empty($row['shipped']);
+                }
+            ],
             'Ship' => [
                 'type' => 'action',
                 'action' => 'ship',
@@ -158,6 +167,21 @@ class Orders extends Table {
             Navigation::redirect($handler::FULFILLMENT_URL, ['id' => $this->id, 'return' => 'fulfill']);
         } else {
             Output::error('Fulfillment handler not found.');
+        }
+    }
+
+    public function getCancel() {
+        $order = Order::loadByID($this->id);
+    }
+
+    public function getCancelConfirm() {
+        $order = Order::loadByID($this->id);
+
+        // Cancel order
+        $order->status = Order::STATUS_CANCELED;
+
+        if (Request::get('refund', Request::TYPE_BOOLEAN)) {
+            $order->refund();
         }
     }
 }
