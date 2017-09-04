@@ -55,7 +55,7 @@ class Product extends Page {
             $template->set('category', $category);
             // TODO: Add pagination
             $this->page[0] = 'category';
-            $products = ProductModel::loadAll(['category_id' => $category->id]);
+            $products = ProductModel::loadAll(['category_id' => $category->id, 'active' => 1]);
             $template->set('products', $products);
 
             // Add meta data
