@@ -30,7 +30,6 @@
         },
 
         click: function(event) {
-            lightning.dialog.showLoader();
             var button = $(event.target);
             var product_id = button.data('checkout-product-id');
             var purchase_options = {};
@@ -45,8 +44,12 @@
                     form.find('input,select,textarea').each(function(index, item){
                         line_item_options[item.name] = item.value;
                     });
+                } else {
+                    return;
                 }
             }
+
+            lightning.dialog.showLoader();
 
             if (button.data('checkout') === 'add-to-cart') {
                 // Attempt to add the item to the cart.
