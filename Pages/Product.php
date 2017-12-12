@@ -51,6 +51,7 @@ class Product extends Page {
             $this->setMeta('description', $product->description);
             $this->setMeta('image', $product->getImage('og-image'));
         } elseif ($category = Category::loadByURL($content_locator)) {
+            $this->rightColumn = false;
             // If this is a category page.
             $template->set('category', $category);
             // TODO: Add pagination
