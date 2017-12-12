@@ -342,7 +342,7 @@ class OrderOverridable extends Object {
                 $required_handlers[] = $handler;
             }
         }
-        return $required_handlers;
+        return array_unique($required_handlers);
     }
 
     /**

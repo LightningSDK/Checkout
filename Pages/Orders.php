@@ -139,6 +139,11 @@ class Orders extends Table {
         parent::get();
     }
 
+    /**
+     * Load the shipping fulfilment page.
+     *
+     * @throws Exception
+     */
     public function getShip() {
         $order = Order::loadByID($this->id);
         $handlers = $order->getRequiredFulfillmentHandlers();

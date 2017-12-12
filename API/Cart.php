@@ -115,6 +115,13 @@ class Cart extends API {
         ];
     }
 
+    /**
+     * Add an item to the cart.
+     *
+     * @return array
+     * 
+     * @throws Exception
+     */
     public function postAddToCart() {
         $cart = Order::loadOrCreateBySession();
         $product_id = Request::post('product_id', Request::TYPE_INT);
@@ -146,6 +153,13 @@ class Cart extends API {
         return $this->get();
     }
 
+    /**
+     * Change the quantity of a single item.
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
     public function postSetQty() {
         $cart = Order::loadBySession();
         if (empty($cart)) {
@@ -156,10 +170,21 @@ class Cart extends API {
         if (!$cart->hasItem($order_item_id)) {
             throw new Exception('Could not change the quantity.');
         }
-        $cart->setItemQty($order_item_id, $qty);
+        if ($qty == 0) {
+            $cart->removeItem($order_item_id);
+        } else {
+            $cart->setItemQty($order_item_id, $qty);
+        }
         return $this->get();
     }
 
+    /**
+     * Set the quantity of multiple items.
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
     public function postSetQtys() {
         $cart = Order::loadBySession();
         if (empty($cart)) {
@@ -175,6 +200,13 @@ class Cart extends API {
         return $this->get();
     }
 
+    /**
+     * Remove a single item from a cart.
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
     public function postRemoveItem() {
         $cart = Order::loadBySession();
         if (empty($cart)) {
@@ -188,6 +220,13 @@ class Cart extends API {
         }
     }
 
+    /**
+     * Add a coupon code to the cart.
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
     public function postAddDiscount() {
         $cart = Order::loadBySession();
         if ($discount = Discount::loadByCode(Request::post('discount'))) {
