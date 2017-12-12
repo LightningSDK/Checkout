@@ -521,7 +521,7 @@
                     content += '<tr class="small-description"><td colspan="4">' + description + '</td></tr>';
 
                     content += '<tr class="checkout-item" data-product-id="' + data.items[i].product_id + '" data-order-item-id="' + data.items[i].checkout_order_item_id + '">';
-                    content += '<td class="remove"><img src="/images/lightning/remove2.png"></td>';
+                    content += '<td class="remove"><img src="/images/lightning/remove2.png" title="Remove" /></td>';
                     content += '<td class="qty"><input name="checkout-qty" class="checkout-qty" value="' + data.items[i].qty + '" size="4"></td>';
                     content += '<td class="title hide-for-small">' + description + '</td>';
                     content += '<td class="amount">$' + parseFloat(data.items[i].price).toFixed(2) + '</td>';
