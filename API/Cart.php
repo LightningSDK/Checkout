@@ -84,6 +84,13 @@ class Cart extends API {
         ];
     }
 
+    /**
+     * Handles immediate payment for a product or subscription.
+     *
+     * @return array|int
+     *
+     * @throws Exception
+     */
     public function postPayNow() {
         $item_id = Request::post('product_id', Request::TYPE_INT);
         $qty = Request::post('qty', Request::TYPE_INT);
@@ -119,7 +126,7 @@ class Cart extends API {
      * Add an item to the cart.
      *
      * @return array
-     * 
+     *
      * @throws Exception
      */
     public function postAddToCart() {

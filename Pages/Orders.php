@@ -100,6 +100,15 @@ class Orders extends Table {
                 'condition' => function(&$row) {
                     return empty($row['shipped']);
                 }
+            ],
+            'Mark Fulfilled' => [
+                'type' => 'action',
+                'action' => 'mark_shipped',
+                'display_name' => 'Mark Fulfilled',
+                'display_value' => '<img src="/images/checkout/shipped.png" border="0">',
+                'condition' => function(&$row) {
+                    return empty($row['shipped']);
+                }
             ]
         ];
     }
@@ -173,6 +182,25 @@ class Orders extends Table {
         } else {
             Output::error('Fulfillment handler not found.');
         }
+    }
+
+    public function getMarkShipped() {
+        $order = Order::loadByID($this->id);
+
+        if (empty($order)) {
+            Output::error('Invalid order ID');
+        }
+
+        $template = Template::getInstance();
+        $template->set('order_id', $order->id);
+        $this->page = ['confirm_mark_shipped', 'Checkout'];
+    }
+
+    public function postMarkShipped() {
+        $order = Order::loadByID($this->id);
+        $order->markFulfilled(true);
+        $order->save();
+        Navigation::redirect();
     }
 
     public function getCancel() {

@@ -15,6 +15,14 @@ class Products extends Table {
             'type' => 'json',
             'unlisted' => true,
         ],
+        'category_id' => [
+            'type' => 'lookup',
+            'lookuptable' => 'checkout_category',
+            'lookupkey' => 'category_id',
+            'display_column' => 'name',
+            'display_name' => 'Category',
+            'allow_blank' => true,
+        ],
         'shipping_address' => 'checkbox',
         'description' => [
             'type' => 'html',
