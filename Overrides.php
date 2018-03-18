@@ -7,3 +7,4 @@
 namespace Modules\Checkout\Model;
 
 class Order extends \Modules\Checkout\Model\OrderOverridable {}
+class Product extends \Modules\Checkout\Model\ProductOverridable {}
