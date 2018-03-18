@@ -9,6 +9,7 @@ return [
         'static' => [
             'admin/orders' => 'Modules\\Checkout\\Pages\\Orders',
             'admin/products' => 'Modules\\Checkout\\Pages\\Products',
+            'store/embed' => 'Modules\\Checkout\\Pages\\ProductWidget',
             'api/cart' => 'Modules\\Checkout\\API\\Cart',
         ],
         'dynamic' => [
