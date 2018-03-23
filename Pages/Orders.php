@@ -79,7 +79,9 @@ class Orders extends Table {
         ];
         $this->preset['contents']['display_value'] = function(&$row) {
             $order = Order::loadByID($row['order_id']);
-            return $order->formatContents();
+            return $order->formatContents([
+                'links' => true,
+            ]);
         };
 
         $this->action_fields = [
