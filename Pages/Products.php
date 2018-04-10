@@ -10,6 +10,9 @@ class Products extends Table {
     const TABLE = 'checkout_product';
     const PRIMARY_KEY = 'product_id';
 
+    protected $sort = ['product_id' => 'DESC'];
+    protected $duplicatable = true;
+
     protected $preset = [
         'options' => [
             'type' => 'json',

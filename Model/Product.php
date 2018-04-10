@@ -14,6 +14,7 @@ class ProductOverridable extends Object {
     const PRIMARY_KEY = 'product_id';
 
     protected $__json_encoded_fields = ['options' => ['type' => 'array']];
+    protected $categoryObj;
 
     public static function loadByURL($url) {
         $data = Database::getInstance()->selectRow(self::TABLE, ['url' => ['LIKE', $url]]);
@@ -22,6 +23,25 @@ class ProductOverridable extends Object {
         } else {
             return null;
         }
+    }
+
+    public static function getSitemapUrls() {
+        $urls = [];
+
+        // Load the pages.
+        $web_root = Configuration::get('web_root');
+        $products = static::loadAll(['active' => 1]);
+
+        foreach($products as $p) {
+            $urls[] = [
+                'loc' => $web_root . "/store/{$p->url}",
+                'lastmod' => date('Y-m-d', time()),
+                'changefreq' => 'monthly',
+                'priority' => 90 / 100,
+            ];
+        }
+
+        return $urls;
     }
 
     public function optionsSatisfied($options) {
@@ -34,6 +54,32 @@ class ProductOverridable extends Object {
         }
 
         return true;
+    }
+
+    public function getBreadcrumbs() {
+        if (!empty($this->options['breadcrumbs'])) {
+            $breadcrumbs = $this->options['breadcrumbs'];
+        } else {
+            $cat = $this->getCategory();
+            if (!empty($cat)) {
+                $breadcrumbs = $this->getCategory()->getBreadcrumbs(false);
+            }
+        }
+        $breadcrumbs['#current'] = $this->title;
+        return $breadcrumbs;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCategory() {
+        if (!empty($this->categoryObj)) {
+            return $this->categoryObj;
+        }
+        if (!empty($this->category)) {
+            return Category::loadByID($this->category);
+        }
+        return null;
     }
 
     public function getPopupOptionsForm() {

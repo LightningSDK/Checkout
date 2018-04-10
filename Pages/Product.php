@@ -50,13 +50,19 @@ class Product extends Page {
             $this->setMeta('title', $product->title);
             $this->setMeta('description', $product->description);
             $this->setMeta('image', $product->getImage('og-image'));
+
+            $template->set('breadcrumbs', $product->getBreadcrumbs());
+
         } elseif ($category = Category::loadByURL($content_locator)) {
             $this->rightColumn = false;
             // If this is a category page.
             $template->set('category', $category);
             // TODO: Add pagination
             $this->page[0] = 'category';
-            $products = ProductModel::loadAll(['category_id' => $category->id, 'active' => 1]);
+            $products = ProductModel::loadAll([
+                'category_id' => $category->id,
+                'active' => 1,
+            ]);
             $template->set('products', $products);
 
             // Add meta data
@@ -68,6 +74,9 @@ class Product extends Page {
                     break;
                 }
             }
+
+            // Setup breadcrumbs:
+            $template->set('breadcrumbs', $category->getBreadcrumbs());
         } else {
             Output::notFound();
         }

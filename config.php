@@ -32,6 +32,10 @@ return [
         'checkout' => [
             'init_view' => 'Modules\\Checkout\\View\\Checkout::init',
         ]
+    ],
+    'sitemap' => [
+        'checkout_products' => 'Modules\\Checkout\\Model\\Category',
+        'checkout_categories' => 'Modules\\Checkout\\Model\\Product',
     ]
     // TODO: add login update session_id => user_id or cart
 ];
