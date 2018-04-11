@@ -19,7 +19,7 @@ class ProductWidget extends Widget {
     }
 
     protected function getProducts() {
-        $products = Request::get('products', Request::TYPE_ARRAY, Request::TYPE_INT);
+        $products = Request::get('products', Request::TYPE_EXPLODE, Request::TYPE_INT);
 
         if (!empty($products)) {
             $products = ProductModel::loadAll(['product_id' => ['IN', $products], 'active' => 1], [], 'ORDER BY RAND()');
