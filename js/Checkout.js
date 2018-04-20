@@ -166,6 +166,8 @@
             var optionsFields = $('.options-fields');
             self.updateOptionsForm(null, self.popupOptions, optionsFields);
             var imgContainer = $('.options-image');
+
+            // If there is an image selected by the options:
             if (self.popupImg) {
                 // Make sure the main display image exists.
                 var img = imgContainer.find('.preview-image img');
@@ -212,6 +214,12 @@
             $('.price', optionsFields).html('$' + parseFloat(self.basePrice).toFixed(2));
         },
 
+        /**
+         * Handles changing the selected image when multiple are available.
+         *
+         * @param e
+         *   The event
+         */
         selectImage: function (e) {
             var image = $(e.target);
             $('.options-image .selection img').removeClass('active');
@@ -256,6 +264,7 @@
                     has_label = false;
                 }
                 var field_name = i.replace(/[^a-z0-9-_]/i, '');
+                var display_name = options.options[i].hasOwnProperty('display_name') ? options.options[i].display_name : i;
                 var previousValue = null;
 
                 // Make sure a wrapper exists
@@ -287,7 +296,7 @@
                         input = $('<input name="' + i + '" id="option-' + field_name + '">');
                         // Set the previous value.
                         input.val(previousValue);
-                        container.append('<label>' + i + '</label>').append(input);
+                        container.append('<label>' + display_name + '</label>').append(input);
                         break;
                     case 'select':
                         input = $('<select name="' + i + '" id="option-' + field_name + '">');
@@ -300,7 +309,7 @@
                         } else {
                             input.val(input.children().first().prop('value'));
                         }
-                        container.append(input);
+                        container.append('<label>' + display_name + '</label>').append(input);
                         break;
                 }
 

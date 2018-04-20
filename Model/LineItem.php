@@ -112,6 +112,12 @@ class LineItem extends Object {
     public function getAggregateOption($option, $default = null) {
         $this->loadProduct();
         $aggregate_options = $this->product->getAggregateOptions($this);
-        return !empty($aggregate_options[$option]) ? $aggregate_options[$option] : $default;
+        if (!empty($aggregate_options[$option])) {
+            return $aggregate_options[$option];
+        } elseif (!empty($this->product->$option)) {
+            return $this->product->$option;
+        } else {
+            return $default;
+        }
     }
 }

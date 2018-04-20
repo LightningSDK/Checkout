@@ -147,8 +147,8 @@ class OrderOverridable extends Object {
         $flat_shipping = 0;
         $biggest_flat_diff = 0;
         foreach ($this->items as $key => $item) {
-            $flat_shipping += $item->qty * $item->getProduct()->flat_shipping_more;
-            $biggest_flat_diff = max($biggest_flat_diff, $item->getProduct()->flat_shipping - $item->getProduct()->flat_shipping_more);
+            $flat_shipping += $item->qty * $item->getAggregateOption('flat_shipping_more');
+            $biggest_flat_diff = max($biggest_flat_diff, $item->getAggregateOption('flat_shipping') - $item->getAggregateOption('flat_shipping_more'));
         }
         return $flat_shipping + $biggest_flat_diff;
     }
