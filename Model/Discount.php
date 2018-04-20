@@ -25,19 +25,36 @@ class Discount extends Object {
      * @return float
      */
     public function getAmount($order) {
+        // Has the minimum subtotal been met?
         if (!empty($this->discounts->minimum) && $order->getSubTotal() < $this->discounts->minimum) {
+            // If not, there is no discount.
             return 0;
         }
 
         $discount = 0;
 
+        // If this is a percentage discount, set it.
         if (!empty($this->discounts->percent)) {
             $discount = $this->discounts->percent * $order->getSubTotal() / 100;
         }
 
+        // If this is a flat discount, set it.
         elseif (!empty($this->discounts->amount)) {
             $discount = $this->discounts->amount;
         }
+
+        // If this is a shipping discount, add it.
+        elseif (!empty($this->discounts->shippingPercent)) {
+            $discount = $this->discounts->shippingPercent * $order->getShipping() / 100;
+        }
+
+        // If this is a shipping discount, add it.
+        elseif (!empty($this->discounts->shippingPercent)) {
+            $discount = min($this->discounts->shippingAmount, $order->getShipping());
+        }
+
+        // Make sure the discount does not exceed the maximum value.
+        $discount = min($discount, $this->discounts->maximum);
 
         return number_format(-$discount, 2);
     }
