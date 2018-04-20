@@ -76,8 +76,8 @@ class ProductOverridable extends Object {
         if (!empty($this->categoryObj)) {
             return $this->categoryObj;
         }
-        if (!empty($this->category)) {
-            return Category::loadByID($this->category);
+        if (!empty($this->category_id)) {
+            return Category::loadByID($this->category_id);
         }
         return null;
     }
