@@ -115,12 +115,12 @@ class OrderOverridable extends Object {
      *
      * @return string
      */
-    public function formatContents($options = []) {
+    public function formatContents($formatOptions = []) {
         $contents = '<table width="100%"><tr><td>Qty</td><td>Item</td><td align="right">Amount</td><td align="right">Total</td></tr>';
         $this->loadItems();
         foreach ($this->items as $item) {
             $contents .= '<tr><td>' . $item->qty . '</td>';
-            if (!empty($options['links'])) {
+            if (!empty($formatOptions['links'])) {
                 $title = '<a href="/store/' . $item->getProduct()->url . '">' . $item->getProduct()->title . '</a>';
             } else {
                 $title = $item->getProduct()->title;
