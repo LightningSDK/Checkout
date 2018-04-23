@@ -516,6 +516,7 @@
             var data = self.contents;
             var content = '', description = '';
             if (data.items && data.items.length > 0) {
+                // TODO: This would be easier with something like angular.
                 content += '<table class="checkout-cart">';
                 content += '<tr><td></td><td class="qty">Qty</td><td class="hide-for-small">Item</td><td class="amount">Amount</td><td class="item-total">Total</td></tr>'
                 for (var i in data.items) {
