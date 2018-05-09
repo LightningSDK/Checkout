@@ -13,6 +13,12 @@ use Modules\Checkout\Model\Order;
 use Modules\Checkout\Model\Product;
 
 class Cart extends API {
+
+    public function __construct() {
+        parent::__construct();
+        Output::setJsonCookies(true);
+    }
+
     /**
      * Get the cart contents.
      */
@@ -68,7 +74,10 @@ class Cart extends API {
         return $output_items;
     }
 
-
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function getProduct() {
         $product_id = Request::get('product_id', Request::TYPE_INT);
         if (empty($product_id)) {

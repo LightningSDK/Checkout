@@ -7,7 +7,6 @@ use Lightning\Pages\Page;
 use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\Tools\Template;
-use Lightning\View\CSS;
 use Lightning\View\JS;
 use Modules\Checkout\Model\Category;
 use Modules\Checkout\Model\Product as ProductModel;
@@ -18,7 +17,6 @@ class Product extends Page {
     protected $page = ['product_wrapper', 'Checkout'];
 
     public function get() {
-        CSS::add('/css/modules.css');
         $content_locator = Request::getFromURL('/store\/(.*)/');
 
         if (empty($content_locator)) {
@@ -41,7 +39,7 @@ class Product extends Page {
             }
 
             // Init the checkout methods
-            JS::startup('lightning.modules.checkout.init();', ['Checkout' => 'Checkout.js']);
+            Checkout::init();
             JS::startup('lightning.modules.checkout.initProductOptions(' . json_encode(['options' => $product->options, 'base_price' => $product->price]) . ');', ['Checkout' => 'Checkout.js']);
 
             Checkout::init();

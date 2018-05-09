@@ -11,6 +11,8 @@ return [
             'admin/products' => 'Modules\\Checkout\\Pages\\Products',
             'store/embed' => 'Modules\\Checkout\\Pages\\ProductWidget',
             'api/cart' => 'Modules\\Checkout\\API\\Cart',
+            'store/checkout' => 'Modules\\Checkout\\Pages\\Checkout',
+            'feeds/products' => 'Modules\\Checkout\\Feeds\\Products',
         ],
         'dynamic' => [
             'store/.*' => 'Modules\\Checkout\\Pages\\Product',

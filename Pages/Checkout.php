@@ -1,12 +1,15 @@
 <?php
 
-namespace Source\Modules\Checkout\Pages;
+namespace Modules\Checkout\Pages;
 
+use Exception;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Navigation;
 use Lightning\Tools\Request;
-use Lightning\Tools\Session\DBSession;
+use Lightning\Tools\Template;
+use Lightning\View\JS;
 use Lightning\View\Page;
+use Modules\Checkout\Model\Address;
 use Modules\Checkout\Model\Order;
 
 class Checkout extends Page {
@@ -34,34 +37,93 @@ class Checkout extends Page {
 
     protected $page = ['checkout/empty', 'Checkout'];
 
+    protected $rightColumn = false;
+    protected $share = false;
+
+    public function hasAccess() {
+        return true;
+    }
+
     public function get() {
+        \Modules\Checkout\View\Checkout::init();
         $nextPage = $this->nextRequiredPage();
         $this->page[0] = 'checkout/' . $nextPage;
-        switch($nextPage) {
-            case self::PAGE_EMPTY:
-                break;
-            case self::PAGE_CART:
-                break;
-            case self::PAGE_SHIPPING:
-                break;
+
+        $template = Template::getInstance();
+        JS::set('modules.checkout.hideCartModal', true);
+
+        switch ($nextPage) {
             case self::PAGE_PAYMENT_OPTIONS:
+                $handlers = \Modules\Checkout\View\Checkout::getHandlers();
+                $template->set('handlers', $handlers);
                 break;
             case self::PAGE_PAYMENT:
-                break;
-            case self::PAGE_CONFIRMATION:
+                JS::set('modules.checkout.total', $this->order->getTotal());
+                // TODO: This should be configurable.
+                JS::set('modules.checkout.currency', 'USD');
+                $handlerId = Request::get('gateway');
+                $handler = \Modules\Checkout\View\Checkout::getHandler($handlerId);
+                $handler->init();
+
+                $this->page = $handler->getPage($this->order);
                 break;
         }
+
+        $template->set('cart', $this->order);
     }
 
     public function postShipping() {
         // TODO: post shipping here
+        $name = Request::post('name');
+        $street = Request::post('street');
+        $street2 = Request::post('street2');
+        $city = Request::post('city');
+        $state = Request::post('state');
+        $zip = Request::post('zip');
+        $country = Request::post('country');
 
-        Navigation::redirect('/checkout?page=' . self::PAGE_PAYMENT);
+        $address = new Address([
+            'name' => $name,
+            'street' => $street,
+            'street2' => $street2,
+            'city' => $city,
+            'state' => $state,
+            'zip' => $zip,
+            'country' => $country,
+        ]);
+
+        $address->save();
+        $order = Order::loadBySession();
+
+        $order->shipping_address = $address->id;
+        $order->save();
+
+        Navigation::redirect('/store/checkout?page=' . self::PAGE_PAYMENT);
     }
 
+    /**
+     * @return string
+     *
+     * @throws Exception
+     */
     protected function nextRequiredPage() {
-        $requestedPage = Request::get('page') ?: $this->nextRequiredPage();
+        $requestedPage = Request::get('page');
+
+        // If this is an order confirmation page:
+        if ($requestedPage === self::PAGE_CONFIRMATION) {
+            $id = Request::get('id', Request::TYPE_INT);
+            $order = Order::loadBySession($id, true);
+            if (!empty($order->id)) {
+                $this->order = $order;
+                return self::PAGE_CONFIRMATION;
+            }
+            throw new Exception('Invalid order ID');
+        }
+
         $this->order = Order::loadBySession();
+        if (empty($this->order)) {
+            throw new Exception('Your cart is empty');
+        }
 
         // If the order is empty, show the empty order page.
         if (count($this->order->getItems()) == 0) {
@@ -69,7 +131,10 @@ class Checkout extends Page {
         }
 
         // Shipping page
-        if (($requestedPage === self::PAGE_CHECKOUT || $requestedPage === self::PAGE_SHIPPING) && ($this->order->requiresShippingAddress())) {
+        if ((
+            $requestedPage === self::PAGE_CHECKOUT
+            || $requestedPage === self::PAGE_SHIPPING
+        ) && ($this->order->requiresShippingAddress())) {
             return self::PAGE_SHIPPING;
         }
 
@@ -87,15 +152,6 @@ class Checkout extends Page {
             } else {
                 $this->paymentHandler = current($paymentHandlers);
                 return self::PAGE_PAYMENT;
-            }
-        }
-
-        if ($requestedPage === self::PAGE_CONFIRMATION) {
-            $id = Request::get('id', Request::TYPE_INT);
-            $order = Order::loadBySession($id);
-            if (!empty($order->id)) {
-                $this->order = $order;
-                return self::PAGE_CONFIRMATION;
             }
         }
 

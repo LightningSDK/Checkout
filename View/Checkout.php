@@ -2,7 +2,9 @@
 
 namespace Modules\Checkout\View;
 
+use Exception;
 use Lightning\Tools\Configuration;
+use Lightning\View\CSS;
 use Lightning\View\HTML;
 use Lightning\View\JS;
 use Modules\Checkout\Model\Product;
@@ -15,10 +17,46 @@ class Checkout {
         JS::set('modules.checkout.ach', Configuration::get('modules.checkout.ach', false));
         JS::set('modules.checkout.enable_discounts', Configuration::get('modules.checkout.enable_discounts', false));
 
+        CSS::add('/css/modules.css');
+
+
         // Init the payment handler for the page.
         $payment_handler = Configuration::get('modules.checkout.handler');
         if (!empty($payment_handler)) {
             call_user_func($payment_handler . '::init');
+        }
+    }
+
+    public static function getHandlers() {
+        $settings = Configuration::get('modules.checkout.handlers');
+        $handlers = [];
+
+        if (is_string($settings)) {
+            $handlers[] = self::loadHandler($settings);
+        } elseif (is_array($settings)) {
+            foreach ($settings as $setting) {
+                $handlers[] = self::loadHandler($setting);
+            }
+        }
+
+        return $handlers;
+    }
+
+    public static function getHandler($id = null) {
+        $settings = Configuration::get('modules.checkout.handlers');
+        if (is_string($settings) && $id === null) {
+            return self::loadHandler($settings);
+        } else if (!empty($settings[$id])) {
+            return self::loadHandler($settings[$id]);
+        }
+        throw new Exception('Payment handler not found');
+    }
+
+    protected static function loadHandler($setting) {
+        if (is_string($setting)) {
+            return new $setting();
+        } elseif (!empty($setting['connector'])) {
+            return new $setting['connector']();
         }
     }
 

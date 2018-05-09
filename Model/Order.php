@@ -6,8 +6,11 @@ use Lightning\Model\Object;
 use Lightning\Model\User;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
-use Lightning\Tools\Session;
-use Lightning\View\HTMLEditor\Markup;
+use Lightning\Tools\Mailer;
+use Lightning\Tools\Messenger;
+use Lightning\Tools\Request;
+use Lightning\Tools\Session\BrowserSession;
+use Lightning\Tools\Session\DBSession;
 use Lightning\Tools\ClientUser;
 
 /**
@@ -61,12 +64,12 @@ class OrderOverridable extends Object {
     /**
      * @return Order
      */
-    public static function loadBySession($order_id = null) {
+    public static function loadBySession($order_id = null, $locked = false) {
         // TODO: Check if there are multiple orders without payments, and merge them
         // (user_id and session_id)
         $criteria = [
-            'session_id' => Session::getInstance()->id,
-            'locked' => 0,
+            'session_id' => DBSession::getInstance()->id,
+            'locked' => $locked ? 1 : 0,
         ];
         if (!empty($order_id)) {
             $criteria['order_id'] = $order_id;
@@ -88,8 +91,9 @@ class OrderOverridable extends Object {
         } else {
             $data = [
                 'user_id' => ClientUser::getInstance()->id,
-                'session_id' => Session::getInstance()->id,
+                'session_id' => DBSession::getInstance()->id,
                 'time' => time(),
+                'referrer' => BrowserSession::getInstance()->referrer,
             ];
             $data['order_id'] = Database::getInstance()->insert(static::TABLE, $data);
             return new static($data);
@@ -103,6 +107,9 @@ class OrderOverridable extends Object {
         return $this->shippingAddress;
     }
 
+    /**
+     * @return User
+     */
     public function getUser() {
         if (empty($this->user)) {
             $this->user = User::loadById($this->user_id);;
@@ -246,6 +253,21 @@ class OrderOverridable extends Object {
         }
     }
 
+    /**
+     * Check if there are any subscription items in this order.
+     *
+     * @return bool
+     */
+    public function hasSubscription() {
+        foreach ($this->items as $item) {
+            if ($item->getProduct()->isSubscription()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function setItemQty($order_item_id, $qty) {
         $this->loadItems();
         return Database::getInstance()->update('checkout_order_item', [
@@ -321,6 +343,39 @@ class OrderOverridable extends Object {
         }
 
         return $payment;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function sendNotifications() {
+        // Set Meta Data for email.
+        $mailer = new Mailer();
+        $mailer->setCustomVariable('META', $this->meta);
+        if ($address = $this->getShippingAddress()) {
+            $mailer->setCustomVariable('SHIPPING_ADDRESS_BLOCK', $address->getHTMLFormatted());
+        }
+
+        $mailer->setCustomVariable('ORDER_DETAILS', $this->formatContents());
+
+        // Send emails.
+        /** @var LineItem $item */
+        foreach ($this->getItems() as $item) {
+            $options = $item->getProduct()->getAggregateOptions($item);
+            if (!empty($options['customer_email'])) {
+                $mailer->sendOne($options['customer_email'], $this->getUser());
+                break;
+            }
+        }
+
+        if ($buyer_email = Configuration::get('modules.checkout.buyer_email')) {
+            $mailer->sendOne($buyer_email, $this->getUser());
+        }
+        if ($seller_email = Configuration::get('modules.checkout.seller_email')) {
+            $mailer->sendOne($seller_email, Configuration::get('contact.to')[0]);
+        }
+
+        Messenger::message('Your order has been processed!');
     }
 
     /**

@@ -25,6 +25,7 @@ class Order extends Schema {
             'details' => $this->text(),
             'gateway_id' => $this->varchar(128),
             'discounts' => $this->varchar(255),
+            'referrer' => $this->int(true),
         ];
     }
 

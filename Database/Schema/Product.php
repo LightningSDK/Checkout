@@ -19,6 +19,7 @@ class Product extends Schema {
             'options' => $this->text(),
             'description' => $this->text(),
             'title' => $this->varchar(128),
+            'sku' => $this->varchar(45),
             'url' => $this->varchar(64),
             'qty' => $this->int(),
             'active' => $this->int(true, Schema::TINYINT),

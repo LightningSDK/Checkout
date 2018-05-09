@@ -439,54 +439,48 @@
         },
 
         payCart: function() {
-            self.pay({
-                amount: self.contents.total,
-                cart_id: self.contents.id,
-                shipping_address: self.contents.shipping_address,
-            }, function(){
-                self.cartIcon.find('.item-count').html(0);
-                self.cartIcon.removeClass('show');
-                lightning.tracker.track(lightning.tracker.events.purchase, {
-                    value: self.contents.total
-                });
-            });
+            window.location = '/store/checkout?page=checkout';
         },
 
         updateCart: function(data) {
-            // Update the cart contents.
-            self.contents = data;
-            self.contents.total
-                = self.contents.subtotal
-                + self.contents.shipping
-                + self.contents.tax
-                + self.contents.discounts.total;
+            if (!lightning.get('modules.checkout.hideCartModal')) {
+                // Update the cart contents.
+                self.contents = data;
+                self.contents.total
+                    = self.contents.subtotal
+                    + self.contents.shipping
+                    + self.contents.tax
+                    + self.contents.discounts.total;
 
-            if (self.contents.items.length > 0) {
-                // If there are items in the cart, show the cart button.
-                if (!self.cartIcon) {
-                    // Create the cart icon.
-                    self.initIcon();
-                }
-                self.cartIcon.find('.item-count').html(self.contents.items.length);
-                self.cartIcon.addClass('show');
-            } else {
-                // If the cart is empty, hide the cart button.
-                if (self.cartIcon) {
-                    self.cartIcon.find('.item-count').html(0);
-                    self.cartIcon.removeClass('show');
+                if (self.contents.items.length > 0) {
+                    // If there are items in the cart, show the cart button.
+                    if (!self.cartIcon) {
+                        // Create the cart icon.
+                        self.initIcon();
+                    }
+                    self.cartIcon.find('.item-count').html(self.contents.items.length);
+                    self.cartIcon.addClass('show');
+                } else {
+                    // If the cart is empty, hide the cart button.
+                    if (self.cartIcon) {
+                        self.cartIcon.find('.item-count').html(0);
+                        self.cartIcon.removeClass('show');
+                    }
                 }
             }
         },
 
         initIcon: function() {
-            var icon = $('<div id="checkout-side-icon"><div class="container"><i class="fa fa-shopping-cart"></i><div class="item-count">' + self.contents.items.length + '</div></div></div>');
-            icon.appendTo('body');
-            self.cartIcon = $('#checkout-side-icon')
-                .addClass('show')
-                .click(function(){
-                    lightning.dialog.clear();
-                    self.showCart();
-                });
+            if (!lightning.get('modules.checkout.hideCartModal')) {
+                var icon = $('<div id="checkout-side-icon"><div class="container"><i class="fa fa-shopping-cart"></i><div class="item-count">' + self.contents.items.length + '</div></div></div>');
+                icon.appendTo('body');
+                self.cartIcon = $('#checkout-side-icon')
+                    .addClass('show')
+                    .click(function(){
+                        lightning.dialog.clear();
+                        self.showCart();
+                    });
+            }
         },
 
         addDiscount: function(discount) {

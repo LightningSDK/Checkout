@@ -7,7 +7,6 @@ use Lightning\Model\Object;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
 use Lightning\Tools\Template;
-use Lightning\View\JS;
 
 class ProductOverridable extends Object {
     const TABLE = 'checkout_product';
@@ -209,5 +208,9 @@ class ProductOverridable extends Object {
                 return $handler::printPlan($this->options['subscription']);
             }
         }
+    }
+
+    public function isSubscription() {
+        return !empty($this->options['subscription']);
     }
 }

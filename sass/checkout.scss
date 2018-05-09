@@ -107,3 +107,16 @@
     }
   }
 }
+.payment-selection {
+  .row-selector {
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 30px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .button {
+    margin: 0;
+    display: inline-block;
+  }
+}
