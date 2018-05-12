@@ -43,6 +43,17 @@ class Products extends Table {
         ]
     ];
 
+    protected $links = [
+        'product_classes' => [
+            'display_name' => 'Product Classes',
+            'key' => 'product_class_id',
+            'table' => 'checkout_product_class',
+            'index' => 'checkout_product_product_class',
+            'display_column' => 'name',
+            'list' => 'compact',
+        ],
+    ];
+
     protected $searchable = true;
     protected $search_fields = ['title'];
 

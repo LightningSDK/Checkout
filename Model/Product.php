@@ -14,6 +14,34 @@ class ProductOverridable extends Object {
 
     protected $__json_encoded_fields = ['options' => ['type' => 'array']];
     protected $categoryObj;
+    protected $compiledOptions;
+
+    public function __get($var) {
+        if ($var == 'options') {
+            // Options has a custom override
+            if ($this->compiledOptions === null) {
+                // Get the options from the classes.
+                $classes = Database::getInstance()->selectColumnQuery([
+                    'select' => 'checkout_product_class.options',
+                    'from' => 'checkout_product_product_class',
+                    'join' => [
+                        'join' => 'checkout_product_class',
+                        'using' => 'product_class_id',
+                    ],
+                    'where' => ['product_id' => $this->id]
+                ]);
+                foreach ($classes as $class_options) {
+                    $options[] = json_decode($class_options, true);
+                }
+                // Overwrite with anything specific to this product.
+                $options[] = parent::__get('options');
+                // Save the output for multiple requests.
+                $this->compiledOptions = array_replace_recursive(...$options);
+            }
+            return $this->compiledOptions;
+        }
+        return parent::__get($var);
+    }
 
     public static function loadByURL($url) {
         $data = Database::getInstance()->selectRow(self::TABLE, ['url' => ['LIKE', $url]]);
