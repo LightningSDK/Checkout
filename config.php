@@ -13,6 +13,7 @@ return [
             'api/cart' => 'Modules\\Checkout\\API\\Cart',
             'store/checkout' => 'Modules\\Checkout\\Pages\\Checkout',
             'feeds/products' => 'Modules\\Checkout\\Feeds\\Products',
+            'affiliate/mysales' => 'Modules\\Checkout\\Pages\\AffiliateSales',
         ],
         'dynamic' => [
             'store/.*' => 'Modules\\Checkout\\Pages\\Product',

@@ -10,6 +10,7 @@ use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\Tools\Template;
 use Lightning\View\JS;
+use Lightning\View\TablePresets;
 use Modules\Checkout\Model\Order;
 use Lightning\Tools\ClientUser;
 
@@ -25,6 +26,8 @@ class Orders extends Table {
             'type' => 'json',
             'unlisted' => true,
         ],
+        'session_id' => 'hidden',
+        'status' => 'hidden',
         'time' => [
             'type' => 'datetime',
             'editable' => false,
@@ -40,11 +43,27 @@ class Orders extends Table {
             'editable' => false,
             'allow_blank' => true,
         ],
+        'shipping_address' => [
+            'editable' => false,
+        ],
+        'tax' => [
+            'editable' => false,
+        ],
+        'shipping' => [
+            'editable' => false,
+        ],
+        'total' => [
+            'editable' => false,
+        ],
+        'locked' => [
+            'type' => 'checkbox',
+        ],
         'contents' => [
             'editable' => false,
             'unlisted' => true,
         ],
         'discounts' => 'json',
+        'referrer' => [],
     ];
 
     protected $accessControl = ['locked' => 1];
@@ -73,6 +92,7 @@ class Orders extends Table {
             }
         ];
         $this->preset['email'] = [
+            'editable' => false,
             'render_list_field' => function(&$row) {
                 return $row['email'];
             }
@@ -83,6 +103,7 @@ class Orders extends Table {
                 'links' => true,
             ]);
         };
+        $this->preset['referrer'] = TablePresets::userSearch();
 
         $this->action_fields = [
             'Cancel' => [
@@ -113,6 +134,11 @@ class Orders extends Table {
                 }
             ]
         ];
+    }
+
+    protected function afterPost() {
+        $order = Order::loadByID($this->id);
+        $order->recalculateAffiliates();
     }
 
     public function getView() {

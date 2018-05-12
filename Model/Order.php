@@ -344,12 +344,65 @@ class OrderOverridable extends Object {
             $this->save();
         }
 
+        // If there are any affiliates, pay them.
+        $this->payAffiliates($payment);
+
         // If there is a user id and a mailing list ID, then subscribe the user to the list.
         if (!empty($this->user_id && $list = Configuration::get('modules.checkout.lists.any'))) {
             User::loadById($this->user_id)->subscribe($list);
         }
 
         return $payment;
+    }
+
+    public function recalculateAffiliates() {
+        Database::getInstance()->delete('checkout_affiliate_payment', ['order_id' => $this->id]);
+        $payments = Payment::loadAll(['order_id' => $this->id]);
+        foreach ($payments as $payment) {
+            $this->payAffiliates($payment);
+        }
+    }
+
+    /**
+     * @param Payment $payment
+     */
+    protected function payAffiliates($payment) {
+        if ($this->referrer > 0) {
+            $commissionScheme = Configuration::get('modules.checkout.affiliates.default_scheme');
+            $commissionPercent = Configuration::get('modules.checkout.affiliates.default_percent');
+
+            $level = 1;
+            switch ($commissionScheme) {
+                case 'net':
+                    $net = $this->getTotal() - $this->getShipping();
+                    /** @var LineItem $item */
+                    foreach ($this->getItems() as $item) {
+                        $net -= $item->getAggregateOption('cost', 0) * $item->qty;
+                    }
+                    if ($net == $this->getTotal()) {
+                        $net = 0;
+                    }
+                    $commissionAmount = $net * $commissionPercent / 100;
+                    $type = 'N';
+                    break;
+
+                case 'total':
+                    $commissionAmount = $this->getTotal() * $commissionPercent / 100;
+                    $type = 'T';
+                    break;
+            }
+            $commissionAmount = floor(100 * $commissionAmount);
+
+            $credit = new AffiliatePayment([
+                'order_id' => $this->id,
+                'payment_id' => $payment->id,
+                'user_id' => $this->user_id,
+                'affiliate_id' => $this->referrer,
+                'amount' => $commissionAmount,
+                'type' => $type . $level,
+            ]);
+            $credit->save();
+        }
     }
 
     /**
