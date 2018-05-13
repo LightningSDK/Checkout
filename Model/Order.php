@@ -99,7 +99,7 @@ class OrderOverridable extends Object {
                 'user_id' => ClientUser::getInstance()->id,
                 'session_id' => DBSession::getInstance()->id,
                 'time' => time(),
-                'referrer' => BrowserSession::getInstance()->referrer,
+                'referrer' => BrowserSession::getInstance()->referrer ?: 0,
             ];
             $order = new static($data);
             $order->save();

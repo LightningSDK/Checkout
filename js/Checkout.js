@@ -152,7 +152,7 @@
 
         initProductOptions: function(data) {
             self.popupOptions = data.options;
-            self.basePrice = data.base_price;
+            self.basePrice = parseFloat(data.base_price);
             self.updateOptionsFormRoot();
             $('.options-fields').on('change', 'input,select', self.updateOptionsFormRoot);
         },
@@ -163,6 +163,7 @@
          */
         updateOptionsFormRoot: function() {
             self.popupImg = self.popupOptions.image ? self.popupOptions.image : null;
+            self.modifiedPrice = self.basePrice;
             var optionsFields = $('.options-fields');
             self.updateOptionsForm(null, self.popupOptions, optionsFields);
             var imgContainer = $('.options-image');
@@ -211,7 +212,7 @@
             } else {
                 imgContainer.empty();
             }
-            $('.price', optionsFields).html('$' + parseFloat(self.basePrice).toFixed(2));
+            $('.price', optionsFields).html('$' + parseFloat(self.modifiedPrice).toFixed(2));
         },
 
         /**
@@ -325,7 +326,14 @@
 
                     // Override the price if present.
                     if (options.options[i].values[value].hasOwnProperty('price')) {
-                        self.basePrice = options.options[i].values[value].price;
+                        var new_price = options.options[i].values[value].price;
+                        if (new_price[0] === '+') {
+                            self.modifiedPrice += parseFloat(new_price.substr(1));
+                        } else if (new_price[0] === '-') {
+                            self.modifiedPrice -= parseFloat(new_price.substr(1));
+                        } else {
+                            self.modifiedPrice = parseFloat(options.options[i].values[value].price);
+                        }
                     }
 
                     // Override child options if present.

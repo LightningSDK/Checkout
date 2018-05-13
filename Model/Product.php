@@ -15,6 +15,7 @@ class ProductOverridable extends Object {
     protected $__json_encoded_fields = ['options' => ['type' => 'array']];
     protected $categoryObj;
     protected $compiledOptions;
+    protected $relativeValueFields = ['price', 'cost'];
 
     public function __get($var) {
         if ($var == 'options') {
@@ -148,8 +149,11 @@ class ProductOverridable extends Object {
     }
 
     public function aggregateOptions($selected_options) {
+        $options = [
+            'price' => floatval($this->price),
+        ];
         // TODO: This does not take into account options on the same level.
-        $options = $this->options;
+        $options += $this->options;
         while (!empty($options['options'])) {
             // Iterate over the options
             $child_options = $options['options'];
@@ -159,7 +163,18 @@ class ProductOverridable extends Object {
                 if (!empty($selected_options[$option_name])) {
                     $selected_value = $selected_options[$option_name];
                     if (!empty($settings['values'][$selected_value])) {
-                        $options = $settings['values'][$selected_value] + $options;
+                        $optionValues = $settings['values'][$selected_value];
+                        // If relative values are present ...
+                        foreach ($this->relativeValueFields as $field) {
+                            if (isset($optionValues[$field])) {
+                                if (substr($optionValues[$field], 0, 1) == '+') {
+                                    $optionValues[$field] = $options[$field] + floatval(substr($optionValues[$field], 1));
+                                } elseif (substr($optionValues[$field], 0, 1) == '+') {
+                                    $optionValues[$field] = $options[$field] - floatval(substr($optionValues[$field], 1));
+                                }
+                            }
+                        }
+                        $options = $optionValues + $options;
                     }
                 }
             }
