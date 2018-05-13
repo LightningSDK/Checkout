@@ -62,12 +62,14 @@ class OrderOverridable extends Object {
     protected $user;
 
     /**
+     * @param null $order_id
+     * @param bool $allowLocked
      * @return Order
      */
-    public static function loadBySession($order_id = null, $locked = false) {
+    public static function loadBySession($order_id = null, $allowLocked = false) {
         // TODO: Check if there are multiple orders without payments, and merge them
         // (user_id and session_id)
-        $criteria = self::loadBySessionCriteria($order_id, $locked);
+        $criteria = self::loadBySessionCriteria($order_id, $allowLocked);
         $data = Database::getInstance()->selectRow(static::TABLE, $criteria);
         if ($data) {
             return new static($data);
@@ -76,11 +78,11 @@ class OrderOverridable extends Object {
         }
     }
 
-    protected static function loadBySessionCriteria($order_id, $locked) {
-        $criteria = [
-            'session_id' => DBSession::getInstance()->id,
-            'locked' => $locked ? 1 : 0,
-        ];
+    protected static function loadBySessionCriteria($order_id, $allowLocked) {
+        $criteria = ['session_id' => DBSession::getInstance()->id];
+        if (empty($allowLocked)) {
+            $criteria['locked'] = 0;
+        }
         if (!empty($order_id)) {
             $criteria['order_id'] = $order_id;
         }

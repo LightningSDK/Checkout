@@ -113,7 +113,7 @@ class Checkout extends Page {
         if ($requestedPage === self::PAGE_CONFIRMATION) {
             $id = Request::get('id', Request::TYPE_INT);
             $order = Order::loadBySession($id, true);
-            if (!empty($order->id)) {
+            if (!empty($order->id) && $order->locked === "1") {
                 $this->order = $order;
                 return self::PAGE_CONFIRMATION;
             }
