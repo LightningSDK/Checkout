@@ -4,6 +4,7 @@ namespace Modules\Checkout\Pages;
 
 use Lightning\Pages\Table;
 use Lightning\Tools\ClientUser;
+use Lightning\Tools\Database;
 
 class Products extends Table {
 
@@ -56,6 +57,7 @@ class Products extends Table {
 
     protected $searchable = true;
     protected $search_fields = ['title'];
+    protected $searchWildcard = Database::WILDCARD_EITHER;
 
     public function hasAccess() {
         return ClientUser::requireAdmin();

@@ -7,22 +7,22 @@ return [
     ],
     'routes' => [
         'static' => [
-            'admin/orders' => 'Modules\\Checkout\\Pages\\Orders',
-            'admin/products' => 'Modules\\Checkout\\Pages\\Products',
-            'admin/product-classes' => 'Modules\\Checkout\\Pages\\ProductClasses',
-            'store/embed' => 'Modules\\Checkout\\Pages\\ProductWidget',
-            'api/cart' => 'Modules\\Checkout\\API\\Cart',
-            'store/checkout' => 'Modules\\Checkout\\Pages\\Checkout',
-            'feeds/products' => 'Modules\\Checkout\\Feeds\\Products',
-            'affiliate/mysales' => 'Modules\\Checkout\\Pages\\AffiliateSales',
+            'admin/orders' => \Modules\Checkout\Pages\Orders::class,
+            'admin/products' => \Modules\Checkout\Pages\Products::class,
+            'admin/product-classes' => \Modules\Checkout\Pages\ProductClasses::class,
+            'store/embed' => \Modules\Checkout\Pages\ProductWidget::class,
+            'api/cart' => \Modules\Checkout\API\Cart::class,
+            'store/checkout' => \Modules\Checkout\Pages\Checkout::class,
+            'feeds/products' => \Modules\Checkout\Feeds\Products::class,
+            'affiliate/mysales' => \Modules\Checkout\Pages\AffiliateSales::class,
         ],
         'dynamic' => [
-            'store/.*' => 'Modules\\Checkout\\Pages\\Product',
+            'store/.*' => \Modules\Checkout\Pages\Product::class,
         ],
     ],
     'markup' => [
         'renderers' => [
-            'checkout' => 'Modules\\Checkout\\View\\Checkout'
+            'checkout' => \Modules\Checkout\View\Checkout::class
         ]
     ],
     'js' => [
@@ -34,12 +34,12 @@ return [
     ],
     'modules' => [
         'checkout' => [
-            'init_view' => 'Modules\\Checkout\\View\\Checkout::init',
+            'init_view' => \Modules\Checkout\View\Checkout::class . '::init',
         ]
     ],
     'sitemap' => [
-        'checkout_products' => 'Modules\\Checkout\\Model\\Category',
-        'checkout_categories' => 'Modules\\Checkout\\Model\\Product',
+        'checkout_products' => \Modules\Checkout\Model\Category::class,
+        'checkout_categories' => \Modules\Checkout\Model\Product::class,
     ]
     // TODO: add login update session_id => user_id or cart
 ];
