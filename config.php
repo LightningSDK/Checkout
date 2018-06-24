@@ -22,7 +22,8 @@ return [
     ],
     'markup' => [
         'renderers' => [
-            'checkout' => \Modules\Checkout\View\Checkout::class
+            'checkout' => \Modules\Checkout\View\Checkout::class,
+            'checkout-product' => \Modules\Checkout\View\Product::class,
         ]
     ],
     'js' => [
