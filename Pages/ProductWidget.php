@@ -22,17 +22,7 @@ class ProductWidget extends Widget {
         $product_ids = Request::get('products', Request::TYPE_EXPLODE, Request::TYPE_INT);
 
         if (!empty($product_ids)) {
-            $products = ProductModel::loadByQuery(
-                [
-                    'where' => [
-                        'product_id' => ['IN', $product_ids],
-                        'active' => 1
-                    ],
-                    'order_by' => [
-                        'product_id' => $product_ids,
-                    ]
-                ]
-            );
+            $products = ProductModel::loadMultipleByIds($product_ids);
             return $products;
         }
 

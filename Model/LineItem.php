@@ -39,6 +39,7 @@ class LineItem extends Object {
     }
 
     public function getPrice() {
+        $this->loadProduct();
         $values = $this->product->getAggregateOptions($this);
         return !empty($values['price']) ? $values['price'] : $this->product->price;
     }

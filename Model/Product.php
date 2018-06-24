@@ -53,6 +53,20 @@ class ProductOverridable extends Object {
         }
     }
 
+    public static function loadMultipleByIds($product_ids) {
+        return self::loadByQuery(
+            [
+                'where' => [
+                    'product_id' => ['IN', $product_ids],
+                    'active' => 1
+                ],
+                'order_by' => [
+                    'product_id' => $product_ids,
+                ]
+            ]
+        );
+    }
+
     public static function getSitemapUrls() {
         $urls = [];
 

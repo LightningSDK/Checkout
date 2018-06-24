@@ -54,7 +54,9 @@ class Discount extends Object {
         }
 
         // Make sure the discount does not exceed the maximum value.
-        $discount = min($discount, $this->discounts->maximum);
+        if (!empty($this->discounts->maximum)) {
+            $discount = min($discount, $this->discounts->maximum);
+        }
 
         return number_format(-$discount, 2);
     }
