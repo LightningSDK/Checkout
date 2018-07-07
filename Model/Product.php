@@ -6,11 +6,16 @@ use Exception;
 use Lightning\Model\Object;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
+use Lightning\Tools\Image;
 use Lightning\Tools\Template;
 
 class ProductOverridable extends Object {
     const TABLE = 'checkout_product';
     const PRIMARY_KEY = 'product_id';
+
+    const IMAGE_LISTING = 'listing-image';
+    const IMAGE_OG = 'og-image';
+    const IMAGE_MAIN = 'image';
 
     protected $__json_encoded_fields = ['options' => ['type' => 'array']];
     protected $categoryObj;
@@ -135,7 +140,7 @@ class ProductOverridable extends Object {
         return $template->build(['product_popup', 'Checkout'], true);
     }
 
-    public function getImage($type = 'listing-image') {
+    public function getImage($type = self::IMAGE_LISTING) {
         $image = null;
         try {
             $options = $this->options;
@@ -144,14 +149,14 @@ class ProductOverridable extends Object {
                     return;
                 }
                 switch ($key) {
-                    case 'og-image':
-                    case 'image':
+                    case self::IMAGE_OG:
+                    case self::IMAGE_MAIN:
                         $image = $val;
                         if ($key == $type) {
                             throw new Exception('Complete');
                         }
                         break;
-                    case 'listing-image':
+                    case self::IMAGE_LISTING:
                         $image = $val;
                         if ($key == $type) {
                             throw new Exception('Complete');
@@ -159,6 +164,21 @@ class ProductOverridable extends Object {
                 }
             });
         } catch (Exception $e) {};
+
+        if (Configuration::get('modules.imageManager')) {
+            $size = 1000;
+            if ($type == self::IMAGE_LISTING) {
+                $size = 250;
+            }
+
+            // Image manager is enabled, so use the image manager version
+            return '/image?' . http_build_query([
+                'i' => $image,
+                's' => $size,
+                'f' => Image::FORMAT_JPG,
+            ]);
+        }
+
         return $image;
     }
 
