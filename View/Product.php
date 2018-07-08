@@ -2,6 +2,7 @@
 
 namespace Modules\Checkout\View;
 
+use Lightning\View\HTML;
 use Modules\Checkout\Model\Product as ProductModel;
 
 class Product {
@@ -35,6 +36,13 @@ class Product {
                 </li>';
         }
 
-        return $output;
+        $form_attributes = [];
+        foreach ($options as $key => $val) {
+            if (preg_match('/^data-/', $key)) {
+                $form_attributes[$key] = $val;
+            }
+        }
+
+        return '<ul class="' . $options['ul-class'] . '" ' . HTML::implodeAttributes($form_attributes) . '>' . $output . '</ul>';
     }
 }
