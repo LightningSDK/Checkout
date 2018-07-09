@@ -16,6 +16,7 @@ class ProductWidget extends Widget {
         $products = $this->getProducts();
         $template = Template::getInstance();
         $template->set('products', $products);
+        $template->set('ref', Request::get('ref', Request::TYPE_INT));
     }
 
     protected function getProducts() {
