@@ -149,6 +149,9 @@ class OrderOverridable extends Object {
             $contents .= '<td align="right">$' . number_format($item->getProduct()->price * $item->qty, 2) . '</td></tr>';
         }
         $contents .= '<tr><td colspan="2"></td><td align="right">Shipping</td><td align="right">$' . number_format($this->getShipping(), 2) . '</td>';
+        if ($discounts = $this->getDiscounts()) {
+            $contents .= '<tr><td colspan="2"></td><td align="right">Discounts</td><td align="right">$' . number_format($discounts, 2) . '</td>';
+        }
         $contents .= '<tr><td colspan="2"></td><td align="right">Total</td><td align="right">$' . number_format($this->getTotal(), 2) . '</td></tr></table>';
         return $contents;
     }
