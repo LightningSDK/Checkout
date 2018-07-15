@@ -26,6 +26,7 @@ class Product {
 
         $output = '';
 
+        /** @var \Modules\Checkout\Model\Product $product */
         foreach ($products as $product) {
             $output .= '
                 <li class="item">
@@ -43,6 +44,6 @@ class Product {
             }
         }
 
-        return '<ul class="' . $options['ul-class'] . '" ' . HTML::implodeAttributes($form_attributes) . '>' . $output . '</ul>';
+        return '<ul class="' . ($options['ul-class'] ?? '') . '" ' . HTML::implodeAttributes($form_attributes) . '>' . $output . '</ul>';
     }
 }
