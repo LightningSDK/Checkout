@@ -182,12 +182,12 @@ class OrderOverridable extends Object {
         return $this->total;
     }
 
-    public function getDiscounts() {
+    public function getDiscounts($itemsOnly = false) {
         $this->discountValue = 0;
         // TODO: This can be optimized.
         $discounts = Discount::loadAll(['code' => ['IN', $this->__data['discounts']]]);
         foreach ($discounts as $d) {
-            $this->discountValue += $d->getAmount($this);
+            $this->discountValue += $d->getAmount($this, $itemsOnly);
         }
 
         return $this->discountValue;
@@ -377,26 +377,32 @@ class OrderOverridable extends Object {
             $commissionPercent = Configuration::get('modules.checkout.affiliates.default_percent');
 
             $level = 1;
+            // The total amount of the order that can be used for commissions
+            $orderBase = $this->getSubTotal() + $this->getDiscounts(true);
+            // The adjusted total amount
+            $commissionBase = $orderBase;
             switch ($commissionScheme) {
                 case 'net':
-                    $net = $this->getTotal() - $this->getShipping();
+                    // Commission based on total minus costs
                     /** @var LineItem $item */
                     foreach ($this->getItems() as $item) {
-                        $net -= $item->getAggregateOption('cost', 0) * $item->qty;
+                        // Subtract the cost of each item included
+                        $commissionBase -= $item->getAggregateOption('cost', 0) * $item->qty;
                     }
-                    if ($net == $this->getTotal()) {
-                        $net = 0;
+                    if ($commissionBase == $this->getTotal()) {
+                        $commissionBase = 0;
                     }
-                    $commissionAmount = $net * $commissionPercent / 100;
                     $type = 'N';
                     break;
 
                 case 'total':
-                    $commissionAmount = $this->getTotal() * $commissionPercent / 100;
+                    // Commission based on total
                     $type = 'T';
                     break;
             }
-            $commissionAmount = floor(100 * $commissionAmount);
+
+            // Commission base is in decimal, but commission amount is an integer (decimal * 100)
+            $commissionAmount = floor($commissionBase * $commissionPercent);
 
             $credit = new AffiliatePayment([
                 'order_id' => $this->id,

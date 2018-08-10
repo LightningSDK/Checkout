@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Checkout\Pages;
+namespace Modules\Checkout\Pages\Admin;
 
 use Exception;
 use Lightning\Pages\Table;

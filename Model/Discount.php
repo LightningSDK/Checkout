@@ -24,7 +24,7 @@ class Discount extends Object {
      *
      * @return float
      */
-    public function getAmount($order) {
+    public function getAmount($order, $itemsOnly = false) {
         // Has the minimum subtotal been met?
         if (!empty($this->discounts->minimum) && $order->getSubTotal() < $this->discounts->minimum) {
             // If not, there is no discount.
@@ -44,12 +44,12 @@ class Discount extends Object {
         }
 
         // If this is a shipping discount, add it.
-        elseif (!empty($this->discounts->shippingPercent)) {
+        elseif (!$itemsOnly && !empty($this->discounts->shippingPercent)) {
             $discount = $this->discounts->shippingPercent * $order->getShipping() / 100;
         }
 
         // If this is a shipping discount, add it.
-        elseif (!empty($this->discounts->shippingPercent)) {
+        elseif (!$itemsOnly && !empty($this->discounts->shippingPercent)) {
             $discount = min($this->discounts->shippingAmount, $order->getShipping());
         }
 

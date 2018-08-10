@@ -7,14 +7,15 @@ return [
     ],
     'routes' => [
         'static' => [
-            'admin/orders' => \Modules\Checkout\Pages\Orders::class,
-            'admin/products' => \Modules\Checkout\Pages\Products::class,
-            'admin/product-classes' => \Modules\Checkout\Pages\ProductClasses::class,
+            'admin/orders' => \Modules\Checkout\Pages\Admin\Orders::class,
+            'admin/products' => \Modules\Checkout\Pages\Admin\Products::class,
+            'admin/product-classes' => \Modules\Checkout\Pages\Admin\ProductClasses::class,
             'store/embed' => \Modules\Checkout\Pages\ProductWidget::class,
             'api/cart' => \Modules\Checkout\API\Cart::class,
             'store/checkout' => \Modules\Checkout\Pages\Checkout::class,
             'feeds/products' => \Modules\Checkout\Feeds\Products::class,
             'affiliate/mysales' => \Modules\Checkout\Pages\AffiliateSales::class,
+            'admin/affiliates' => \Modules\Checkout\Pages\Admin\Affiliates::class,
         ],
         'dynamic' => [
             'store/.*' => \Modules\Checkout\Pages\Product::class,
@@ -35,7 +36,7 @@ return [
     ],
     'modules' => [
         'checkout' => [
-            'init_view' => \Modules\Checkout\View\Checkout::class . '::init',
+            'init_view' => [\Modules\Checkout\View\Checkout::class, 'init'],
         ]
     ],
     'sitemap' => [
