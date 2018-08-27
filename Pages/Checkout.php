@@ -3,7 +3,9 @@
 namespace Modules\Checkout\Pages;
 
 use Exception;
+use Lightning\Model\User;
 use Lightning\Tools\Configuration;
+use Lightning\Tools\Form;
 use Lightning\Tools\Navigation;
 use Lightning\Tools\Request;
 use Lightning\Tools\Template;
@@ -73,7 +75,6 @@ class Checkout extends Page {
     }
 
     public function postShipping() {
-        // TODO: post shipping here
         $name = Request::post('name');
         $street = Request::post('street');
         $street2 = Request::post('street2');
@@ -81,6 +82,9 @@ class Checkout extends Page {
         $state = Request::post('state');
         $zip = Request::post('zip');
         $country = Request::post('country');
+        $email = Request::post('email', Request::TYPE_EMAIL);
+
+        $user = User::addUser($email, ['full_name' => $name]);
 
         $address = new Address([
             'name' => $name,
@@ -96,6 +100,10 @@ class Checkout extends Page {
         $order = Order::loadBySession();
 
         $order->shipping_address = $address->id;
+        if (empty($order->user_id)) {
+            $order->user_id = $user->id;
+        }
+
         $order->save();
 
         Navigation::redirect('/store/checkout?page=' . self::PAGE_PAYMENT);

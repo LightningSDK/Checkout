@@ -7,6 +7,12 @@
             <input type="hidden" name="action" value="shipping">
 
             <div>
+                <label>Email:</label>
+                <input name="email" type="email" required value="<?= !empty($shipping->name) ? $shipping->name : ''; ?>">
+                <small class="error">Please enter a valid email</small>
+            </div>
+
+            <div>
                 <label>Name:</label>
                 <input name="name" required value="<?= !empty($shipping->name) ? $shipping->name : ''; ?>">
                 <small class="error">Please enter your name</small>
