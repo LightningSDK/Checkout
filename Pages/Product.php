@@ -24,6 +24,7 @@ class Product extends Page {
         }
 
         $template = Template::getInstance();
+
         if ($product = ProductModel::loadByURL($content_locator)) {
             // If this is a product page.
             $template->set('product', $product);
@@ -67,7 +68,7 @@ class Product extends Page {
             $this->setMeta('title', !empty($category->header_text) ? $category->header_text : $category->name);
             $this->setMeta('description', $category->description);
             foreach ($products as $product) {
-                if ($image = $product->getImage('og-image')) {
+                if ($image = $product->getImage(ProductModel::IMAGE_OG)) {
                     $this->setMeta('image', $image);
                     break;
                 }
@@ -77,6 +78,13 @@ class Product extends Page {
             $template->set('breadcrumbs', $category->getBreadcrumbs());
         } else {
             Output::notFound();
+        }
+
+        // Attempt to load gallery if available.
+        if (class_exists('Modules\PhotoGallery\View\Gallery')) {
+            \Modules\PhotoGallery\View\Gallery::init();
+            $gallery = new \Modules\PhotoGallery\Model\Gallery();
+            $template->set('gallery', $gallery);
         }
     }
 }

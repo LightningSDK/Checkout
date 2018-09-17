@@ -11,3 +11,6 @@
         </div>
     </div>
 </div>
+<?php if (!empty($gallery)){
+    $this->build(['gallery', 'PhotoGallery']);
+} ?>

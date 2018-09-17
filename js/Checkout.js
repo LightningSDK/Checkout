@@ -175,7 +175,9 @@
                 if (img.length === 0) {
                     imgContainer.append('<div class="preview-image"><img src="" /></div>');
                     img = imgContainer.find('.preview-image img');
-                    img.on('click', lightning.modules.photogallery.show).css('cursor', 'zoom-in');
+                    self.initPhotoGallery(function(){
+                        img.on('click', lightning.modules.photogallery.show).css('cursor', 'zoom-in');
+                    });
                 }
 
                 // Make sure the image is an array (even if just one image)
@@ -210,18 +212,26 @@
                     }
                 }
 
-                if (lightning.modules.photogallery) {
+                self.initPhotoGallery(function(){
                     lightning.modules.photogallery.setImages(self.popupImg);
-                } else {
-                    lightning_startup(function(){
-                        lightning.modules.photogallery.setImages(self.popupImg);
-                    });
-                }
+                });
 
             } else {
                 imgContainer.empty();
             }
             $('.price', optionsFields).html('$' + parseFloat(self.modifiedPrice).toFixed(2));
+        },
+
+        initPhotoGallery: function(callback) {
+            if (lightning.modules.photogallery) {
+                callback();
+            } else {
+                lightning_startup(function(){
+                    if (lightning.modules.photogallery) {
+                        callback();
+                    }
+                });
+            }
         },
 
         /**

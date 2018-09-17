@@ -11,3 +11,6 @@
         <h2>Sorry, there's nothing here at the moment. Try back later.</h2>
     <?php endif; ?>
 </ul>
+<?php if (!empty($gallery)){
+    $this->build(['gallery', 'PhotoGallery']);
+} ?>
