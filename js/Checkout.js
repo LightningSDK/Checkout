@@ -175,6 +175,7 @@
                 if (img.length === 0) {
                     imgContainer.append('<div class="preview-image"><img src="" /></div>');
                     img = imgContainer.find('.preview-image img');
+                    img.on('click', lightning.modules.photogallery.show).css('cursor', 'zoom-in');
                 }
 
                 // Make sure the image is an array (even if just one image)
@@ -197,7 +198,7 @@
                             active = 'active';
                             imageSet = true;
                         }
-                        selectionContainer.append('<img src="' + self.popupImg[i] + '" class="' + active + '" />');
+                        selectionContainer.append('<img src="' + self.popupImg[i] + '" class="' + active + ' gallery-image" />');
                     }
                 }
 
@@ -207,6 +208,14 @@
                     if (self.popupImg.length > 1) {
                         selectionContainer.find('img').first().addClass('active');
                     }
+                }
+
+                if (lightning.modules.photogallery) {
+                    lightning.modules.photogallery.setImages(self.popupImg);
+                } else {
+                    lightning_startup(function(){
+                        lightning.modules.photogallery.setImages(self.popupImg);
+                    });
                 }
 
             } else {

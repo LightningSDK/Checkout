@@ -47,7 +47,7 @@ class Product extends Page {
             // Set up the meta data.
             $this->setMeta('title', $product->title);
             $this->setMeta('description', $product->description);
-            $this->setMeta('image', $product->getImage('og-image'));
+            $this->setMeta('image', $product->getImage(ProductModel::IMAGE_OG));
 
             $template->set('breadcrumbs', $product->getBreadcrumbs());
 
