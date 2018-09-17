@@ -16,6 +16,8 @@ class Checkout {
         JS::set('modules.checkout.bitcoin', Configuration::get('modules.checkout.bitcoin', false));
         JS::set('modules.checkout.ach', Configuration::get('modules.checkout.ach', false));
         JS::set('modules.checkout.enable_discounts', Configuration::get('modules.checkout.enable_discounts', false));
+        JS::set('modules.checkout.image_manager', Configuration::get('modules.checkout.image_manager', false));
+        JS::set('modules.checkout.photo_gallery', class_exists('Modules\PhotoGallery\View\Gallery'));
 
         CSS::add('/css/modules.css');
 
