@@ -165,7 +165,7 @@ class ProductOverridable extends Object {
             });
         } catch (Exception $e) {};
 
-        if (Configuration::get('modules.imageManager')) {
+        if (class_exists('Modules\PhotoGallery\View\Gallery')) {
             $size = 1000;
             if ($type == self::IMAGE_LISTING) {
                 $size = 250;

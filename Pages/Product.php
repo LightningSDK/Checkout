@@ -2,7 +2,6 @@
 
 namespace Modules\Checkout\Pages;
 
-use Exception;
 use Lightning\Pages\Page;
 use Lightning\Tools\Output;
 use Lightning\Tools\Request;
