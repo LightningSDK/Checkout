@@ -165,18 +165,13 @@ class ProductOverridable extends Object {
             });
         } catch (Exception $e) {};
 
-        if (class_exists('Modules\PhotoGallery\View\Gallery')) {
+        // If image manager is installed, use it.
+        if (class_exists('Modules\ImageManager\Model\Image')) {
             $size = 1000;
             if ($type == self::IMAGE_LISTING) {
                 $size = 250;
             }
-
-            // Image manager is enabled, so use the image manager version
-            return '/image?' . http_build_query([
-                'i' => $image,
-                's' => $size,
-                'f' => Image::FORMAT_JPG,
-            ]);
+            $image = \Modules\ImageManager\Model\Image::getImage($image, $size, Image::FORMAT_JPG);
         }
 
         return $image;

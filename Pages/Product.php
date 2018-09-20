@@ -63,6 +63,11 @@ class Product extends Page {
             ]);
             $template->set('products', $products);
 
+            $categories = Category::loadAll([
+                'parent_id' => $category->id,
+            ]);
+            $template->set('categories', $categories);
+
             // Add meta data
             $this->setMeta('title', !empty($category->header_text) ? $category->header_text : $category->name);
             $this->setMeta('description', $category->description);

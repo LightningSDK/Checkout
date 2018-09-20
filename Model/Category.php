@@ -5,10 +5,15 @@ namespace Modules\Checkout\Model;
 use Lightning\Model\Object;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
+use Lightning\Tools\Image;
 
 class Category extends Object {
     const TABLE = 'checkout_category';
     const PRIMARY_KEY = 'category_id';
+
+    const IMAGE_LISTING = 'listing-image';
+    const IMAGE_OG = 'og-image';
+    const IMAGE_MAIN = 'image';
 
     public static function loadByURL($url) {
         $data = Database::getInstance()->selectRow(self::TABLE, ['url' => ['LIKE', $url]]);
@@ -56,11 +61,32 @@ class Category extends Object {
 
     /**
      * @return Category
+     *
+     * @throws \Exception
      */
     public function getParentCategory() {
         if (!empty($this->parent_id)) {
             return Category::loadByID($this->parent_id);
         }
         return null;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public function getImage($type = self::IMAGE_LISTING) {
+        $image = $this->image;
+        // If image manager is installed, use it.
+        if (class_exists('Modules\ImageManager\Model\Image')) {
+            $size = 1000;
+            if ($type == self::IMAGE_LISTING) {
+                $size = 250;
+            }
+            $image = \Modules\ImageManager\Model\Image::getImage($image, $size, Image::FORMAT_JPG);
+        }
+
+        return $image;
     }
 }
