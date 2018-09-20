@@ -42,8 +42,6 @@ class Product extends Page {
             Checkout::init();
             JS::startup('lightning.modules.checkout.initProductOptions(' . json_encode(['options' => $product->options, 'base_price' => $product->price]) . ');', ['Checkout' => 'Checkout.js']);
 
-            Checkout::init();
-
             // Set up the meta data.
             $this->setMeta('title', $product->title);
             $this->setMeta('description', $product->description);
@@ -52,6 +50,8 @@ class Product extends Page {
             $template->set('breadcrumbs', $product->getBreadcrumbs());
 
         } elseif ($category = Category::loadByURL($content_locator)) {
+            Checkout::init();
+
             $this->rightColumn = false;
             // If this is a category page.
             $template->set('category', $category);
