@@ -32,7 +32,7 @@ class Product {
 
         /** @var \Modules\Checkout\Model\Product $product */
         foreach ($products as $product) {
-            $button_text = $config['buy_now_text'] == '$price' ? '$' . intval($product->price) : $config['buy_now_text'];
+            $button_text = (!empty($config['buy_now_text']) && $config['buy_now_text'] == '$price') ? '$' . intval($product->price) : $config['buy_now_text'];
             $output .= '
                 <li class="item">
                     <a href="/store/' . $product->url . '">
