@@ -2,6 +2,8 @@
 
 namespace Modules\Checkout\View;
 
+use Lightning\Tools\Configuration;
+use Lightning\Tools\Scrub;
 use Lightning\View\HTML;
 use Modules\Checkout\Model\Product as ProductModel;
 
@@ -26,14 +28,17 @@ class Product {
 
         $output = '';
 
+        $config = Configuration::get('modules.checkout');
+
         /** @var \Modules\Checkout\Model\Product $product */
         foreach ($products as $product) {
+            $button_text = $config['buy_now_text'] == '$price' ? '$' . intval($product->price) : $config['buy_now_text'];
             $output .= '
                 <li class="item">
                     <a href="/store/' . $product->url . '">
-                        <img src="' . $product->getImage() . '" style="border-radius: 10px;"><br>
+                        <img src="' . $product->getImage() . '" style="border-radius: 10px;" alt="' . Scrub::toHTML($product->title) . '"><br>
                     </a>
-                    <span class="button medium red checkout-product" id="' . $product->sku . '" data-checkout-product-id="' . $product->id . '" data-checkout="add-to-cart">Buy Now</span>
+                    <span class="button medium red checkout-product" id="' . $product->sku . '" data-checkout-product-id="' . $product->id . '" data-checkout="add-to-cart">' . $button_text . '</span>
                 </li>';
         }
 

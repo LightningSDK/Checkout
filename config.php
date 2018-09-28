@@ -37,6 +37,7 @@ return [
     'modules' => [
         'checkout' => [
             'init_view' => [\Modules\Checkout\View\Checkout::class, 'init'],
+            'buy_now_text' => 'Buy Now',
         ]
     ],
     'sitemap' => [
