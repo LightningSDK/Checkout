@@ -72,6 +72,7 @@ class Checkout {
      *
      * @param $vars
      * @return string
+     * @throws Exception
      */
     public static function renderMarkup($options, $vars) {
         static::init();
@@ -84,7 +85,7 @@ class Checkout {
             $attributes['data-checkout-product-id'] = $product_id;
             $product = Product::loadByID($product_id);
             $attributes['data-title'] = $product->title;
-            $attributes['data-amount'] = $product->price;
+            $attributes['data-amount'] = $product->price + $product->flat_shipping;
         }
         if (!empty($options['create-customer'])) {
             if ($options['create-customer'] == 'true') {

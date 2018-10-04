@@ -2,6 +2,7 @@
 
 namespace Modules\Checkout\Model;
 
+use Exception;
 use Lightning\Model\Object;
 use Lightning\Model\User;
 use Lightning\Tools\Configuration;
@@ -226,6 +227,15 @@ class OrderOverridable extends Object {
         ]);
     }
 
+    /**
+     * @param int|object $product
+     * @param int $qty
+     * @param array $options
+     *
+     * @return int
+     *
+     * @throws Exception
+     */
     public function addItem($product, $qty, $options = []) {
         // Make sure the order is saved, so it has an ID.
         if (empty($this->id)) {
@@ -235,6 +245,10 @@ class OrderOverridable extends Object {
         // Make sure the product is an object.
         if (is_int($product)) {
             $product = Product::loadByID($product);
+        }
+
+        if (empty($product)) {
+            throw new Exception('Invalid product');
         }
 
         $item = [
@@ -370,6 +384,8 @@ class OrderOverridable extends Object {
 
     /**
      * @param Payment $payment
+     *
+     * @throws Exception
      */
     protected function payAffiliates($payment) {
         if ($this->referrer > 0) {
