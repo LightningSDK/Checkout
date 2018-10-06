@@ -36,8 +36,25 @@ class Checkout {
         if (is_string($settings)) {
             $handlers[] = self::loadHandler($settings);
         } elseif (is_array($settings)) {
-            foreach ($settings as $setting) {
-                $handlers[] = self::loadHandler($setting);
+            foreach ($settings as $key => $setting) {
+                if (is_string($setting)) {
+                    $handler = new $setting();
+                }
+                elseif (is_array($setting)) {
+                    $handler = new $setting['connector']();
+                }
+                else {
+                    unset($handlers[$key]);
+                    continue;
+                }
+
+                // Make sure it's configured
+                if (!$handler->isConfigured()) {
+                    unset($handlers[$key]);
+                    continue;
+                }
+
+                $handlers[$key] = self::loadHandler($setting);
             }
         }
 
@@ -100,6 +117,9 @@ class Checkout {
         }
         if (!empty($options['bitcoin']) && $options['bitcoin'] == "true") {
             $attributes['data-bitcoin'] = $options['bitcoin'];
+        }
+        if (!empty($options['add-to-cart'])) {
+            $attributes['data-checkout'] = 'add-to-cart';
         }
 
         return '<span ' . HTML::implodeAttributes($attributes) . ' >' . $text . '</span>';

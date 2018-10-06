@@ -33,9 +33,14 @@ class Checkout extends Page {
     protected $order;
 
     /**
-     * @var string|array
+     * @var object
      */
     protected $paymentHandler;
+
+    /**
+     * @var array
+     */
+    protected $paymentHandlers;
 
     protected $page = ['checkout/empty', 'Checkout'];
 
@@ -56,18 +61,15 @@ class Checkout extends Page {
 
         switch ($nextPage) {
             case self::PAGE_PAYMENT_OPTIONS:
-                $handlers = \Modules\Checkout\View\Checkout::getHandlers();
-                $template->set('handlers', $handlers);
+                $template->set('handlers', $this->paymentHandlers);
                 break;
             case self::PAGE_PAYMENT:
                 JS::set('modules.checkout.total', $this->order->getTotal());
                 // TODO: This should be configurable.
                 JS::set('modules.checkout.currency', 'USD');
-                $handlerId = Request::get('gateway');
-                $handler = \Modules\Checkout\View\Checkout::getHandler($handlerId);
-                $handler->init();
+                $this->paymentHandler->init();
 
-                $this->page = $handler->getPage($this->order);
+                $this->page = $this->paymentHandler->getPage($this->order);
                 break;
         }
 
@@ -149,17 +151,18 @@ class Checkout extends Page {
         // Payment options page
         if ($requestedPage === self::PAGE_PAYMENT) {
             $paymentHandler = Request::get('gateway');
-            $paymentHandlers = Configuration::get('modules.checkout.handlers');
+            $this->paymentHandlers = \Modules\Checkout\View\Checkout::getHandlers();
 
-            if (!empty($paymentHandler) && !empty($paymentHandlers[$paymentHandler])) {
-                $this->paymentHandler = $paymentHandlers[$paymentHandler];
+            if (!empty($this->paymentHandlers) && !empty($this->paymentHandlers[$paymentHandler])) {
+                $this->paymentHandler = $this->paymentHandlers[$paymentHandler];
                 return self::PAGE_PAYMENT;
-            }
-            if (count($paymentHandlers) > 1) {
+            } elseif (count($this->paymentHandlers) == 1) {
+                $this->paymentHandler = current($this->paymentHandlers);
+                return self::PAGE_PAYMENT;
+            } elseif (count($this->paymentHandlers) > 1) {
                 return self::PAGE_PAYMENT_OPTIONS;
             } else {
-                $this->paymentHandler = current($paymentHandlers);
-                return self::PAGE_PAYMENT;
+                throw new Exception('No payment handlers configured');
             }
         }
 

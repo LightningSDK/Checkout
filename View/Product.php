@@ -19,6 +19,10 @@ class Product {
      *
      * @param $vars
      * @return string
+     *
+     * Renders a product or list of products with image.
+     *
+     * TODO: This should call the Checkout::renderMarkup() for rendering the button.
      */
     public static function renderMarkup($options, $vars) {
         Checkout::init();
