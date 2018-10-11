@@ -122,6 +122,12 @@ class Checkout {
             $attributes['data-checkout'] = 'add-to-cart';
         }
 
-        return '<span ' . HTML::implodeAttributes($attributes) . ' >' . $text . '</span>';
+        if (!empty($options['img'])) {
+            $body = '<img src="' . $options['img'] . '" alt="' . $text . '" style="' . ($options['img-style'] ?? '') . '" />';
+        } else {
+            $body = $text;
+        }
+
+        return '<span ' . HTML::implodeAttributes($attributes) . ' >' . $body . '</span>';
     }
 }
