@@ -30,7 +30,7 @@
         },
 
         click: function(event) {
-            var button = $(event.target);
+            var button = $(event.currentTarget);
             var product_id = button.data('checkout-product-id');
             var purchase_options = {};
             var line_item_options = {};
