@@ -18,7 +18,7 @@ return [
             'admin/affiliates' => \Modules\Checkout\Pages\Admin\Affiliates::class,
         ],
         'dynamic' => [
-            'store/.*' => \Modules\Checkout\Pages\Product::class,
+            '^store/.*' => \Modules\Checkout\Pages\Product::class,
         ],
     ],
     'markup' => [
@@ -43,6 +43,14 @@ return [
     'sitemap' => [
         'checkout_products' => \Modules\Checkout\Model\Category::class,
         'checkout_categories' => \Modules\Checkout\Model\Product::class,
-    ]
+    ],
+    'jobs' => [
+        'checkout-mailer' => [
+            'class' => \Modules\Checkout\Jobs\Mail::class,
+            'offset' => 7200, // 2 am server time
+            'interval' => 86400,
+            'max_threads' => 1,
+        ],
+    ],
     // TODO: add login update session_id => user_id or cart
 ];

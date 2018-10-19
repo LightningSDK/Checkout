@@ -8,6 +8,8 @@ use Lightning\Tools\Configuration;
 use Lightning\Tools\Form;
 use Lightning\Tools\Navigation;
 use Lightning\Tools\Request;
+use Lightning\Tools\Security\Encryption;
+use Lightning\Tools\Session\DBSession;
 use Lightning\Tools\Template;
 use Lightning\View\JS;
 use Lightning\View\Page;
@@ -52,7 +54,13 @@ class Checkout extends Page {
     }
 
     public function get() {
+        // Attempt to load a cart from a previous session.
+        Order::loadOrMergeByEncryptedUrlKey();
+
+        // Initialize the module.
         \Modules\Checkout\View\Checkout::init();
+
+        // Initialize the page display.
         $nextPage = $this->nextRequiredPage();
         $this->page[0] = 'checkout/' . $nextPage;
 

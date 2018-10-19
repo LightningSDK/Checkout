@@ -10,6 +10,7 @@ use Lightning\Tools\Database;
 use Lightning\Tools\Mailer;
 use Lightning\Tools\Messenger;
 use Lightning\Tools\Request;
+use Lightning\Tools\Security\Encryption;
 use Lightning\Tools\Session\BrowserSession;
 use Lightning\Tools\Session\DBSession;
 use Lightning\Tools\ClientUser;
@@ -65,7 +66,10 @@ class OrderOverridable extends Object {
     /**
      * @param null $order_id
      * @param bool $allowLocked
+     *
      * @return Order
+     *
+     * @throws Exception
      */
     public static function loadBySession($order_id = null, $allowLocked = false) {
         // TODO: Check if there are multiple orders without payments, and merge them
@@ -77,6 +81,80 @@ class OrderOverridable extends Object {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Load a cart from an encrypted key. This is used when an email is sent out to
+     * invite a user to complete a purchase. There are cases handled for whether a
+     * user is signed in under a different account, or has created another cart.
+     *
+     * @param boolean $allowLocked
+     *
+     * @return Order|null
+     *
+     * @throws Exception
+     */
+    public static function loadOrMergeByEncryptedUrlKey($allowLocked = false) {
+        if ($cart = Request::get('cart', Request::TYPE_ENCRYPTED)) {
+            $data = json_decode(Encryption::aesDecrypt($cart, Configuration::get('user.key')), true);
+            if (!empty($data['cart_id'])) {
+                $cart = static::loadByID($data['cart_id']);
+                // If the cart is locked and not allowed, return.
+                if (!empty($cart->locked) && $allowLocked === false) {
+                    return null;
+                }
+                // If the cart belongs to another user than who is signed in,
+                // sign out the user an load the cart to a new session.
+                $session = DBSession::getInstance();
+                $user = ClientUser::getInstance();
+                if (!$user->isAnonymous() && ClientUser::getInstance()->id != $cart->user_id) {
+                    $session->destroy();
+                    $session = DBSession::getInstance();
+                }
+
+                // We are only interested in unlocked carts in the current session.
+                $existingCart = self::loadBySession(null, false);
+                if (empty($existingCart)) {
+                    // If there is no existing cart, then set this cart to
+                    // the current session
+                    $cart->session_id = $session->id;
+                    $cart->save();
+                } elseif ($existingCart->id != $cart->id) {
+                    // If there is already an unlocked cart on this session
+                    // delete the requested cart, and move all it's items
+                    // to the existing session.
+                    $existingCart->mergeFromAnotherCart($cart);
+                    return $existingCart;
+                }
+
+                // If we made it here, the user already had the requested cart in
+                // their session, and nothing needs to be done.
+                return $cart;
+            }
+        }
+    }
+
+    public function getEncryptedUrlKey() {
+        $data = [
+            'cart_id' => $this->id,
+        ];
+        return Encryption::aesEncrypt(json_encode($data), Configuration::get('user.key'));
+    }
+
+    /**
+     * Merges data from one cart into another. This should only be used
+     * for unlocked carts in restoring user sessions.
+     *
+     * @param Order $cart
+     *
+     * @throws Exception
+     */
+    public function mergeFromAnotherCart($cart) {
+        Database::getInstance()->update(LineItem::TABLE, [
+            'order_id' => $this->id,
+        ], [
+            'order_id' => $cart->id,
+        ]);
     }
 
     protected static function loadBySessionCriteria($order_id, $allowLocked) {
@@ -93,13 +171,19 @@ class OrderOverridable extends Object {
 
     /**
      * @return Order
+     *
+     * @throws Exception
      */
     public static function loadOrCreateBySession() {
         if ($order = self::loadBySession()) {
             return $order;
         } else {
             $data = [
-                'user_id' => ClientUser::getInstance()->id,
+                'user_id' =>
+                    // If the user is signed in, we know their id.
+                    ClientUser::getInstance()->id
+                    // If the user is only being tracked, we know their id from the browser session.
+                    ?? BrowserSession::getInstance()->user_id ?? 0,
                 'session_id' => DBSession::getInstance()->id,
                 'time' => time(),
                 'referrer' => BrowserSession::getInstance()->referrer ?: 0,
@@ -119,6 +203,8 @@ class OrderOverridable extends Object {
 
     /**
      * @return User
+     *
+     * @throws Exception
      */
     public function getUser() {
         if (empty($this->user)) {
