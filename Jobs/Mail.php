@@ -5,12 +5,13 @@ namespace Modules\Checkout\Jobs;
 use Lightning\Jobs\Job;
 use Lightning\Model\Message;
 use Lightning\Model\Subscription;
-use Lightning\Model\User;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Mailer;
 use Modules\Checkout\Model\Order;
 
 class Mail extends Job {
+
+    const NAME = 'Checkout Mailer';
 
     /**
      * @var Mailer
@@ -28,6 +29,8 @@ class Mail extends Job {
      * @throws \Exception
      */
     public function execute($job) {
+
+        $this->out('Sending emails to complete checkout');
 
         // Load the carts
         $abandonedCarts = $this->getCarts();
@@ -70,6 +73,7 @@ class Mail extends Job {
                 $stats['count'] < $max_messages
                 && $stats['last'] < time() - $min_wait
             ) {
+                $this->out('Sending resume cart email to ' . $cart->getUser()->email);
                 $this->sendMessage($cart);
             }
         }
