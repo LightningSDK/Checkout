@@ -47,8 +47,7 @@ return [
     'jobs' => [
         'checkout-mailer' => [
             'class' => \Modules\Checkout\Jobs\Mail::class,
-            'offset' => 7200, // 2 am server time
-            'interval' => 86400,
+            'schedule' => '*/20 * * * * *',
             'max_threads' => 1,
         ],
     ],
