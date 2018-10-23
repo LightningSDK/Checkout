@@ -68,6 +68,9 @@ class Checkout extends Page {
         JS::set('modules.checkout.hideCartModal', true);
 
         switch ($nextPage) {
+            case self::PAGE_SHIPPING:
+                JS::startup('lightning.tracker.track(lightning.tracker.events.initiateCheckout, {});');
+                break;
             case self::PAGE_PAYMENT_OPTIONS:
                 $template->set('handlers', $this->paymentHandlers);
                 break;
