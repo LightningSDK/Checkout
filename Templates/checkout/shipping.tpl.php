@@ -14,7 +14,7 @@
 
             <div>
                 <label>Email:</label>
-                <input name="email" type="email" required value="<?= !empty($shipping->name) ? $shipping->name : ''; ?>">
+                <input name="email" type="email" required value="<?= $cart->getUser()->email ?? ''; ?>">
                 <small class="error">Please enter a valid email</small>
             </div>
 
@@ -60,7 +60,7 @@
             </div>
 
             <div class="text-right">
-                <input type="submit" name="submit" class="button red medium" value="Next">
+                <input type="submit" name="submit" class="button red medium" value="Continue">
             </div>
         </form>
     </div>
