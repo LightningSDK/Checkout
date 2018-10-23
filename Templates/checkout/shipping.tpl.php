@@ -1,6 +1,12 @@
 <div class="row">
     <div class="small-12 medium-6 medium-offset-3 column">
-        <h2 class="text-center">Where should we ship it?</h2>
+        <?= \Lightning\View\CMS::embed('checkout_shipping_header', [
+                'default' => '
+                <h2 class="text-center">Where should we ship it?</h2>
+                <p style="text-align: center"><img src="/images/checkout/secure-payments.png" style="height:60px;"></p>
+                ',
+        ]); ?>
+
         <form data-abide method="post" action="/store/checkout">
             <?= \Lightning\Tools\Form::renderTokenInput(); ?>
             <?php $shipping = $cart->getShippingAddress(); ?>

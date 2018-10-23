@@ -7,7 +7,9 @@
 
             <?php foreach($handlers as $gateway => $handler): ?>
                 <div class="row-selector">
-                    <div class="description column small-12 large-8"><?= $handler->getDescription(); ?></div>
+                    <div class="description column small-12 large-8 text-center"><?= $handler->getDescription(); ?><br>
+                    <img src="<?= $handler->getLogo(); ?>" style="height: 40px; margin:20px;" />
+                    </div>
                     <div class="button-container small-12 large-4 text-center column">
                         <a class="button blue medium" href="/store/checkout?page=payment&gateway=<?= $gateway; ?>"><?= $handler->getTitle(); ?></a>
                     </div>
