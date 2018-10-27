@@ -83,5 +83,5 @@
 </table>
 <div class="checkout-buttons">
     <span class="button medium checkout-update-total">Update Total</span><span class="button-spacer"></span>
-    <span class="button red medium checkout-pay">Complete Order</span>
+    <span class="button red medium checkout-pay">Checkout</span>
 </div>
