@@ -1,6 +1,7 @@
 <?php
 /* @var $cart \Modules\Checkout\Model\Order */
 ?>
+<div class="checkout-cart-container">
 <table class="checkout-cart">
     <tr>
         <td></td>
@@ -84,4 +85,5 @@
 <div class="checkout-buttons">
     <span class="button medium checkout-update-total">Update Total</span><span class="button-spacer"></span>
     <span class="button red medium checkout-pay">Checkout</span>
+</div>
 </div>

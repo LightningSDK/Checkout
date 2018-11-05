@@ -23,7 +23,9 @@
             // Make sure the modal is present prior to attaching event listeners.
             lightning.dialog.init();
             // Add an event handler when clicking to remove an item.
-            $('.reveal-modal').on('click', '.remove img', self.removeItem)
+            // .reveal-modal handles all events in a popup
+            // .checkout-cart-container handles all events on the checkout page
+            $('.reveal-modal,.checkout-cart-container').on('click', '.remove img', self.removeItem)
                 .on('change', '.checkout-qty', self.updateQty)
                 .on('click', '.checkout-update-total', self.updateQtys)
                 .on('click', '.checkout-pay', self.payCart);
