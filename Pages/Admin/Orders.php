@@ -103,7 +103,7 @@ class Orders extends Table {
                 'links' => true,
             ]);
         };
-        $this->preset['referrer'] = TablePresets::userSearch();
+        $this->preset['referrer'] = TablePresets::userSearch('referrer');
 
         $this->action_fields = [
             'Cancel' => [
