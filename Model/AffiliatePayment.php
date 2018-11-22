@@ -19,7 +19,7 @@ use Lightning\Model\Object;
  * @parameter integer $amount
  * @parameter string $type
  */
-class AffiliatePayment extends Object {
+class AffiliatePaymentOverridable extends Object {
     const TABLE = 'checkout_affiliate_payment';
     const PRIMARY_KEY = 'affiliate_payment_id';
 }

@@ -16,7 +16,15 @@ class Affiliates extends Page {
     }
 
     public function get() {
-        $affilates = Database::getInstance()->selectAllQuery([
+        $query = $this->getAffiliatesDueQuery();
+        $affilates = Database::getInstance()->selectAllQuery($query);
+
+        $template = Template::getInstance();
+        $template->set('affiliates', $affilates);
+    }
+
+    protected function getAffiliatesDueQuery() {
+        return [
             'select' => '*',
             'from' => [
                 'select' => [
@@ -31,9 +39,6 @@ class Affiliates extends Page {
                 'left_join' => 'user',
                 'on' => ['totals.affiliate_id' => ['expression' => 'user.user_id']],
             ],
-        ]);
-
-        $template = Template::getInstance();
-        $template->set('affiliates', $affilates);
+        ];
     }
 }

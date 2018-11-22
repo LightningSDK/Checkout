@@ -25,7 +25,17 @@ class AffiliateSales extends Page {
     public function get() {
         $template = Template::getInstance();
         $user = ClientUser::getInstance();
-        $orders = Database::getInstance()->selectAllQuery([
+        $orders = Database::getInstance()->selectAllQuery($this->getOrdersQuery($user));
+
+        $template->set('orders', $orders);
+
+        $balance = Database::getInstance()->selectFieldQuery($this->getBalanceQuery($user), 'balance');
+
+        $template->set('balance', $balance);
+    }
+
+    protected function getOrdersQuery($user) {
+        return [
             'select' => [
                 'order_id' => 'checkout_affiliate_payment.order_id',
                 'time' => 'checkout_payment.time',
@@ -46,11 +56,11 @@ class AffiliateSales extends Page {
             'where' => [
                 'affiliate_id' => $user->id,
             ]
-        ]);
+        ];
+    }
 
-        $template->set('orders', $orders);
-
-        $balance = Database::getInstance()->selectFieldQuery([
+    protected function getBalanceQuery($user) {
+        return [
             'select' => [
                 'balance' => ['expression' => 'SUM(amount)']
             ],
@@ -58,9 +68,6 @@ class AffiliateSales extends Page {
             'where' => [
                 'affiliate_id' => $user->id,
             ]
-        ], 'balance');
-
-        $template->set('balance', $balance);
+        ];
     }
-
 }
