@@ -47,7 +47,12 @@ return [
     'jobs' => [
         'checkout-mailer' => [
             'class' => \Modules\Checkout\Jobs\Mail::class,
-            'schedule' => '*/20 * * * * *',
+            'schedule' => '*/30 * * * * *',
+            'max_threads' => 1,
+        ],
+        'amazon-upload-products' => [
+            'class' => \Modules\Checkout\Jobs\AmazonUpload::class,
+            'schedule' => '* 3 * * * *',
             'max_threads' => 1,
         ],
     ],

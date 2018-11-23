@@ -245,6 +245,77 @@ class ProductOverridable extends Object {
         return $this->aggregateOptions($item->options);
     }
 
+    public function getAllOptionCombinations() {
+        $optionCombinations = [];
+
+        if (!empty($this->options['options'])) {
+            $optionCombinations = $this->getAllChildOptionCombinations([], $this->options['options']);
+        }
+
+        return $optionCombinations;
+    }
+
+    public function getAllChildOptionCombinations($parentCombinations, $options) {
+        foreach ($options as $option => $settings) {
+            if (!empty($settings['values'])) {
+                $thisCombinations = [];
+                foreach ($settings['values'] as $value => $childsettings) {
+                    $optionCombinations = [[$option => $value]];
+                    if (!empty($childsettings['options'])) {
+                        $optionCombinations = $this->getAllChildOptionCombinations($optionCombinations, $childsettings['options']);
+                    }
+                    $thisCombinations = array_merge($thisCombinations, $optionCombinations);
+                }
+                $parentCombinations = $this->matrixify($parentCombinations, $thisCombinations);
+            }
+        }
+        return $parentCombinations;
+    }
+
+    public function getOptionForSettings($option, $settings) {
+        $aggSettings = $this->aggregateOptions($settings);
+        return $aggSettings[$option] ?? null;
+    }
+
+    /**
+     * Create multiple variations of an array $source with a new key $key for each value $values
+     * @param array $source
+     * @param string $key
+     * @param array $values
+     *
+     * @return array
+     */
+    public function matrixify($source, $new) {
+        $output = [];
+        if (empty($source)) {
+            // To prevent an empty response, the source should contain at least one empty array.
+            $source[] = [];
+        }
+
+        foreach ($source as $s) {
+            foreach ($new as $n) {
+                $output[] = $s + $n;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * Style: men
+     *   Color: black, white
+     *     Size: m, l
+     * Style: women
+     *   Color: blue, yellow
+     *     Size: s, m
+     *
+     * [
+     *   Style: men
+     *   Color: black
+     *   Size: m
+     * ]
+     */
+
     public function getURL() {
         return '/store/' . $this->url;
     }
