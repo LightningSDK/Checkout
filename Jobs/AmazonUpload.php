@@ -125,11 +125,3 @@ class AmazonUpload extends Job {
         return base64_encode(hash_hmac('sha256', $content, Configuration::get('modules.checkout.amazon.secret_key'), true));
     }
 }
-
-
-//        $client->set('FeedContent', $content);
-//        $client->set('FeedType', '_POST_PRODUCT_DATA_');
-//        $client->set('MWSAuthToken', '');
-//        $client->set('MarketplaceIdList.Id.1', '');
-//        $client->set('ContentMD5Value', md5($content));
-//        $client->setHeader('Content-MD5', md5($content));
