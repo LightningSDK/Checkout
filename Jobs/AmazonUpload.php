@@ -13,6 +13,12 @@ class AmazonUpload extends Job {
     const NAME = 'Amazon Product Sync';
 
     protected $host = 'mws.amazonservices.com';
+    protected $client;
+
+    public function __construct() {
+        $this->client = new RestClient('https://' . $this->host);
+        $this->client->setHeader('Content-Type', 'text/xml');
+    }
 
     public function execute($job) {
 //        $submissionId = $this->sendProductList($job);
@@ -22,44 +28,78 @@ class AmazonUpload extends Job {
     }
 
     public function getSubmissionStatus($submissionId) {
-        $client = new RestClient('https://' . $this->host);
-        $client->setHeader('Content-Type', 'text/xml');
 
         $query = $this->getBaseQuery();
         $query['Action'] = 'GetFeedSubmissionResult';
         $query['FeedSubmissionId'] = $submissionId;
 
         $query['Signature'] = $this->getSignature('/Feeds/2009-01-01', $query);
-        $client->callPost('/Feeds/2009-01-01?' . http_build_query($query));
-        print_r($client->getRaw());
+        $this->client->callPost('/Feeds/2009-01-01?' . http_build_query($query));
+        print_r($this->client->getRaw());
     }
 
     public function sendProductList() {
-        $client = new RestClient('https://' . $this->host);
-        $client->setHeader('Content-Type', 'text/xml');
-
         // Build the feed
+        $template = $this->getTemplate();
+        $template->set('products', $this->getProducts());
+        $content = $template->render(['xml/amazon_product_feed', 'Checkout'], true);
+
+        return $this->submitFeed($content, '_POST_PRODUCT_DATA_');
+    }
+
+    public function sendProductImages() {
+        // Build the feed
+        $template = $this->getTemplate();
+        $template->set('products', $this->getProducts());
+        $content = $template->render(['xml/amazon_image_feed', 'Checkout'], true);
+
+        return $this->submitFeed($content, '_POST_PRODUCT_IMAGE_DATA_');
+    }
+
+    public function sendProductPrices() {
+        // Build the feed
+        $template = $this->getTemplate();
+        $template->set('products', $this->getProducts());
+        $content = $template->render(['xml/amazon_price_feed', 'Checkout'], true);
+
+        return $this->submitFeed($content, '_POST_PRODUCT_PRICING_DATA_');
+    }
+
+    protected function getTemplate() {
         $template = new Template();
         $template->setDebug(false);
-        $products = Product::loadAll();
-        $template->set('products', $products);
         $template->set('sellerId', Configuration::get('modules.checkout.amazon.seller_id'));
-        $content = $template->render(['xml/amazon_feed', 'Checkout'], true);
-        $client->setBody($content);
+        return $template;
+    }
+
+    protected function getProducts() {
+        $products = Product::loadAll(['sku' => ['IS NOT NULL'], 'product_id' => 164]);
+        if (empty($products)) {
+            throw new \Exception('No products found');
+        }
+        return $products;
+    }
+
+    protected function submitFeed($content, $feedType) {
+        $this->client->clearRequestVars();
+
         print $content;
+        $this->client->setBody($content);
 
         // Main request header information
         $query = $this->getBaseQuery();
         $query['Action'] = 'SubmitFeed';
-        $query['FeedType'] = '_POST_PRODUCT_DATA_';
+        $query['FeedType'] = $feedType;
         $query['ContentMD5Value'] = base64_encode(md5($content, true));
 
         $query['Signature'] = $this->getSignature('/Feeds/2009-01-01', $query);
-        $client->callPost('/Feeds/2009-01-01?' . http_build_query($query));
+        $this->client->callPost('/Feeds/2009-01-01?' . http_build_query($query));
 
-        $body = $client->getRaw();
+        $body = $this->client->getRaw();
         $xml = simplexml_load_string($body);
-        return (string) $xml->SubmitFeedResult->FeedSubmissionInfo->FeedSubmissionId;
+        $submissionId = (string) $xml->SubmitFeedResult->FeedSubmissionInfo->FeedSubmissionId;
+        $this->out('Submitted feed: ' . $submissionId);
+        return $submissionId;
     }
 
     protected function getBaseQuery() {

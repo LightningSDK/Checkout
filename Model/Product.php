@@ -21,6 +21,7 @@ class ProductOverridable extends Object {
     protected $categoryObj;
     protected $compiledOptions;
     protected $relativeValueFields = ['price', 'cost'];
+    protected $amazonVariationKeys = ['Size', 'Color'];
 
     public function __get($var) {
         if ($var == 'options') {
@@ -245,14 +246,57 @@ class ProductOverridable extends Object {
         return $this->aggregateOptions($item->options);
     }
 
-    public function getAllOptionCombinations() {
-        $optionCombinations = [];
+    public function getAmazonProducts() {
+        $options = $this->getAllOptionCombinations();
+        foreach ($options as &$optionSet) {
+            foreach ($optionSet as $key => $value) {
+                if (in_array($key, $this->amazonVariationKeys)) {
+                    unset($optionSet[$key]);
+                }
+            }
+        }
+        $options = array_map('json_encode', $options);
+        $options = array_unique($options);
+        $options = array_map(function ($value) { return json_decode($value, true); }, $options);
+        return !empty($options) ? $options : [];
+    }
+
+    public function getAmazonVariation($variation = []) {
+        foreach ($variation as $key => $value) {
+            if (!in_array($key, $this->amazonVariationKeys)) {
+                unset($variation[$key]);
+            }
+        }
+        return $variation;
+    }
+
+    public function getNonAmazonVariation($variation = []) {
+        foreach ($variation as $key => $value) {
+            if (in_array($key, $this->amazonVariationKeys)) {
+                unset($variation[$key]);
+            }
+        }
+        return $variation;
+    }
+
+    public function hasOptions($knownOptions = []) {
+        return count($this->getAllOptionCombinations($knownOptions)) > 0;
+    }
+
+    public function getAllOptionCombinations($knownOptions = []) {
+        $availableOptions = [];
 
         if (!empty($this->options['options'])) {
             $optionCombinations = $this->getAllChildOptionCombinations([], $this->options['options']);
+
+            foreach ($optionCombinations as $combination) {
+                if (array_intersect($combination, $knownOptions) == $knownOptions) {
+                    $availableOptions[] = $combination;
+                }
+            }
         }
 
-        return $optionCombinations;
+        return $availableOptions;
     }
 
     public function getAllChildOptionCombinations($parentCombinations, $options) {
