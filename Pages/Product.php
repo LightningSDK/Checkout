@@ -46,6 +46,7 @@ class Product extends Page {
             $this->setMeta('title', $product->title);
             $this->setMeta('description', $product->description);
             $this->setMeta('image', $product->getImage(ProductModel::IMAGE_OG));
+            $this->setMeta('keywords', $product->keywords);
 
             $template->set('breadcrumbs', $product->getBreadcrumbs());
 
@@ -77,6 +78,7 @@ class Product extends Page {
                     break;
                 }
             }
+            $this->setMeta('keywords', $category->keywords);
 
             // Setup breadcrumbs:
             $template->set('breadcrumbs', $category->getBreadcrumbs());
