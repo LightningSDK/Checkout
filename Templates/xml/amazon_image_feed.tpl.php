@@ -16,13 +16,13 @@
             <?php foreach ($product->getAllOptionCombinations($knownOptions) as $variation): if (!empty($variation)): ?>
                 <?php $images = $product->getOptionForSettings('image', $variation);
                 if (is_string($images)) {$images = [$images];}
-                foreach ($images as $image): ?>
+                foreach ($images as $key => $image): ?>
                 <Message>
                     <MessageID><?= $i++; ?></MessageID>
                     <OperationType>Update</OperationType>
                     <ProductImage>
                         <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
-                        <ImageType><?= $main ? 'Main' : 'Alternate'; ?></ImageType>
+                        <ImageType><?= $key == 0 ? 'Main' : ('PT' . $key); ?></ImageType>
                         <ImageLocation><?= \Lightning\Model\URL::getAbsolute($image); ?></ImageLocation>
                     </ProductImage>
                 </Message>

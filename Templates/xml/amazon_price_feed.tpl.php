@@ -13,17 +13,13 @@
          */ ?>
         <?php foreach ($product->getAmazonProducts() as $knownOptions): ?>
             <?php foreach ($product->getAllOptionCombinations($knownOptions) as $variation): if (!empty($variation)): ?>
-                <?php $images = $product->getOptionForSettings('image', $variation);
-                if (is_string($images)) {$images = [$images];}
-                foreach ($images as $image): ?>
-                    <Message>
-                        <MessageID><?= $i++; ?></MessageID>
-                        <Price>
-                            <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
-                            <StandardPrice currency="USD"><?= number_format($product->getOptionForSettings('price', $variation), 2); ?></StandardPrice>
-                        </Price>
-                    </Message>
-                <?php endforeach; ?>
+                <Message>
+                    <MessageID><?= $i++; ?></MessageID>
+                    <Price>
+                        <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
+                        <StandardPrice currency="USD"><?= number_format($product->getOptionForSettings('price', $variation), 2); ?></StandardPrice>
+                    </Price>
+                </Message>
             <?php endif; endforeach; ?>
         <?php endforeach; ?>
     <?php endforeach; ?>

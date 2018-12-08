@@ -29,7 +29,6 @@
                         } else { $nonAmazonVariations = []; } ?>
                         <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $nonAmazonVariations)); ?></SKU>
                         <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
-                        <ProductType>Clothing</ProductType>
                         <DescriptionData>
                             <Title><?= $product->title; ?></Title>
                             <Brand><?= \Source\Model\Site::getInstance()->name; ?></Brand>
@@ -45,23 +44,24 @@
                             <?php endforeach; ?>
                         </DescriptionData>
                         <ProductData>
-                            <Home>
-                                <?php if ($product->hasOptions($knownOptions)) : ?>
-                                    <Parentage>variation-parent</Parentage>
-                                    <VariationData>
-                                        <VariationTheme><?php
-                                            $options = current($product->getAllOptionCombinations($knownOptions));
-                                            $amazonVariations = $product->getAmazonVariation($options);
-                                            print implode('-', array_keys($amazonVariations)) ?></VariationTheme>
-                                    <?php foreach ($amazonVariations as $key => $value): ?>
-                                        <<?= $key; ?>><?= $value; ?></<?= $key; ?>>
-                                    <?php endforeach; ?>
-                                    </VariationData>
-                                <?php endif; ?>
-                                <?php if (!empty($product->options['material'])): ?>
-                                    <Material><?= $product->options['material']; ?></Material>
-                                <?php endif; ?>
-                            </Home>
+                            <?php if (!empty($product->options['amazon']['type'])): ?>
+                                <?= "<{$product->options['amazon']['type']}>"; ?>
+                                    <?php if ($product->hasOptions($knownOptions)) : ?>
+                                        <VariationData>
+                                            <Parentage>parent</Parentage>
+                                            <VariationTheme><?php
+                                                $options = current($product->getAllOptionCombinations($knownOptions));
+                                                $amazonVariations = $product->getAmazonVariation($options);
+                                                print implode('-', array_keys($amazonVariations)) ?></VariationTheme>
+                                        </VariationData>
+                                        <ClassificationData>
+                                            <?php foreach ($product->options['amazon']['classification'] as $key => $value): ?>
+                                                <?= "<{$key}>{$value}</{$key}>"; ?>
+                                            <?php endforeach; ?>
+                                        </ClassificationData>
+                                    <?php endif; ?>
+                                <?= "</{$product->options['amazon']['type']}>"; ?>
+                            <?php endif; ?>
                         </ProductData>
                     </Product>
                 <?php endif; ?>
@@ -78,18 +78,42 @@
                     <Product>
                         <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
                         <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
-                        <ProductType>Clothing</ProductType>
+                        <DescriptionData>
+                            <Title><?= $product->title; ?></Title>
+                            <Brand><?= \Source\Model\Site::getInstance()->name; ?></Brand>
+                            <Description><?= strip_tags($product->description); ?></Description>
+                            <Manufacturer><?= \Source\Model\Site::getInstance()->name; ?></Manufacturer>
+                            <?php foreach (explode(',', $product->keywords ?? '') as $keyword): if (!empty($keyword)): ?>
+                                <SearchTerms><?= $keyword; ?></SearchTerms>
+                            <?php endif; endforeach; ?>
+                            <IsGiftWrapAvailable>false</IsGiftWrapAvailable>
+                            <IsGiftMessageAvailable>false</IsGiftMessageAvailable>
+                            <?php foreach ($product->options['amazon']['browse-node'] ?? [] as $node): ?>
+                                <RecommendedBrowseNode><?= $node; ?></RecommendedBrowseNode>
+                            <?php endforeach; ?>
+                        </DescriptionData>
                         <ProductData>
-                            <Home>
-                                <Parentage>child</Parentage>
-                                <VariationData>
-                                    <?php $amazonVariations = $product->getAmazonVariation($variation); ?>
-                                <VariationTheme><?= implode('-', array_keys($amazonVariations)) ?></VariationTheme>
-                                <?php foreach ($amazonVariations as $key => $value): ?>
-                                    <<?= $key; ?>><?= $value; ?></<?= $key; ?>>
-                                <?php endforeach; ?>
-                                </VariationData>
-                            </Home>
+                            <?php if (!empty($product->options['amazon']['type'])): ?>
+                                <?php $amazonVariations = $product->getAmazonVariation($variation); ?>
+                                <?= "<{$product->options['amazon']['type']}>"; ?>
+                                    <VariationData>
+                                        <Parentage>child</Parentage>
+                                        <VariationTheme><?= implode('-', array_keys($amazonVariations)) ?></VariationTheme>
+                                    </VariationData>
+                                    <ClassificationData>
+                                        <?php foreach ($product->options['amazon']['classification'] as $key => $value): ?>
+                                            <?= "<{$key}>{$value}</{$key}>"; ?>
+                                        <?php endforeach; ?>
+                                        <?php foreach ($amazonVariations as $key => $value): ?>
+                                            <?= "<{$key}>{$value}</{$key}>"; ?>
+                                            <?php if (in_array($key, ['Size', 'Color'])): ?>
+                                                <?= "<{$key}Map>{$value}</{$key}>"; ?>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                        <?php /* Shirt, Sweater, Pants, Shorts, Skirt, Dress, Suit, Blazer, Outerwear, SocksHosiery, Underwear, Bra, Shoes, Hat, Bag, Accessory, Jewelry, Sleepwear, Swimwear, PersonalBodyCare, HomeAccessory, NonApparelMisc, Kimono, Obi, Chanchanko, Jinbei, Yukata, EthnicWear, Costume, AdultCostume, BabyCostume, ChildrensCostume]&apos;. It must be a value from the enumeration.</ResultDescription> */ ?>
+                                    </ClassificationData>
+                                <?= "</{$product->options['amazon']['type']}>"; ?>
+                            <?php endif; ?>
                         </ProductData>
                     </Product>
                 </Message>

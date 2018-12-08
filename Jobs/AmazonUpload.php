@@ -47,6 +47,15 @@ class AmazonUpload extends Job {
         return $this->submitFeed($content, '_POST_PRODUCT_DATA_');
     }
 
+    public function sendProductRelationships() {
+        // Build the feed
+        $template = $this->getTemplate();
+        $template->set('products', $this->getProducts());
+        $content = $template->render(['xml/amazon_product_relationship_feed', 'Checkout'], true);
+
+        return $this->submitFeed($content, '_POST_PRODUCT_DATA_');
+    }
+
     public function sendProductImages() {
         // Build the feed
         $template = $this->getTemplate();
