@@ -4,13 +4,10 @@ namespace Modules\Checkout\Pages;
 
 use Exception;
 use Lightning\Model\User;
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Form;
 use Lightning\Tools\Navigation;
 use Lightning\Tools\Request;
-use Lightning\Tools\Security\Encryption;
-use Lightning\Tools\Session\DBSession;
 use Lightning\Tools\Template;
+use Lightning\View\Field\Location;
 use Lightning\View\JS;
 use Lightning\View\Page;
 use Modules\Checkout\Model\Address;
@@ -70,6 +67,8 @@ class Checkout extends Page {
         switch ($nextPage) {
             case self::PAGE_SHIPPING:
                 JS::startup('lightning.tracker.track(lightning.tracker.events.initiateCheckout, {});');
+                JS::startup('lightning.modules.checkout.initCountrySelection()', ['Checkout' => 'Checkout.js']);
+                JS::set('modules.checkout.states', Location::getStateOptions(null));
                 break;
             case self::PAGE_PAYMENT_OPTIONS:
                 $template->set('handlers', $this->paymentHandlers);

@@ -620,6 +620,49 @@
                 content = '<div><h2>Your cart is empty.</h2></div>';
             }
             lightning.dialog.showContent(content, false);
+        },
+
+        /**
+         * Change the state selector option when the country is changed.
+         * This must be called on the checkout page on load.
+         */
+        initCountrySelection: function() {
+            $('#country').on('change', self.updateState);
+            self.updateState();
+        },
+
+        updateState:  function(){
+            var country = $('#country').val();
+            var states = lightning.get('modules.checkout.states.' + country, null);
+            var container = $('#state_container');
+            var select = container.find('select');
+            var input = container.find('input');
+            if (states === null) {
+                // No options are available for this country.
+                // If this field is still a select field, change it to a text field.
+                if (select.length > 0) {
+                    select.remove();
+                }
+                if (input.length === 0) {
+                    container.prepend('<input type="text" name="state" id="state" required />');
+                }
+            } else {
+                // State options are available for this country.
+                // If this field is still a select field, change it to a text field.
+                if (input.length > 0) {
+                    input.remove();
+                }
+                if (select.length === 0) {
+                    container.prepend('<select type="text" name="state" id="state" required></select>');
+                    select = container.find('select');
+                } else {
+                    select.empty();
+                }
+                select.append('<option></option>');
+                for (var i in states) {
+                    select.append('<option value="' + i + '">' + states[i] + '</option>');
+                }
+            }
         }
     };
 })();

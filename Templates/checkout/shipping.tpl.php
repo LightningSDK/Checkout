@@ -42,21 +42,21 @@
             </div>
 
             <div>
+                <label>Country:</label>
+                <?= \Lightning\View\Field\Location::countryPop('country', 'required', !empty($shipping->country) ? $shipping->country : 'US'); ?>
+                <small class="error">Please select your country</small>
+            </div>
+            <div>
                 <label>State:</label>
-                <?= \Lightning\View\Field\Location::statePop('state', !empty($shipping->state) ? $shipping->state : '', 'required'); ?>
-                <small class="error">Please select your state</small>
+                <div id="state_container">
+                    <small class="error">Please select your state</small>
+                </div>
             </div>
 
             <div>
                 <label>Postal Code:</label>
                 <input name="zip" required value="<?= !empty($shipping->zip) ? $shipping->zip : ''; ?>">
                 <small class="error">Please enter your postal code</small>
-            </div>
-
-            <div>
-                <label>Country:</label>
-                <?= \Lightning\View\Field\Location::countryPop('country', 'required', !empty($shipping->country) ? $shipping->country : 'US'); ?>
-                <small class="error">Please select your country</small>
             </div>
 
             <div class="text-right">
