@@ -24,3 +24,15 @@
         <?php endif; ?>
     </div>
 </div>
+<div class="row">
+    <div class="column">
+        <?php
+$default = <<<DEFAULT
+<h3>Here's your affiliate link:</h3>
+<p><code>{WEB_ROOT}/?ref={USER_ID}</code></p>
+DEFAULT;
+echo \Lightning\View\CMS::embed('checkout-affiliate-body', [
+                'default' => $default,
+        ]); ?>
+    </div>
+</div>
