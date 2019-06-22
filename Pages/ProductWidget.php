@@ -13,6 +13,9 @@ class ProductWidget extends Widget {
 
     public function getBody() {
         parent::getBody();
+        if ($max = Request::get('max', Request::TYPE_INT)) {
+            $this->maxProducts = $max;
+        }
         $products = $this->getProducts();
         $template = Template::getInstance();
         $template->set('products', $products);
