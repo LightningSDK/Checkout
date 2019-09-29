@@ -7,7 +7,7 @@ use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
 use Lightning\Tools\Image;
 
-class Category extends Object {
+class CategoryOverridable extends Object {
     const TABLE = 'checkout_category';
     const PRIMARY_KEY = 'category_id';
 
