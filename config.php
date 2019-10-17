@@ -10,6 +10,7 @@ return [
             'admin/orders' => \Modules\Checkout\Pages\Admin\Orders::class,
             'admin/products' => \Modules\Checkout\Pages\Admin\Products::class,
             'admin/product-classes' => \Modules\Checkout\Pages\Admin\ProductClasses::class,
+            'admin/product-categories' => \Modules\Checkout\Pages\Admin\Categories::class,
             'store/embed' => \Modules\Checkout\Pages\ProductWidget::class,
             'api/cart' => \Modules\Checkout\API\Cart::class,
             'store/checkout' => \Modules\Checkout\Pages\Checkout::class,
