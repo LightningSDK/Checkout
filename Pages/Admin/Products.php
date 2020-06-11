@@ -2,9 +2,9 @@
 
 namespace lightningsdk\checkout\Pages\Admin;
 
-use Lightning\Pages\Table;
-use Lightning\Tools\ClientUser;
-use Lightning\Tools\Database;
+use lightningsdk\core\Pages\Table;
+use lightningsdk\core\Tools\ClientUser;
+use lightningsdk\core\Tools\Database;
 
 class Products extends Table {
 

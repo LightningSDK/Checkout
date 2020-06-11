@@ -3,11 +3,11 @@
 namespace lightningsdk\checkout\Model;
 
 use Exception;
-use Lightning\Model\BaseObject;
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Database;
-use Lightning\Tools\Image;
-use Lightning\Tools\Template;
+use lightningsdk\core\Model\BaseObject;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Database;
+use lightningsdk\core\Tools\Image;
+use lightningsdk\core\Tools\Template;
 
 class ProductOverridable extends BaseObject {
     const TABLE = 'checkout_product';

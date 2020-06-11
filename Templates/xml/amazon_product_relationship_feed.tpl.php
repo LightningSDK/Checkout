@@ -27,7 +27,7 @@
                         $options = current($product->getAllOptionCombinations($knownOptions));
                         $nonAmazonVariations = $product->getNonAmazonVariation($options);
                     } else { $nonAmazonVariations = []; } ?>
-                    <ParentSKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $nonAmazonVariations)); ?></ParentSKU>
+                    <ParentSKU><?= $product->sku; ?>-<?= \lightningsdk\core\Tools\Scrub::url(implode('-', $nonAmazonVariations)); ?></ParentSKU>
 
                     <?php
                     /**
@@ -36,7 +36,7 @@
                     ?>
                     <?php foreach ($product->getAllOptionCombinations($knownOptions) as $variation): if (!empty($variation)): ?>
                         <Relation>
-                            <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
+                            <SKU><?= $product->sku; ?>-<?= \lightningsdk\core\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
                             <Type>Variation</Type>
                         </Relation>
                     <?php endif; endforeach; ?>

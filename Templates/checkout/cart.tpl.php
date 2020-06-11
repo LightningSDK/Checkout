@@ -48,7 +48,7 @@
         <td>$<?= number_format($cart->getShipping(), 2); ?></td>
     </tr>
     <?php endif; ?>
-    <?php if (\Lightning\Tools\Configuration::get('modules.checkout.enable_discounts')): ?>
+    <?php if (\lightningsdk\core\Tools\Configuration::get('modules.checkout.enable_discounts')): ?>
         <?php $discountsField = '<div class="row">
             <div class="large-4 medium-12 column">
                 <span class="form-inline">Add a discount:</span>

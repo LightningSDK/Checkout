@@ -3,13 +3,13 @@
 namespace lightningsdk\checkout\Pages;
 
 use Exception;
-use Lightning\Model\User;
-use Lightning\Tools\Navigation;
-use Lightning\Tools\Request;
-use Lightning\Tools\Template;
-use Lightning\View\Field\Location;
-use Lightning\View\JS;
-use Lightning\View\Page;
+use lightningsdk\core\Model\User;
+use lightningsdk\core\Tools\Navigation;
+use lightningsdk\core\Tools\Request;
+use lightningsdk\core\Tools\Template;
+use lightningsdk\core\View\Field\Location;
+use lightningsdk\core\View\JS;
+use lightningsdk\core\View\Page;
 use lightningsdk\checkout\Model\Address;
 use lightningsdk\checkout\Model\Order;
 

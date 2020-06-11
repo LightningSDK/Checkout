@@ -2,8 +2,8 @@
 
 namespace lightningsdk\checkout\Feeds;
 
-use Lightning\Model\URL;
-use Lightning\View\Feed;
+use lightningsdk\core\Model\URL;
+use lightningsdk\core\View\Feed;
 use lightningsdk\checkout\Model\Product;
 
 class Products extends Feed {

@@ -1,6 +1,6 @@
 <div class="row">
     <div class="small-12 medium-6 medium-offset-3 column">
-        <?= \Lightning\View\CMS::embed('checkout_shipping_header', [
+        <?= \lightningsdk\core\View\CMS::embed('checkout_shipping_header', [
                 'default' => '
                 <h2 class="text-center">Where should we ship it?</h2>
                 <p style="text-align: center"><img src="/images/checkout/secure-payments.png" style="height:60px;"></p>
@@ -8,7 +8,7 @@
         ]); ?>
 
         <form data-abide method="post" action="/store/checkout">
-            <?= \Lightning\Tools\Form::renderTokenInput(); ?>
+            <?= \lightningsdk\core\Tools\Form::renderTokenInput(); ?>
             <?php $shipping = $cart->getShippingAddress(); ?>
             <input type="hidden" name="action" value="shipping">
 
@@ -43,7 +43,7 @@
 
             <div>
                 <label>Country:</label>
-                <?= \Lightning\View\Field\Location::countryPop('country', 'required', !empty($shipping->country) ? $shipping->country : 'US'); ?>
+                <?= \lightningsdk\core\View\Field\Location::countryPop('country', 'required', !empty($shipping->country) ? $shipping->country : 'US'); ?>
                 <small class="form-error">Please select your country</small>
             </div>
             <div>

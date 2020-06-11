@@ -16,7 +16,7 @@
                 <Message>
                     <MessageID><?= $i++; ?></MessageID>
                     <Price>
-                        <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
+                        <SKU><?= $product->sku; ?>-<?= \lightningsdk\core\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
                         <StandardPrice currency="USD"><?= number_format($product->getOptionForSettings('price', $variation), 2); ?></StandardPrice>
                     </Price>
                 </Message>

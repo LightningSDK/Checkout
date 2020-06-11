@@ -2,8 +2,8 @@
 
 namespace lightningsdk\checkout\Pages\Admin;
 
-use Lightning\Pages\Table;
-use Lightning\Tools\ClientUser;
+use lightningsdk\core\Pages\Table;
+use lightningsdk\core\Tools\ClientUser;
 
 class ProductClasses extends Table {
 

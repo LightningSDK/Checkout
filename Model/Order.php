@@ -3,17 +3,17 @@
 namespace lightningsdk\checkout\Model;
 
 use Exception;
-use Lightning\Model\BaseObject;
-use Lightning\Model\User;
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Database;
-use Lightning\Tools\Mailer;
-use Lightning\Tools\Messenger;
-use Lightning\Tools\Request;
-use Lightning\Tools\Security\Encryption;
-use Lightning\Tools\Session\BrowserSession;
-use Lightning\Tools\Session\DBSession;
-use Lightning\Tools\ClientUser;
+use lightningsdk\core\Model\BaseObject;
+use lightningsdk\core\Model\User;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Database;
+use lightningsdk\core\Tools\Mailer;
+use lightningsdk\core\Tools\Messenger;
+use lightningsdk\core\Tools\Request;
+use lightningsdk\core\Tools\Security\Encryption;
+use lightningsdk\core\Tools\Session\BrowserSession;
+use lightningsdk\core\Tools\Session\DBSession;
+use lightningsdk\core\Tools\ClientUser;
 
 /**
  * Class Order

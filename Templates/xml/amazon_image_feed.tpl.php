@@ -21,9 +21,9 @@
                     <MessageID><?= $i++; ?></MessageID>
                     <OperationType>Update</OperationType>
                     <ProductImage>
-                        <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
+                        <SKU><?= $product->sku; ?>-<?= \lightningsdk\core\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
                         <ImageType><?= $key == 0 ? 'Main' : ('PT' . $key); ?></ImageType>
-                        <ImageLocation><?= \Lightning\Model\URL::getAbsolute($image); ?></ImageLocation>
+                        <ImageLocation><?= \lightningsdk\core\Model\URL::getAbsolute($image); ?></ImageLocation>
                     </ProductImage>
                 </Message>
                 <?php endforeach; ?>

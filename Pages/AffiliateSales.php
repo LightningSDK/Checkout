@@ -2,11 +2,11 @@
 
 namespace lightningsdk\checkout\Pages;
 
-use Lightning\Tools\ClientUser;
-use Lightning\Tools\Database;
-use Lightning\Tools\Navigation;
-use Lightning\Tools\Template;
-use Lightning\View\Page;
+use lightningsdk\core\Tools\ClientUser;
+use lightningsdk\core\Tools\Database;
+use lightningsdk\core\Tools\Navigation;
+use lightningsdk\core\Tools\Template;
+use lightningsdk\core\View\Page;
 
 class AffiliateSales extends Page {
 

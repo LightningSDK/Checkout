@@ -2,10 +2,10 @@
 
 namespace lightningsdk\checkout\Jobs;
 
-use Lightning\Jobs\Job;
-use Lightning\Tools\Communicator\RestClient;
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Template;
+use lightningsdk\core\Jobs\Job;
+use lightningsdk\core\Tools\Communicator\RestClient;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Template;
 use lightningsdk\checkout\Model\Product;
 
 class AmazonUpload extends Job {

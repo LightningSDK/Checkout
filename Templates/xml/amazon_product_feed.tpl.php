@@ -27,7 +27,7 @@
                                     $options = current($product->getAllOptionCombinations($knownOptions));
                             $nonAmazonVariations = $product->getNonAmazonVariation($options);
                         } else { $nonAmazonVariations = []; } ?>
-                        <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $nonAmazonVariations)); ?></SKU>
+                        <SKU><?= $product->sku; ?>-<?= \lightningsdk\core\Tools\Scrub::url(implode('-', $nonAmazonVariations)); ?></SKU>
                         <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
                         <DescriptionData>
                             <Title><?= $product->title; ?></Title>
@@ -86,7 +86,7 @@
                     <MessageID><?= $i++; ?></MessageID>
                     <OperationType>Update</OperationType>
                     <Product>
-                        <SKU><?= $product->sku; ?>-<?= \Lightning\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
+                        <SKU><?= $product->sku; ?>-<?= \lightningsdk\core\Tools\Scrub::url(implode('-', $variation)); ?></SKU>
                         <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
                         <DescriptionData>
                             <Title><?= $product->title; ?></Title>

@@ -2,7 +2,7 @@
 <div class="row">
     <div class="column">
         <form method="post">
-            <?= \Lightning\Tools\Form::renderTokenInput(); ?>
+            <?= \lightningsdk\core\Tools\Form::renderTokenInput(); ?>
             <h3>
                 Are you sure you want to mark this order as fulfilled?
             </h3>

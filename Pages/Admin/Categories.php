@@ -2,9 +2,9 @@
 
 namespace lightningsdk\checkout\Pages\Admin;
 
-use Lightning\Pages\Table;
-use Lightning\Tools\ClientUser;
-use Lightning\Tools\Request;
+use lightningsdk\core\Pages\Table;
+use lightningsdk\core\Tools\ClientUser;
+use lightningsdk\core\Tools\Request;
 
 class Categories extends Table {
 

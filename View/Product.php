@@ -2,9 +2,9 @@
 
 namespace lightningsdk\checkout\View;
 
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Scrub;
-use Lightning\View\HTML;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Scrub;
+use lightningsdk\core\View\HTML;
 use lightningsdk\checkout\Model\Product as ProductModel;
 
 class Product {

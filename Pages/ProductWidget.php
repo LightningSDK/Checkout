@@ -2,10 +2,10 @@
 
 namespace lightningsdk\checkout\Pages;
 
-use Lightning\Tools\Request;
-use Lightning\Tools\Template;
+use lightningsdk\core\Tools\Request;
+use lightningsdk\core\Tools\Template;
 use lightningsdk\checkout\Model\Product as ProductModel;
-use Lightning\View\Widget;
+use lightningsdk\core\View\Widget;
 
 class ProductWidget extends Widget {
     protected $page = ['widget', 'Checkout'];

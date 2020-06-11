@@ -2,10 +2,10 @@
 
 namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\BaseObject;
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Database;
-use Lightning\Tools\Image;
+use lightningsdk\core\Model\BaseObject;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Database;
+use lightningsdk\core\Tools\Image;
 
 class Category extends BaseObject {
     const TABLE = 'checkout_category';

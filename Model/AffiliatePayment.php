@@ -2,7 +2,7 @@
 
 namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\BaseObject;
+use lightningsdk\core\Model\BaseObject;
 
 /**
  * Class Address

@@ -2,9 +2,9 @@
 
 namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\BaseObject;
-use Lightning\Tools\Database;
-use Lightning\View\HTMLEditor\Markup;
+use lightningsdk\core\Model\BaseObject;
+use lightningsdk\core\Tools\Database;
+use lightningsdk\core\View\HTMLEditor\Markup;
 
 class LineItem extends BaseObject {
     const TABLE = 'checkout_order_item';

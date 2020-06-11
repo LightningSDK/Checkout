@@ -3,16 +3,16 @@
 namespace lightningsdk\checkout\Pages\Admin;
 
 use Exception;
-use Lightning\Pages\Table;
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Navigation;
-use Lightning\Tools\Output;
-use Lightning\Tools\Request;
-use Lightning\Tools\Template;
-use Lightning\View\JS;
-use Lightning\View\TablePresets;
+use lightningsdk\core\Pages\Table;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Navigation;
+use lightningsdk\core\Tools\Output;
+use lightningsdk\core\Tools\Request;
+use lightningsdk\core\Tools\Template;
+use lightningsdk\core\View\JS;
+use lightningsdk\core\View\TablePresets;
 use lightningsdk\checkout\Model\Order;
-use Lightning\Tools\ClientUser;
+use lightningsdk\core\Tools\ClientUser;
 
 class Orders extends Table {
     const TABLE = 'checkout_order';

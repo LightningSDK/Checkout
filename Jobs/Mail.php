@@ -2,11 +2,11 @@
 
 namespace lightningsdk\checkout\Jobs;
 
-use Lightning\Jobs\Job;
-use Lightning\Model\Message;
-use Lightning\Model\Subscription;
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Mailer;
+use lightningsdk\core\Jobs\Job;
+use lightningsdk\core\Model\Message;
+use lightningsdk\core\Model\Subscription;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Mailer;
 use lightningsdk\checkout\Model\Order;
 
 class Mail extends Job {

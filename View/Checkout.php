@@ -3,10 +3,10 @@
 namespace lightningsdk\checkout\View;
 
 use Exception;
-use Lightning\Tools\Configuration;
-use Lightning\View\CSS;
-use Lightning\View\HTML;
-use Lightning\View\JS;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\View\CSS;
+use lightningsdk\core\View\HTML;
+use lightningsdk\core\View\JS;
 use lightningsdk\checkout\Model\Product;
 
 class Checkout {

@@ -35,7 +35,7 @@ $default = <<<DEFAULT
 <h3>Here's your affiliate link:</h3>
 <p><code>{WEB_ROOT}/?ref={USER_ID}</code></p>
 DEFAULT;
-echo \Lightning\View\CMS::embed('checkout-affiliate-body', [
+echo \lightningsdk\core\View\CMS::embed('checkout-affiliate-body', [
                 'default' => $default,
         ]); ?>
     </div>

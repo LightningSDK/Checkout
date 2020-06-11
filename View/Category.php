@@ -2,10 +2,10 @@
 
 namespace lightningsdk\checkout\View;
 
-use Lightning\Tools\Configuration;
-use Lightning\Tools\Scrub;
-use Lightning\Tools\Template;
-use Lightning\View\HTML;
+use lightningsdk\core\Tools\Configuration;
+use lightningsdk\core\Tools\Scrub;
+use lightningsdk\core\Tools\Template;
+use lightningsdk\core\View\HTML;
 use lightningsdk\checkout\Model\Category as CategoryModel;
 
 class Category {

@@ -3,10 +3,10 @@
 namespace lightningsdk\checkout\API;
 
 use Exception;
-use Lightning\Tools\ClientUser;
-use Lightning\Tools\Output;
-use Lightning\Tools\Request;
-use Lightning\View\API;
+use lightningsdk\core\Tools\ClientUser;
+use lightningsdk\core\Tools\Output;
+use lightningsdk\core\Tools\Request;
+use lightningsdk\core\View\API;
 use lightningsdk\checkout\Model\Discount;
 use lightningsdk\checkout\Model\LineItem;
 use lightningsdk\checkout\Model\Order;

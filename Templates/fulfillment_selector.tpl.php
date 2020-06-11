@@ -1,4 +1,4 @@
-<?php use Lightning\Tools\Configuration; ?>
+<?php use lightningsdk\core\Tools\Configuration; ?>
 <div class="row">
     <div class="column">
         This order requires multiple fulfillment handlers:

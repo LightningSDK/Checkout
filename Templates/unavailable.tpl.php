@@ -5,17 +5,17 @@
     <div class="loading-container optin clearfix frame">
         Want to know when this item is available?
         <form action="/user" method="post" id="register" data-abide>
-            <?= \Lightning\Tools\Form::renderTokenInput(); ?>
+            <?= \lightningsdk\core\Tools\Form::renderTokenInput(); ?>
             <input type="hidden" name="list" value="<?=\Source\Model\Message::getListIDByName('Product Waiting');?>" />
             <div>
                 <label>Your Name:
-                    <input type="text" name="name" id='name' value="<?=\Lightning\View\Field::defaultValue('name');?>" required />
+                    <input type="text" name="name" id='name' value="<?=\lightningsdk\core\View\Field::defaultValue('name');?>" required />
                 </label>
                 <small class="form-error">Please enter your name.</small>
             </div>
             <div>
                 <label>Your Email:
-                    <input type="email" name="email" id='email' value="<?=\Lightning\View\Field::defaultValue('email');?>" required />
+                    <input type="email" name="email" id='email' value="<?=\lightningsdk\core\View\Field::defaultValue('email');?>" required />
                 </label>
                 <small class="form-error">Please enter your email.</small>
             </div>

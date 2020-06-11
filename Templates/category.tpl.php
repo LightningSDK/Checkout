@@ -4,7 +4,7 @@ category
     <ul class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4 category-products text-center">
         <?php foreach ($categories as $category): ?>
             <li class="product cell">
-                <a href="/store/<?= $category->url; ?>"><img src="<?= $category->getImage(); ?>" alt="<?= \Lightning\Tools\Scrub::toHTML($category->name); ?>">
+                <a href="/store/<?= $category->url; ?>"><img src="<?= $category->getImage(); ?>" alt="<?= \lightningsdk\core\Tools\Scrub::toHTML($category->name); ?>">
                     <br><strong><?= $category->name; ?></strong></a>
             </li>
         <?php endforeach; ?>
@@ -15,7 +15,7 @@ category
     <ul class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4 category-products text-center">
         <?php foreach ($products as $product): ?>
             <li class="product cell">
-                <a href="/store/<?= $product->url; ?>"><img src="<?= $product->getImage(); ?>" alt="<?= \Lightning\Tools\Scrub::toHTML($product->title); ?>">
+                <a href="/store/<?= $product->url; ?>"><img src="<?= $product->getImage(); ?>" alt="<?= \lightningsdk\core\Tools\Scrub::toHTML($product->title); ?>">
                 <br><strong><?= $product->title; ?></strong></a>
             </li>
         <?php endforeach; ?>

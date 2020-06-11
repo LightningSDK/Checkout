@@ -2,7 +2,7 @@
 
 namespace lightningsdk\checkout\Database\Schema;
 
-use Lightning\Database\Schema;
+use lightningsdk\core\Database\Schema;
 
 class Payment extends Schema {
 

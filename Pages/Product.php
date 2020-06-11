@@ -2,11 +2,11 @@
 
 namespace lightningsdk\checkout\Pages;
 
-use Lightning\Pages\Page;
-use Lightning\Tools\Output;
-use Lightning\Tools\Request;
-use Lightning\Tools\Template;
-use Lightning\View\JS;
+use lightningsdk\core\Pages\Page;
+use lightningsdk\core\Tools\Output;
+use lightningsdk\core\Tools\Request;
+use lightningsdk\core\Tools\Template;
+use lightningsdk\core\View\JS;
 use lightningsdk\checkout\Model\Category;
 use lightningsdk\checkout\Model\Product as ProductModel;
 use lightningsdk\checkout\View\Checkout;

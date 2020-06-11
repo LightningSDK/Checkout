@@ -2,7 +2,7 @@
 
 namespace lightningsdk\checkout\Database\Schema;
 
-use Lightning\Database\Schema;
+use lightningsdk\core\Database\Schema;
 
 class Order extends Schema {
 
