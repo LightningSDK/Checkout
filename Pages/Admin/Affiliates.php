@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Checkout\Pages\Admin;
+namespace lightningsdk\checkout\Pages\Admin;
 
 use Lightning\Tools\ClientUser;
 use Lightning\Tools\Database;

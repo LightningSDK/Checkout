@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
 use Lightning\Tools\Image;
 
-class CategoryOverridable extends Object {
+class Category extends BaseObject {
     const TABLE = 'checkout_category';
     const PRIMARY_KEY = 'category_id';
 
@@ -79,12 +79,12 @@ class CategoryOverridable extends Object {
     public function getImage($type = self::IMAGE_LISTING) {
         $image = $this->image;
         // If image manager is installed, use it.
-        if (class_exists('Modules\ImageManager\Model\Image')) {
+        if (class_exists('lightningsdk\imagemanager\Model\Image')) {
             $size = 1000;
             if ($type == self::IMAGE_LISTING) {
                 $size = 250;
             }
-            $image = \Modules\ImageManager\Model\Image::getImage($image, $size, Image::FORMAT_JPG);
+            $image = \lightningsdk\imagemanager\Model\Image::getImage($image, $size, Image::FORMAT_JPG);
         }
 
         return $image;

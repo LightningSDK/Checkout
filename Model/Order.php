@@ -1,9 +1,9 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
 use Exception;
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 use Lightning\Model\User;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
@@ -17,7 +17,7 @@ use Lightning\Tools\ClientUser;
 
 /**
  * Class Order
- * @package Modules\Checkout\Model
+ * @package lightningsdk\checkout\Model
  *
  * @parameter integer $id
  * @parameter integer $order_id
@@ -32,7 +32,7 @@ use Lightning\Tools\ClientUser;
  * @parameter integer $total
  * @parameter string $details
  */
-class OrderOverridable extends Object {
+class OrderOverridable extends BaseObject {
     const TABLE = 'checkout_order';
     const PRIMARY_KEY = 'order_id';
 

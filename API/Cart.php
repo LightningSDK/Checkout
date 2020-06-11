@@ -1,16 +1,16 @@
 <?php
 
-namespace Modules\Checkout\API;
+namespace lightningsdk\checkout\API;
 
 use Exception;
 use Lightning\Tools\ClientUser;
 use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\View\API;
-use Modules\Checkout\Model\Discount;
-use Modules\Checkout\Model\LineItem;
-use Modules\Checkout\Model\Order;
-use Modules\Checkout\Model\Product;
+use lightningsdk\checkout\Model\Discount;
+use lightningsdk\checkout\Model\LineItem;
+use lightningsdk\checkout\Model\Order;
+use lightningsdk\checkout\Model\Product;
 
 class Cart extends API {
 

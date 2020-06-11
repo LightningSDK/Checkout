@@ -7,54 +7,73 @@ return [
     ],
     'routes' => [
         'static' => [
-            'admin/orders' => \Modules\Checkout\Pages\Admin\Orders::class,
-            'admin/products' => \Modules\Checkout\Pages\Admin\Products::class,
-            'admin/product-classes' => \Modules\Checkout\Pages\Admin\ProductClasses::class,
-            'admin/product-categories' => \Modules\Checkout\Pages\Admin\Categories::class,
-            'store/embed' => \Modules\Checkout\Pages\ProductWidget::class,
-            'api/cart' => \Modules\Checkout\API\Cart::class,
-            'store/checkout' => \Modules\Checkout\Pages\Checkout::class,
-            'feeds/products' => \Modules\Checkout\Feeds\Products::class,
-            'affiliate/mysales' => \Modules\Checkout\Pages\AffiliateSales::class,
-            'admin/affiliates' => \Modules\Checkout\Pages\Admin\Affiliates::class,
+            'admin/orders' => \lightningsdk\checkout\Pages\Admin\Orders::class,
+            'admin/products' => \lightningsdk\checkout\Pages\Admin\Products::class,
+            'admin/product-classes' => \lightningsdk\checkout\Pages\Admin\ProductClasses::class,
+            'store/embed' => \lightningsdk\checkout\Pages\ProductWidget::class,
+            'api/cart' => \lightningsdk\checkout\API\Cart::class,
+            'store/checkout' => \lightningsdk\checkout\Pages\Checkout::class,
+            'feeds/products' => \lightningsdk\checkout\Feeds\Products::class,
+            'affiliate/mysales' => \lightningsdk\checkout\Pages\AffiliateSales::class,
+            'admin/affiliates' => \lightningsdk\checkout\Pages\Admin\Affiliates::class,
         ],
         'dynamic' => [
-            '^store/.*' => \Modules\Checkout\Pages\Product::class,
+            '^store/.*' => \lightningsdk\checkout\Pages\Product::class,
         ],
     ],
     'markup' => [
         'renderers' => [
-            'checkout' => \Modules\Checkout\View\Checkout::class,
-            'checkout-product' => \Modules\Checkout\View\Product::class,
+            'checkout' => \lightningsdk\checkout\View\Checkout::class,
+            'checkout-category' => \lightningsdk\checkout\View\Category::class,
+            'checkout-product' => \lightningsdk\checkout\View\Product::class,
         ]
     ],
-    'js' => [
-        // Module Name
-        'Checkout' => [
-            // Source file => Dest file
-            'Checkout.js' => 'Checkout.min.js',
-        ]
+    'compiler' => [
+        'js' => [
+            // Module Name
+            'Checkout' => [
+                // Source file => Dest file
+                'Checkout.js' => 'Checkout.min.js',
+            ]
+        ],
+        'css' => [
+            'Checkout' => [
+                'checkout.scss' => 'lightning.css',
+            ],
+        ],
     ],
     'modules' => [
         'checkout' => [
-            'init_view' => [\Modules\Checkout\View\Checkout::class, 'init'],
+            'init_view' => [\lightningsdk\checkout\View\Checkout::class, 'init'],
             'buy_now_text' => 'Buy Now',
         ]
     ],
     'sitemap' => [
-        'checkout_products' => \Modules\Checkout\Model\Category::class,
-        'checkout_categories' => \Modules\Checkout\Model\Product::class,
+        'checkout_products' => \lightningsdk\checkout\Model\Category::class,
+        'checkout_categories' => \lightningsdk\checkout\Model\Product::class,
     ],
     'jobs' => [
         'checkout-mailer' => [
-            'class' => \Modules\Checkout\Jobs\Mail::class,
+            'class' => \lightningsdk\checkout\Jobs\Mail::class,
             'schedule' => '*/30 * * * * *',
             'max_threads' => 1,
         ],
         'amazon-upload-products' => [
-            'class' => \Modules\Checkout\Jobs\AmazonUpload::class,
+            'class' => \lightningsdk\checkout\Jobs\AmazonUpload::class,
             'schedule' => '* 3 * * * *',
             'max_threads' => 1,
+        ],
+    ],
+    'menus' => [
+        'admin' => [
+            'Store' => [
+                'children' => [
+                    'Orders' => '/admin/orders',
+                    'Products' => '/admin/products',
+                    'Product Classes' => '/admin/product-classes',
+                    'Affiliates' => '/admin/affiliates',
+                ],
+            ],
         ],
     ],
     // TODO: add login update session_id => user_id or cart

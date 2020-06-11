@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Checkout\Pages\Admin;
+namespace lightningsdk\checkout\Pages\Admin;
 
 use Exception;
 use Lightning\Pages\Table;
@@ -11,7 +11,7 @@ use Lightning\Tools\Request;
 use Lightning\Tools\Template;
 use Lightning\View\JS;
 use Lightning\View\TablePresets;
-use Modules\Checkout\Model\Order;
+use lightningsdk\checkout\Model\Order;
 use Lightning\Tools\ClientUser;
 
 class Orders extends Table {
@@ -20,6 +20,8 @@ class Orders extends Table {
 
     protected $field_order = ['order_id', 'status', 'email', 'shipping_address'];
     protected $sort = ['order_id' => 'DESC'];
+    protected $addable = false;
+    protected $exportable = true;
 
     protected $preset = [
         'details' => [
@@ -43,8 +45,12 @@ class Orders extends Table {
             'editable' => false,
             'allow_blank' => true,
         ],
+        'email' => [
+            'editable' => false,
+        ],
         'shipping_address' => [
             'editable' => false,
+            'exportable' => false,
         ],
         'tax' => [
             'editable' => false,
@@ -86,17 +92,12 @@ class Orders extends Table {
 
     protected function initSettings() {
         parent::initSettings();
-        $this->preset['shipping_address'] = [
-            'render_list_field' => function(&$row) {
+        $this->preset['shipping_address']['render_list_field'] = function(&$row) {
                 return $row['name'] . '<br>' . $row['street'] . ' ' . $row['street2'] . '<br>' . $row['city'] . ', ' . $row['state'] . ' ' . $row['zip'];
-            }
-        ];
-        $this->preset['email'] = [
-            'editable' => false,
-            'render_list_field' => function(&$row) {
+            };
+        $this->preset['email']['render_list_field'] = function(&$row) {
                 return $row['email'];
-            }
-        ];
+            };
         $this->preset['contents']['display_value'] = function(&$row) {
             $order = Order::loadByID($row['order_id']);
             return $order->formatContents([

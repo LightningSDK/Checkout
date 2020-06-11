@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Checkout\Pages;
+namespace lightningsdk\checkout\Pages;
 
 use Lightning\Tools\Request;
 use Lightning\Tools\Template;
-use Modules\Checkout\Model\Product as ProductModel;
+use lightningsdk\checkout\Model\Product as ProductModel;
 use Lightning\View\Widget;
 
 class ProductWidget extends Widget {

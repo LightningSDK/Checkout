@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Checkout\Jobs;
+namespace lightningsdk\checkout\Jobs;
 
 use Lightning\Jobs\Job;
 use Lightning\Model\Message;
 use Lightning\Model\Subscription;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Mailer;
-use Modules\Checkout\Model\Order;
+use lightningsdk\checkout\Model\Order;
 
 class Mail extends Job {
 

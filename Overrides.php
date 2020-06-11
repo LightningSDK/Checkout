@@ -4,9 +4,8 @@
  * These are here to map the overridable classes for your IDE.
  */
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-class AffiliatePayment extends \Modules\Checkout\Model\AffiliatePaymentOverridable {}
-class Order extends \Modules\Checkout\Model\OrderOverridable {}
-class Product extends \Modules\Checkout\Model\ProductOverridable {}
-class Catgoery extends \Modules\Checkout\Model\CategoryOverridable {}
+class AffiliatePayment extends \lightningsdk\checkout\Model\AffiliatePaymentOverridable {}
+class Order extends \lightningsdk\checkout\Model\OrderOverridable {}
+class Product extends \lightningsdk\checkout\Model\ProductOverridable {}

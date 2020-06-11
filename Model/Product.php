@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
 use Exception;
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Database;
 use Lightning\Tools\Image;
 use Lightning\Tools\Template;
 
-class ProductOverridable extends Object {
+class ProductOverridable extends BaseObject {
     const TABLE = 'checkout_product';
     const PRIMARY_KEY = 'product_id';
 
@@ -167,12 +167,12 @@ class ProductOverridable extends Object {
         } catch (Exception $e) {};
 
         // If image manager is installed, use it.
-        if (class_exists('Modules\ImageManager\Model\Image')) {
+        if (class_exists('lightningsdk\imagemanager\Model\Image')) {
             $size = 1000;
             if ($type == self::IMAGE_LISTING) {
                 $size = 250;
             }
-            $image = \Modules\ImageManager\Model\Image::getImage($image, $size, Image::FORMAT_JPG);
+            $image = \lightningsdk\imagemanager\Model\Image::getImage($image, $size, Image::FORMAT_JPG);
         }
 
         return $image;

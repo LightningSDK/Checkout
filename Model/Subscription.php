@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 use Lightning\Tools\Database;
 
 /**
  * Class Subscription
- * @package Modules\Checkout\Model
+ * @package lightningsdk\checkout\Model
  *
  * @property integer subscription_id
  * @property integer user_id
@@ -16,7 +16,7 @@ use Lightning\Tools\Database;
  * @property integer updated
  * @property string status
  */
-class Subscription extends Object {
+class Subscription extends BaseObject {
 
     const TABLE = 'checkout_subscription';
     const PRIMARY_KEY = 'subscription_id';

@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Checkout\Feeds;
+namespace lightningsdk\checkout\Feeds;
 
 use Lightning\Model\URL;
 use Lightning\View\Feed;
-use Modules\Checkout\Model\Product;
+use lightningsdk\checkout\Model\Product;
 
 class Products extends Feed {
 

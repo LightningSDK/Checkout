@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Checkout\View;
+namespace lightningsdk\checkout\View;
 
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Scrub;
 use Lightning\View\HTML;
-use Modules\Checkout\Model\Product as ProductModel;
+use lightningsdk\checkout\Model\Product as ProductModel;
 
 class Product {
 
@@ -34,16 +34,17 @@ class Product {
 
         $config = Configuration::get('modules.checkout');
 
-        /** @var \Modules\Checkout\Model\Product $product */
+        /** @var \lightningsdk\checkout\Model\Product $product */
+        $li_class = $options['ul-class'] ?? 'column column-block';
         foreach ($products as $product) {
             $button_text = (!empty($config['buy_now_text']) && $config['buy_now_text'] == '$price') ? '$' . intval($product->price) : $config['buy_now_text'];
             $output .= '
-                <li class="item">
+                <div class="item ' . $li_class . '">
                     <a href="/store/' . $product->url . '">
                         <img src="' . $product->getImage() . '" style="border-radius: 10px;" alt="' . Scrub::toHTML($product->title) . '"><br>
                     </a>
                     <span class="button medium red checkout-product" id="' . $product->sku . '" data-checkout-product-id="' . $product->id . '" data-checkout="add-to-cart">' . $button_text . '</span>
-                </li>';
+                </div>';
         }
 
         $form_attributes = [];
@@ -53,6 +54,6 @@ class Product {
             }
         }
 
-        return '<ul class="' . ($options['ul-class'] ?? '') . '" ' . HTML::implodeAttributes($form_attributes) . '>' . $output . '</ul>';
+        return '<div class="' . ($options['ul-class'] ?? 'grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4') . '" ' . HTML::implodeAttributes($form_attributes) . '>' . $output . '</div>';
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\Checkout\View;
+namespace lightningsdk\checkout\View;
 
 use Exception;
 use Lightning\Tools\Configuration;
 use Lightning\View\CSS;
 use Lightning\View\HTML;
 use Lightning\View\JS;
-use Modules\Checkout\Model\Product;
+use lightningsdk\checkout\Model\Product;
 
 class Checkout {
     public static function init() {

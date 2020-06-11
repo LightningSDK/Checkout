@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Checkout\Database\Schema;
+namespace lightningsdk\checkout\Database\Schema;
 
 use Lightning\Database\Schema;
 

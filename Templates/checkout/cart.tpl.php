@@ -1,5 +1,5 @@
 <?php
-/* @var $cart \Modules\Checkout\Model\Order */
+/* @var $cart \lightningsdk\checkout\Model\Order */
 ?>
 <div class="checkout-cart-container">
 <table class="checkout-cart">
@@ -11,7 +11,7 @@
         <td class="item-total">Total</td>
     </tr>
     <?php
-    /* @var $item \Modules\Checkout\Model\LineItem */
+    /* @var $item \lightningsdk\checkout\Model\LineItem */
     foreach ($cart->getItems() as $item):
     $description = '<strong>' . $item->title . '</strong>';
     if (!empty($item->description)) {

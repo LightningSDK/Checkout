@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 
 /**
  * Class Address
  *   Can be a shipping or billing address.
  *
- * @package Modules\Checkout\Model
+ * @package lightningsdk\checkout\Model
  *
  * @parameter integer $id
  *   The primary key alias.
@@ -22,7 +22,7 @@ use Lightning\Model\Object;
  * @parameter string $zip
  * @parameter string $country
  */
-class Address extends Object {
+class Address extends BaseObject {
     const TABLE = 'checkout_address';
     const PRIMARY_KEY = 'address_id';
 

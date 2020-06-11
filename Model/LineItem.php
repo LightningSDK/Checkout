@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 use Lightning\Tools\Database;
 use Lightning\View\HTMLEditor\Markup;
 
-class LineItem extends Object {
+class LineItem extends BaseObject {
     const TABLE = 'checkout_order_item';
     const PRIMARY_KEY = 'checkout_order_item_id';
 

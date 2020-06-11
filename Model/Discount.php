@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 use Lightning\Tools\Database;
 
-class Discount extends Object {
+class Discount extends BaseObject {
     const TABLE = 'checkout_discount';
     const PRIMARY_KEY = 'discount_id';
 

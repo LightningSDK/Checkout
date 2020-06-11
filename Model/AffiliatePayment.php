@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 
 /**
  * Class Address
  *   Can be a shipping or billing address.
  *
- * @package Modules\Checkout\Model
+ * @package lightningsdk\checkout\Model
  *
  * @parameter integer $id
  *   The primary key alias.
@@ -19,7 +19,7 @@ use Lightning\Model\Object;
  * @parameter integer $amount
  * @parameter string $type
  */
-class AffiliatePaymentOverridable extends Object {
+class AffiliatePaymentOverridable extends BaseObject {
     const TABLE = 'checkout_affiliate_payment';
     const PRIMARY_KEY = 'affiliate_payment_id';
 }

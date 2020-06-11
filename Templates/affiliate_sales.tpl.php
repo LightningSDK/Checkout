@@ -1,3 +1,7 @@
+<?php
+// This is unique to each user and shouldn't be cached.
+$this->dontCache();
+?>
 <div class="row">
     <div class="column">
         <h2>Your unpaid balance: $<?= number_format($balance/100, 2); ?></h2>

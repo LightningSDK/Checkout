@@ -1,0 +1,9 @@
+{
+  "name": "lightningsdk/checkout",
+  "type": "library",
+  "description": "Adds Ecommerce system.",
+  "version": "3.5.0",
+  "require": {
+    "lightningsdk/core": "^1.0"
+  }
+}

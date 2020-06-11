@@ -1,9 +1,9 @@
 <?= $this->build(['breadcrumbs', 'Checkout']); ?>
-
+category
 <?php if (!empty($categories)): ?>
-    <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 category-products text-center">
+    <ul class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4 category-products text-center">
         <?php foreach ($categories as $category): ?>
-            <li class="column small-12 medium-4 large-3 left product">
+            <li class="product cell">
                 <a href="/store/<?= $category->url; ?>"><img src="<?= $category->getImage(); ?>" alt="<?= \Lightning\Tools\Scrub::toHTML($category->name); ?>">
                     <br><strong><?= $category->name; ?></strong></a>
             </li>
@@ -12,9 +12,9 @@
 <?php endif; ?>
 
 <?php if (!empty($products)): ?>
-    <ul class="small-block-grid-2 medium-block-grid-3 large-block-grid-4 category-products text-center">
+    <ul class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4 category-products text-center">
         <?php foreach ($products as $product): ?>
-            <li class="column small-12 medium-4 large-3 left product">
+            <li class="product cell">
                 <a href="/store/<?= $product->url; ?>"><img src="<?= $product->getImage(); ?>" alt="<?= \Lightning\Tools\Scrub::toHTML($product->title); ?>">
                 <br><strong><?= $product->title; ?></strong></a>
             </li>

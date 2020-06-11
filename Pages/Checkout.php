@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Checkout\Pages;
+namespace lightningsdk\checkout\Pages;
 
 use Exception;
 use Lightning\Model\User;
@@ -10,8 +10,8 @@ use Lightning\Tools\Template;
 use Lightning\View\Field\Location;
 use Lightning\View\JS;
 use Lightning\View\Page;
-use Modules\Checkout\Model\Address;
-use Modules\Checkout\Model\Order;
+use lightningsdk\checkout\Model\Address;
+use lightningsdk\checkout\Model\Order;
 
 class Checkout extends Page {
 
@@ -55,7 +55,7 @@ class Checkout extends Page {
         Order::loadOrMergeByEncryptedUrlKey();
 
         // Initialize the module.
-        \Modules\Checkout\View\Checkout::init();
+        \lightningsdk\checkout\View\Checkout::init();
 
         // Initialize the page display.
         $nextPage = $this->nextRequiredPage();
@@ -161,7 +161,7 @@ class Checkout extends Page {
         // Payment options page
         if ($requestedPage === self::PAGE_PAYMENT) {
             $paymentHandler = Request::get('gateway');
-            $this->paymentHandlers = \Modules\Checkout\View\Checkout::getHandlers();
+            $this->paymentHandlers = \lightningsdk\checkout\View\Checkout::getHandlers();
 
             if (!empty($this->paymentHandlers) && !empty($this->paymentHandlers[$paymentHandler])) {
                 $this->paymentHandler = $this->paymentHandlers[$paymentHandler];

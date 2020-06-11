@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Checkout\Model;
+namespace lightningsdk\checkout\Model;
 
-use Lightning\Model\Object;
+use Lightning\Model\BaseObject;
 
-class Payment extends Object {
+class Payment extends BaseObject {
     const TABLE = 'checkout_payment';
     const PRIMARY_KEY = 'payment_id';
 

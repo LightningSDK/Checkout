@@ -1,15 +1,15 @@
 <?php
 
-namespace Modules\Checkout\Pages;
+namespace lightningsdk\checkout\Pages;
 
 use Lightning\Pages\Page;
 use Lightning\Tools\Output;
 use Lightning\Tools\Request;
 use Lightning\Tools\Template;
 use Lightning\View\JS;
-use Modules\Checkout\Model\Category;
-use Modules\Checkout\Model\Product as ProductModel;
-use Modules\Checkout\View\Checkout;
+use lightningsdk\checkout\Model\Category;
+use lightningsdk\checkout\Model\Product as ProductModel;
+use lightningsdk\checkout\View\Checkout;
 
 class Product extends Page {
 
@@ -87,9 +87,9 @@ class Product extends Page {
         }
 
         // Attempt to load gallery if available.
-        if (class_exists('Modules\PhotoGallery\View\Gallery')) {
-            \Modules\PhotoGallery\View\Gallery::init();
-            $gallery = new \Modules\PhotoGallery\Model\Gallery();
+        if (class_exists('lightningsdk\photogallery\View\Gallery')) {
+            \lightningsdk\photogallery\View\Gallery::init();
+            $gallery = new \lightningsdk\photogallery\Model\Gallery();
             $template->set('gallery', $gallery);
         }
     }

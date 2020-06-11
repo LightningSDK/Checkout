@@ -139,7 +139,7 @@
                         lightning.dialog.showContent(data.form);
                         self.initProductOptions(data);
                         setTimeout(function(){
-                            $(document).foundation('reflow');
+                            $(document).foundation();
                         }, 500);
                     } else {
                         // The product has been added.

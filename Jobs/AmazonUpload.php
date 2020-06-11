@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Checkout\Jobs;
+namespace lightningsdk\checkout\Jobs;
 
 use Lightning\Jobs\Job;
 use Lightning\Tools\Communicator\RestClient;
 use Lightning\Tools\Configuration;
 use Lightning\Tools\Template;
-use Modules\Checkout\Model\Product;
+use lightningsdk\checkout\Model\Product;
 
 class AmazonUpload extends Job {
 
@@ -21,10 +21,15 @@ class AmazonUpload extends Job {
     }
 
     public function execute($job) {
-//        $submissionId = $this->sendProductList($job);
-//        sleep(60);
-        $submissionId = '50017017855';
-        $this->getSubmissionStatus($submissionId);
+//        $this->sendProductList($job);
+        $this->getSubmissionStatus('50143017878');
+//        $this->sendProductRelationships($job);
+//        $this->getSubmissionStatus('50122017873');
+//        $this->sendProductImages($job);
+//        $this->getSubmissionStatus('50122017873');
+//        $this->sendProductPrices($job);
+//        $this->getSubmissionStatus('50124017873');
+        exit;
     }
 
     public function getSubmissionStatus($submissionId) {

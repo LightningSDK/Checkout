@@ -30,9 +30,6 @@
   }
   .small-description {
     display: none;
-    @include breakpoint(small only) {
-      display: table-row !important;
-    }
   }
 }
 .checkout-buttons {

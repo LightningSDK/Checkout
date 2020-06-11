@@ -11,13 +11,13 @@
                 <label>Your Name:
                     <input type="text" name="name" id='name' value="<?=\Lightning\View\Field::defaultValue('name');?>" required />
                 </label>
-                <small class="error">Please enter your name.</small>
+                <small class="form-error">Please enter your name.</small>
             </div>
             <div>
                 <label>Your Email:
                     <input type="email" name="email" id='email' value="<?=\Lightning\View\Field::defaultValue('email');?>" required />
                 </label>
-                <small class="error">Please enter your email.</small>
+                <small class="form-error">Please enter your email.</small>
             </div>
             <div class="text-center">
                 <input name="submit" type="submit" class="button medium red" style="display: inline-block" value="Let me know!" />

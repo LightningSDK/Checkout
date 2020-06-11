@@ -55,8 +55,18 @@
                                                 print implode('-', array_keys($amazonVariations)) ?></VariationTheme>
                                         </VariationData>
                                         <ClassificationData>
+                                            <?php foreach ($amazonVariations as $key => $value): ?>
+                                                <?php if (in_array($key, ['Size', 'Color'])): ?>
+                                                    <?= "<{$key}>{$value}</{$key}>"; ?>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
                                             <?php foreach ($product->options['amazon']['classification'] as $key => $value): ?>
                                                 <?= "<{$key}>{$value}</{$key}>"; ?>
+                                            <?php endforeach; ?>
+                                            <?php foreach ($amazonVariations as $key => $value): ?>
+                                                <?php if (in_array($key, ['Size', 'Color'])): ?>
+                                                    <?= "<{$key}Map>{$value}</{$key}Map>"; ?>
+                                                <?php endif; ?>
                                             <?php endforeach; ?>
                                         </ClassificationData>
                                     <?php endif; ?>
@@ -101,13 +111,17 @@
                                         <VariationTheme><?= implode('-', array_keys($amazonVariations)) ?></VariationTheme>
                                     </VariationData>
                                     <ClassificationData>
+                                        <?php foreach ($amazonVariations as $key => $value): ?>
+                                            <?php if (in_array($key, ['Size', 'Color'])): ?>
+                                                <?= "<{$key}>{$value}</{$key}>"; ?>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
                                         <?php foreach ($product->options['amazon']['classification'] as $key => $value): ?>
                                             <?= "<{$key}>{$value}</{$key}>"; ?>
                                         <?php endforeach; ?>
                                         <?php foreach ($amazonVariations as $key => $value): ?>
-                                            <?= "<{$key}>{$value}</{$key}>"; ?>
                                             <?php if (in_array($key, ['Size', 'Color'])): ?>
-                                                <?= "<{$key}Map>{$value}</{$key}>"; ?>
+                                                <?= "<{$key}Map>{$value}</{$key}Map>"; ?>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                         <?php /* Shirt, Sweater, Pants, Shorts, Skirt, Dress, Suit, Blazer, Outerwear, SocksHosiery, Underwear, Bra, Shoes, Hat, Bag, Accessory, Jewelry, Sleepwear, Swimwear, PersonalBodyCare, HomeAccessory, NonApparelMisc, Kimono, Obi, Chanchanko, Jinbei, Yukata, EthnicWear, Costume, AdultCostume, BabyCostume, ChildrensCostume]&apos;. It must be a value from the enumeration.</ResultDescription> */ ?>

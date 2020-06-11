@@ -1,3 +1,4 @@
+<?php $this->dontCache(); ?>
 <div class="row">
     <div class="column">
         <form method="post">
