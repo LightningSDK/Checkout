@@ -2,7 +2,7 @@
 
 return [
     'package' => [
-        'module' => 'Checkout',
+        'module' => 'lightningsdk/checkout',
         'version' => '1.0',
     ],
     'routes' => [
@@ -31,13 +31,13 @@ return [
     'compiler' => [
         'js' => [
             // Module Name
-            'Checkout' => [
+            'lightningsdk/checkout' => [
                 // Source file => Dest file
                 'Checkout.js' => 'Checkout.min.js',
             ]
         ],
         'css' => [
-            'Checkout' => [
+            'lightningsdk/checkout' => [
                 'checkout.scss' => 'lightning.css',
             ],
         ],

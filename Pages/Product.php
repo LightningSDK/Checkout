@@ -40,7 +40,7 @@ class Product extends Page {
 
             // Init the checkout methods
             Checkout::init();
-            JS::startup('lightning.modules.checkout.initProductOptions(' . json_encode(['options' => $product->options, 'base_price' => $product->price]) . ');', ['Checkout' => 'Checkout.js']);
+            JS::startup('lightning.modules.checkout.initProductOptions(' . json_encode(['options' => $product->options, 'base_price' => $product->price]) . ');', ['lightningsdk/checkout' => 'Checkout.js']);
 
             // Set up the meta data.
             $this->setMeta('title', $product->title);

@@ -67,7 +67,7 @@ class Checkout extends Page {
         switch ($nextPage) {
             case self::PAGE_SHIPPING:
                 JS::startup('lightning.tracker.track(lightning.tracker.events.initiateCheckout, {});');
-                JS::startup('lightning.modules.checkout.initCountrySelection()', ['Checkout' => 'Checkout.js']);
+                JS::startup('lightning.modules.checkout.initCountrySelection()', ['lightningsdk/checkout' => 'Checkout.js']);
                 JS::set('modules.checkout.states', Location::getStateOptions(null));
                 break;
             case self::PAGE_PAYMENT_OPTIONS:
