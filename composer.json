@@ -4,6 +4,6 @@
   "description": "Adds Ecommerce system.",
   "version": "1.0.0",
   "require": {
-    "lightningsdk/core": "^1.0"
+    "lightningsdk/core": "dev-php7.3"
   }
 }
