@@ -633,35 +633,26 @@
         updateState:  function(){
             var country = $('#country').val();
             var states = lightning.get('modules.checkout.states.' + country, null);
-            var container = $('#state_container');
-            var select = container.find('select');
-            var input = container.find('input');
+            var container = $('#state_form_element');
             if (states === null) {
                 // No options are available for this country.
-                // If this field is still a select field, change it to a text field.
-                if (select.length > 0) {
-                    select.remove();
-                }
-                if (input.length === 0) {
-                    container.prepend('<input type="text" name="state" id="state" required />');
+                if (!container.is('input')) {
+                    container.replaceWith('<input type="text" name="state" id="state_form_element" required />');
                 }
             } else {
                 // State options are available for this country.
-                // If this field is still a select field, change it to a text field.
-                if (input.length > 0) {
-                    input.remove();
-                }
-                if (select.length === 0) {
-                    container.prepend('<select type="text" name="state" id="state" required></select>');
-                    select = container.find('select');
+                if (!container.is('.original')) {
+                    container.replaceWith('<select type="text" name="state" id="state_form_element" required></select>');
+                    container = $('#state_form_element');
                 } else {
-                    select.empty();
+                    container.empty();
                 }
-                select.append('<option></option>');
+                container.append('<option></option>');
                 for (var i in states) {
-                    select.append('<option value="' + i + '">' + states[i] + '</option>');
+                    container.append('<option value="' + i + '">' + states[i] + '</option>');
                 }
             }
+            setTimeout(function(){Foundation.reInit('abide');}, 50);
         }
     };
 })();

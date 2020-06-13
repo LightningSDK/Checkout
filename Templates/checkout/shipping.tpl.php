@@ -7,7 +7,7 @@
                 ',
         ]); ?>
 
-        <form data-abide method="post" action="/store/checkout">
+        <form data-abide method="post" action="/store/checkout" novalidate>
             <?= \lightningsdk\core\Tools\Form::renderTokenInput(); ?>
             <?php $shipping = $cart->getShippingAddress(); ?>
             <input type="hidden" name="action" value="shipping">
@@ -53,9 +53,11 @@
                 </label>
             </div>
             <div>
-                <label>State:
-                    <div id="state_container">
-                    </div>
+                <label for="state">State:
+                    <select id="state_form_element" class="original" name="state" required>
+                        <option></option>
+                        <option>asd</option>
+                    </select>
                     <span class="form-error">Please select your state</span>
                 </label>
             </div>
@@ -68,7 +70,7 @@
             </div>
 
             <div class="text-right">
-                <input type="submit" name="submit" class="button red medium" value="Continue">
+                <button type="submit" class="button red medium" value="Submit">Continue</button>
             </div>
         </form>
     </div>
