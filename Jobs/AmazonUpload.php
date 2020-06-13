@@ -47,7 +47,7 @@ class AmazonUpload extends Job {
         // Build the feed
         $template = $this->getTemplate();
         $template->set('products', $this->getProducts());
-        $content = $template->render(['xml/amazon_product_feed', 'Checkout'], true);
+        $content = $template->render(['xml/amazon_product_feed', 'lightningsdk/checkout'], true);
 
         return $this->submitFeed($content, '_POST_PRODUCT_DATA_');
     }
@@ -56,7 +56,7 @@ class AmazonUpload extends Job {
         // Build the feed
         $template = $this->getTemplate();
         $template->set('products', $this->getProducts());
-        $content = $template->render(['xml/amazon_product_relationship_feed', 'Checkout'], true);
+        $content = $template->render(['xml/amazon_product_relationship_feed', 'lightningsdk/checkout'], true);
 
         return $this->submitFeed($content, '_POST_PRODUCT_DATA_');
     }
@@ -65,7 +65,7 @@ class AmazonUpload extends Job {
         // Build the feed
         $template = $this->getTemplate();
         $template->set('products', $this->getProducts());
-        $content = $template->render(['xml/amazon_image_feed', 'Checkout'], true);
+        $content = $template->render(['xml/amazon_image_feed', 'lightningsdk/checkout'], true);
 
         return $this->submitFeed($content, '_POST_PRODUCT_IMAGE_DATA_');
     }
@@ -74,7 +74,7 @@ class AmazonUpload extends Job {
         // Build the feed
         $template = $this->getTemplate();
         $template->set('products', $this->getProducts());
-        $content = $template->render(['xml/amazon_price_feed', 'Checkout'], true);
+        $content = $template->render(['xml/amazon_price_feed', 'lightningsdk/checkout'], true);
 
         return $this->submitFeed($content, '_POST_PRODUCT_PRICING_DATA_');
     }

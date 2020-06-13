@@ -1,4 +1,4 @@
-<div class="row">
+<div class="grid-x grid-padding-x">
     <form data-abide id="checkout-popup-options" class="checkout-form" data-product-id="<?=$product->id;?>">
         <?= !empty($fields_template) ? $this->build($fields_template) : ''; ?>
     </form>

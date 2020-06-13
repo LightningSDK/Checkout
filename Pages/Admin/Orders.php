@@ -201,7 +201,7 @@ class Orders extends Table {
             $template = Template::getInstance();
             $template->set('handlers', $handlers);
             $template->set('order_id', $order->id);
-            $this->page = ['fulfillment_selector', 'Checkout'];
+            $this->page = ['fulfillment_selector', 'lightningsdk/checkout'];
             return;
         }
 
@@ -222,7 +222,7 @@ class Orders extends Table {
 
         $template = Template::getInstance();
         $template->set('order_id', $order->id);
-        $this->page = ['confirm_mark_shipped', 'Checkout'];
+        $this->page = ['confirm_mark_shipped', 'lightningsdk/checkout'];
     }
 
     public function postMarkShipped() {

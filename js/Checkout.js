@@ -23,9 +23,9 @@
             // Make sure the modal is present prior to attaching event listeners.
             lightning.dialog.init();
             // Add an event handler when clicking to remove an item.
-            // .reveal-modal handles all events in a popup
+            // .reveal handles all events in a popup
             // .checkout-cart-container handles all events on the checkout page
-            $('.reveal-modal,.checkout-cart-container').on('click', '.remove img', self.removeItem)
+            $('.reveal,.checkout-cart-container').on('click', '.remove img', self.removeItem)
                 .on('change', '.checkout-qty', self.updateQty)
                 .on('click', '.checkout-update-total', self.updateQtys)
                 .on('click', '.checkout-pay', self.payCart);
@@ -41,7 +41,6 @@
             var form = button.closest('.options-fields');
             if (form.length === 1) {
                 var elems = form.find('input, textarea, select').not(":hidden, [data-abide-ignore]").get();
-                Foundation.libs.abide.validate(elems, form, true);
                 if (form.find('div.error').length === 0) {
                     form.find('input,select,textarea').each(function(index, item){
                         line_item_options[item.name] = item.value;
@@ -192,7 +191,7 @@
                     // Make sure there is an image selection container.
                     var selectionContainer = imgContainer.find('.selection');
                     if (selectionContainer.length === 0) {
-                        imgContainer.append('<div class="column selection"></div>');
+                        imgContainer.append('<div class="cell selection"></div>');
                         selectionContainer = imgContainer.find('.selection');
                     }
                     selectionContainer.empty();
@@ -592,9 +591,9 @@
                 }
                 if (lightning.vars.modules.checkout.enable_discounts) {
                     var discountsField = '<div class="row">' +
-                        '<div class="large-4 medium-12 column"><span class="form-inline">Add a discount:</span></div>' +
-                        '<div class="large-4 medium-6 column"><input type="text" name="discount" value="" id="cart-discount" /></div>' +
-                        '<div class="large-4 medium-6 column"><span class="button form-inline" onclick="lightning.modules.checkout.addDiscount($(\'#cart-discount\').val())">Add Discount</span><div class="discount-result"></div></div>' +
+                        '<div class="large-4 medium-12 cell"><span class="form-inline">Add a discount:</span></div>' +
+                        '<div class="large-4 medium-6 cell"><input type="text" name="discount" value="" id="cart-discount" /></div>' +
+                        '<div class="large-4 medium-6 cell"><span class="button form-inline" onclick="lightning.modules.checkout.addDiscount($(\'#cart-discount\').val())">Add Discount</span><div class="discount-result"></div></div>' +
                         '</div>';
                     // Show added discounts.
                     if (data.discounts && data.discounts.total) {

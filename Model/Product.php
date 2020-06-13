@@ -138,7 +138,7 @@ class ProductOverridable extends BaseObject {
             $template->set('fields_template', '');
         }
         $template->set('product', $this);
-        return $template->build(['product_popup', 'Checkout'], true);
+        return $template->build(['product_popup', 'lightningsdk/checkout'], true);
     }
 
     public function getImage($type = self::IMAGE_LISTING) {
@@ -379,9 +379,9 @@ class ProductOverridable extends BaseObject {
         $template = Template::getInstance();
         $template->set('product', $this);
         if ($this->isAvailable()) {
-            return $template->build(['options', 'Checkout'], true);
+            return $template->build(['options', 'lightningsdk/checkout'], true);
         } else {
-            return $template->build(['unavailable', 'Checkout'], true);
+            return $template->build(['unavailable', 'lightningsdk/checkout'], true);
         }
     }
 

@@ -1,5 +1,5 @@
-<div class="row payment-selection">
-    <div class="small-12 large-10 large-offset-1 column">
+<div class="grid-x grid-padding-x payment-selection">
+    <div class="small-12 large-10 large-offset-1 cell">
         <?php if (empty($handlers)): ?>
             <h2 class="text-center">There are no payment handlers configured.</h2>
         <?php else: ?>
@@ -7,10 +7,10 @@
 
             <?php foreach($handlers as $gateway => $handler): ?>
                 <div class="row-selector">
-                    <div class="description column small-12 large-8 text-center"><?= $handler->getDescription(); ?><br>
+                    <div class="description cell small-12 large-8 text-center"><?= $handler->getDescription(); ?><br>
                     <img src="<?= $handler->getLogo(); ?>" style="height: 40px; margin:20px;" />
                     </div>
-                    <div class="button-container small-12 large-4 text-center column">
+                    <div class="button-container small-12 large-4 text-center cell">
                         <a class="button blue medium" href="/store/checkout?page=payment&gateway=<?= $gateway; ?>"><?= $handler->getTitle(); ?></a>
                     </div>
                 </div>

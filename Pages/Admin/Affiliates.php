@@ -9,7 +9,7 @@ use lightningsdk\core\View\Page;
 
 class Affiliates extends Page {
 
-    protected $page = ['admin/affiliates', 'Checkout'];
+    protected $page = ['admin/affiliates', 'lightningsdk/checkout'];
 
     public function hasAccess() {
         return ClientUser::requireAdmin();

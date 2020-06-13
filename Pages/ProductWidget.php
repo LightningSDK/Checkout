@@ -8,7 +8,7 @@ use lightningsdk\checkout\Model\Product as ProductModel;
 use lightningsdk\core\View\Widget;
 
 class ProductWidget extends Widget {
-    protected $page = ['widget', 'Checkout'];
+    protected $page = ['widget', 'lightningsdk/checkout'];
     protected $maxProducts = 4;
 
     public function getBody() {

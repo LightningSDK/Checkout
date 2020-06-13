@@ -13,7 +13,7 @@ use lightningsdk\checkout\View\Checkout;
 
 class Product extends Page {
 
-    protected $page = ['product_wrapper', 'Checkout'];
+    protected $page = ['product_wrapper', 'lightningsdk/checkout'];
 
     public function get() {
         $content_locator = Request::getFromURL('/store\/(.*)/');
@@ -35,7 +35,7 @@ class Product extends Page {
             if (!empty($product->options['product_template'])) {
                 $template->set('product_template', $product->options['product_template']);
             } else {
-                $template->set('product_template', ['product', 'Checkout']);
+                $template->set('product_template', ['product', 'lightningsdk/checkout']);
             }
 
             // Init the checkout methods

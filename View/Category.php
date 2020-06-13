@@ -41,7 +41,7 @@ class Category {
         $template->setData([
             'categories' => $categories,
         ]);
-        return $template->render(['components/category', 'Checkout'],  true);
+        return $template->render(['components/category', 'lightningsdk/checkout'],  true);
 
         $output = '';
 

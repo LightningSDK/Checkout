@@ -2,8 +2,8 @@
 // This is unique to each user and shouldn't be cached.
 $this->dontCache();
 ?>
-<div class="row">
-    <div class="column">
+<div class="grid-x grid-padding-x">
+    <div class="cell">
         <h2>Your unpaid balance: $<?= number_format($balance/100, 2); ?></h2>
         <h2>Your affiliate sales:</h2>
         <?php if (empty($orders)): ?>
@@ -28,8 +28,8 @@ $this->dontCache();
         <?php endif; ?>
     </div>
 </div>
-<div class="row">
-    <div class="column">
+<div class="grid-x grid-padding-x">
+    <div class="cell">
         <?php
 $default = <<<DEFAULT
 <h3>Here's your affiliate link:</h3>

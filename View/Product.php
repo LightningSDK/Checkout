@@ -54,6 +54,6 @@ class Product {
             }
         }
 
-        return '<div class="' . ($options['ul-class'] ?? 'grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4') . '" ' . HTML::implodeAttributes($form_attributes) . '>' . $output . '</div>';
+        return '<div class="' . ($options['ul-class'] ?? 'grid-x grid-padding-x grid-padding-y small-up-2 medium-up-3 large-up-4') . '" ' . HTML::implodeAttributes($form_attributes) . '>' . $output . '</div>';
     }
 }

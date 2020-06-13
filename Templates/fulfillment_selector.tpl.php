@@ -1,6 +1,6 @@
 <?php use lightningsdk\core\Tools\Configuration; ?>
-<div class="row">
-    <div class="column">
+<div class="grid-x grid-padding-x">
+    <div class="cell">
         This order requires multiple fulfillment handlers:
         <ul>
             <?php foreach ($handlers as $handler): ?>

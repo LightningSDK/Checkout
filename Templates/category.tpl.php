@@ -1,25 +1,25 @@
-<?= $this->build(['breadcrumbs', 'Checkout']); ?>
+<?= $this->build(['breadcrumbs', 'lightningsdk/checkout']); ?>
 category
 <?php if (!empty($categories)): ?>
-    <ul class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4 category-products text-center">
+    <div class="grid-x grid-padding-x grid-padding-y small-up-2 medium-up-3 large-up-4 category-products text-center">
         <?php foreach ($categories as $category): ?>
-            <li class="product cell">
+            <div class="product cell">
                 <a href="/store/<?= $category->url; ?>"><img src="<?= $category->getImage(); ?>" alt="<?= \lightningsdk\core\Tools\Scrub::toHTML($category->name); ?>">
                     <br><strong><?= $category->name; ?></strong></a>
-            </li>
+            </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
 <?php endif; ?>
 
 <?php if (!empty($products)): ?>
-    <ul class="grid-x grid-margin-x grid-margin-y small-up-2 medium-up-3 large-up-4 category-products text-center">
+    <div class="grid-x grid-padding-x grid-padding-y small-up-2 medium-up-3 large-up-4 category-products text-center">
         <?php foreach ($products as $product): ?>
-            <li class="product cell">
+            <div class="product cell">
                 <a href="/store/<?= $product->url; ?>"><img src="<?= $product->getImage(); ?>" alt="<?= \lightningsdk\core\Tools\Scrub::toHTML($product->title); ?>">
                 <br><strong><?= $product->title; ?></strong></a>
-            </li>
+            </div>
         <?php endforeach; ?>
-    </ul>
+    </div>
 <?php endif; ?>
 
 <?php if (empty($products) && empty($categories)): ?>
@@ -27,5 +27,5 @@ category
 <?php endif; ?>
 
 <?php if (!empty($gallery)){
-    $this->build(['gallery', 'PhotoGallery']);
+    $this->build(['gallery', 'lightningsdk/photogallery']);
 } ?>

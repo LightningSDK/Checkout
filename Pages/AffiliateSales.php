@@ -10,7 +10,7 @@ use lightningsdk\core\View\Page;
 
 class AffiliateSales extends Page {
 
-    protected $page = ['affiliate_sales', 'Checkout'];
+    protected $page = ['affiliate_sales', 'lightningsdk/checkout'];
 
     public function hasAccess() {
         // TODO: Make sure the user is an affiliate first

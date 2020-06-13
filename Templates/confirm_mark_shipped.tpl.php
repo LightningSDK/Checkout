@@ -1,6 +1,6 @@
 <?php $this->dontCache(); ?>
-<div class="row">
-    <div class="column">
+<div class="grid-x grid-padding-x">
+    <div class="cell">
         <form method="post">
             <?= \lightningsdk\core\Tools\Form::renderTokenInput(); ?>
             <h3>

@@ -7,7 +7,7 @@ use lightningsdk\core\Tools\Configuration;
 use lightningsdk\core\Tools\Database;
 use lightningsdk\core\Tools\Image;
 
-class Category extends BaseObject {
+class CategoryOverridable extends BaseObject {
     const TABLE = 'checkout_category';
     const PRIMARY_KEY = 'category_id';
 

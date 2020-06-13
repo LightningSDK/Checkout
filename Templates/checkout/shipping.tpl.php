@@ -1,5 +1,5 @@
-<div class="row">
-    <div class="small-12 medium-6 medium-offset-3 column">
+<div class="grid-x grid-padding-x">
+    <div class="small-12 medium-6 medium-offset-3 cell">
         <?= \lightningsdk\core\View\CMS::embed('checkout_shipping_header', [
                 'default' => '
                 <h2 class="text-center">Where should we ship it?</h2>
@@ -13,50 +13,58 @@
             <input type="hidden" name="action" value="shipping">
 
             <div>
-                <label>Email:</label>
-                <input name="email" type="email" required value="<?= $cart->getUser()->email ?? ''; ?>">
-                <small class="form-error">Please enter a valid email</small>
+                <label>Email:
+                    <input name="email" type="email" required value="<?= $cart->getUser()->email ?? ''; ?>">
+                    <span class="form-error">Please enter a valid email</span>
+                </label>
             </div>
 
             <div>
-                <label>Name:</label>
-                <input name="name" required value="<?= !empty($shipping->name) ? $shipping->name : ''; ?>">
-                <small class="form-error">Please enter your name</small>
+                <label>Name:
+                    <input name="name" type="text" required value="<?= !empty($shipping->name) ? $shipping->name : ''; ?>">
+                    <span class="form-error">Please enter your name</span>
+                </label>
             </div>
 
             <div>
-                <label>Address:</label>
-                <input name="street" required value="<?= !empty($shipping->street) ? $shipping->street : ''; ?>">
-                <small class="form-error">Please enter your address</small>
+                <label>Address:
+                    <input name="street" type="text" required value="<?= !empty($shipping->street) ? $shipping->street : ''; ?>">
+                    <span class="form-error">Please enter your address</span>
+                </label>
             </div>
 
             <div>
-                <label>Address (cont):</label>
-                <input name="street2" value="<?= !empty($shipping->street2) ? $shipping->street2 : ''; ?>">
+                <label>Address (cont):
+                    <input name="street2" type="text" value="<?= !empty($shipping->street2) ? $shipping->street2 : ''; ?>">
+                </label>
             </div>
 
             <div>
-                <label>City:</label>
-                <input name="city" required value="<?= !empty($shipping->city) ? $shipping->city : ''; ?>">
-                <small class="form-error">Please enter your city</small>
+                <label>City:
+                    <input name="city" type="text" required value="<?= !empty($shipping->city) ? $shipping->city : ''; ?>">
+                    <span class="form-error">Please enter your city</span>
+                </label>
             </div>
 
             <div>
-                <label>Country:</label>
-                <?= \lightningsdk\core\View\Field\Location::countryPop('country', 'required', !empty($shipping->country) ? $shipping->country : 'US'); ?>
-                <small class="form-error">Please select your country</small>
+                <label>Country:
+                    <?= \lightningsdk\core\View\Field\Location::countryPop('country', 'required', !empty($shipping->country) ? $shipping->country : 'US'); ?>
+                    <span class="form-error">Please select your country</span>
+                </label>
             </div>
             <div>
-                <label>State:</label>
-                <div id="state_container">
-                    <small class="form-error">Please select your state</small>
-                </div>
+                <label>State:
+                    <div id="state_container">
+                    </div>
+                    <span class="form-error">Please select your state</span>
+                </label>
             </div>
 
             <div>
-                <label>Postal Code:</label>
-                <input name="zip" required value="<?= !empty($shipping->zip) ? $shipping->zip : ''; ?>">
-                <small class="form-error">Please enter your postal code</small>
+                <label>Postal Code:
+                    <input name="zip" type="text" required value="<?= !empty($shipping->zip) ? $shipping->zip : ''; ?>">
+                    <span class="form-error">Please enter your postal code</span>
+                </label>
             </div>
 
             <div class="text-right">

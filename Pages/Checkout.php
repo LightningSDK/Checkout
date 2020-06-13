@@ -41,7 +41,7 @@ class Checkout extends Page {
      */
     protected $paymentHandlers;
 
-    protected $page = ['checkout/empty', 'Checkout'];
+    protected $page = ['checkout/empty', 'lightningsdk/checkout'];
 
     protected $rightColumn = false;
     protected $share = false;

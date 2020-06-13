@@ -1,6 +1,6 @@
 <?php if (!empty($breadcrumbs)): ?>
-    <div class="row">
-        <div class="column">
+    <div class="grid-x grid-padding-x">
+        <div class="cell">
             <ul class="breadcrumbs">
                 <li><a href="/store">Store</a></li>
                 <?php foreach ($breadcrumbs as $url => $name): ?>

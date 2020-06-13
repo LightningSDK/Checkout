@@ -49,14 +49,14 @@
     </tr>
     <?php endif; ?>
     <?php if (\lightningsdk\core\Tools\Configuration::get('modules.checkout.enable_discounts')): ?>
-        <?php $discountsField = '<div class="row">
-            <div class="large-4 medium-12 column">
+        <?php $discountsField = '<div class="grid-x grid-padding-x">
+            <div class="large-4 medium-12 cell">
                 <span class="form-inline">Add a discount:</span>
             </div>
-            <div class="large-4 medium-6 column">
+            <div class="large-4 medium-6 cell">
                 <input type="text" name="discount" value="" id="cart-discount" />
             </div>
-            <div class="large-4 medium-6 column">
+            <div class="large-4 medium-6 cell">
                 <span class="button form-inline" onclick="lightning.modules.checkout.addDiscount($(\'#cart-discount\').val())">Add Discount</span>
                 <div class="discount-result"></div></div>
             </div>'; ?>
