@@ -6,7 +6,7 @@
         Want to know when this item is available?
         <form action="/user" method="post" id="register" data-abide>
             <?= \lightningsdk\core\Tools\Form::renderTokenInput(); ?>
-            <input type="hidden" name="list" value="<?=\Source\Model\Message::getListIDByName('Product Waiting');?>" />
+            <input type="hidden" name="list" value="<?=\lightningsdk\core\model\Mailing\Message::getListIDByName('Product Waiting');?>" />
             <div>
                 <label>Your Name:
                     <input type="text" name="name" id='name' value="<?=\lightningsdk\core\View\Field::defaultValue('name');?>" required />

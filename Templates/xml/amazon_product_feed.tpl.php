@@ -31,9 +31,9 @@
                         <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
                         <DescriptionData>
                             <Title><?= $product->title; ?></Title>
-                            <Brand><?= \Source\Model\Site::getInstance()->name; ?></Brand>
+                            <Brand><?= \lightningsdk\sitemanager\Model\Site::getInstance()->name; ?></Brand>
                             <Description><?= strip_tags($product->description); ?></Description>
-                            <Manufacturer><?= \Source\Model\Site::getInstance()->name; ?></Manufacturer>
+                            <Manufacturer><?= \lightningsdk\sitemanager\Model\Site::getInstance()->name; ?></Manufacturer>
                             <?php foreach (explode(',', $product->keywords ?? '') as $keyword): if (!empty($keyword)): ?>
                                 <SearchTerms><?= $keyword; ?></SearchTerms>
                             <?php endif; endforeach; ?>
@@ -90,9 +90,9 @@
                         <ProductTaxCode>A_GEN_NOTAX</ProductTaxCode>
                         <DescriptionData>
                             <Title><?= $product->title; ?></Title>
-                            <Brand><?= \Source\Model\Site::getInstance()->name; ?></Brand>
+                            <Brand><?= \lightningsdk\sitemanager\Model\Site::getInstance()->name; ?></Brand>
                             <Description><?= strip_tags($product->description); ?></Description>
-                            <Manufacturer><?= \Source\Model\Site::getInstance()->name; ?></Manufacturer>
+                            <Manufacturer><?= \lightningsdk\Model\Site::getInstance()->name; ?></Manufacturer>
                             <?php foreach (explode(',', $product->keywords ?? '') as $keyword): if (!empty($keyword)): ?>
                                 <SearchTerms><?= $keyword; ?></SearchTerms>
                             <?php endif; endforeach; ?>
